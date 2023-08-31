@@ -14,7 +14,7 @@ export default function Icon(props: IconProps) {
   useEffect(() => {
     import("@tabler/icons-react")
       .then((module) => {
-        const iconComponent = module[props.name];
+        const iconComponent = module[props.name] as React.ElementType;
         if (iconComponent) {
           setIconComponent(iconComponent);
         }
