@@ -2,7 +2,87 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+@layer components {
+  /* main */
+  .main-container {
+    @apply flex min-h-screen flex-1 flex-col items-center bg-dark-1 px-6 pb-10 pt-28 max-md:pb-32 sm:px-10;
+  }
+
+  /* Head Text */
+  .head-text {
+    @apply text-heading2-bold text-light-1;
+  }
+  .topbar {
+    @apply fixed top-0 z-30 flex w-full items-center justify-between bg-dark-2 px-6 py-3;
+  }
+  .leftsidebar {
+    @apply sticky left-0 top-0 z-20 flex h-screen w-fit flex-col justify-between overflow-auto border-r border-r-dark-4 bg-dark-2 pb-5 pt-28 max-md:hidden;
+  }
+
+  .rightsidebar {
+    @apply sticky right-0 top-0 z-20 flex h-screen w-fit flex-col justify-between gap-12 overflow-auto border-l border-l-dark-4 bg-dark-2 px-10 pb-6 pt-28 max-xl:hidden;
+  }
+}
+.bottombar_link {
+  @apply relative flex flex-col items-center gap-2 rounded-lg p-2 sm:flex-1 sm:px-2 sm:py-2.5;
+}
+.leftsidebar_link {
+  @apply relative flex justify-start gap-4 rounded-lg p-4;
+}
+.bottombar_container {
+  @apply flex items-center justify-between gap-3 xs:gap-5;
+}
+.bottombar {
+  @apply fixed bottom-0 z-10 w-full rounded-t-3xl bg-glassmorphism p-4 backdrop-blur-lg xs:px-7 md:hidden;
+}
+.tabler-icon {
+  color: white;
+}
+/*.icon-placeholder {
+  width: 24px;
+  height: 24px;
+}*/
+@media screen and (min-width: 768px) {
+  .header {
+    margin: 56px auto 0;
+  }
+}
+.animated {
+  width: 24px;
+  height: 24px;
+  background-color: #1a1a1a;
+  background: linear-gradient(to right, #1a1a1a 10%, #111 40%, #1a1a1a 70%);
+  animation: placeholderShimmer 20s linear 0s infinite normal forwards;
+  border-radius: 5px;
+}
+.avatar {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+}
+.avatar:before {
+  position: absolute;
+  left: 0;
+  content: '';
+  background: #fff;
+  height: 40px;
+}
+
+.avatar-image {
+  width: 40px;
+  height: 40px;
+}
+
+@keyframes placeholderShimmer {
+  0% {
+    background-position: -500px 0;
+  }
+  100% {
+    background-position: 500px 0;
+  }
+}
+
+/*:root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
@@ -24,4 +104,4 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
-}
+}*/
