@@ -4,14 +4,11 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Icon from "./Icon";
+import { IPot } from "@/lib/models/pot";
 
-export default function NavOptions(props: { position: string; pots: Pot[] }) {
+export default function NavOptions(props: { position: string; pots: IPot[] }) {
   const pathname = usePathname();
-  props.pots.forEach((element) => {
-    element.componentName = `Icon${
-      element.icon.charAt(0).toUpperCase() + element.icon.slice(1)
-    }`;
-  });
+
   return (
     <div className="contents w-full">
       <Link
@@ -42,7 +39,7 @@ export default function NavOptions(props: { position: string; pots: Pot[] }) {
 					${isActive && "bg-primary-500"}`}
           >
             {/*<i className={`ti ti-${pot.icon}`}></i>*/}
-            <Icon name={pot.componentName} stroke="1" strokeLinejoin="miter" />
+            <Icon name={pot.icon} stroke="1" strokeLinejoin="miter" />
             {props.position === "leftsidebar" ? (
               <p className="text-light-1 max-lg:hidden flex relative">
                 {pot.potName}
