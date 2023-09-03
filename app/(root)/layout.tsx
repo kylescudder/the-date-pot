@@ -39,10 +39,8 @@ export default async function RootLayout({
       >
         <html lang="en">
           <body className={inter.className}>
-            <Topbar />
-            <MainContent
-              pots={pots}
-              children={children} />
+            <Topbar pots={pots} />
+            <MainContent pots={pots} children={children} />
           </body>
         </html>
       </ClerkProvider>

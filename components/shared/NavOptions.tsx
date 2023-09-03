@@ -8,23 +8,18 @@ import { IPot } from "@/lib/models/pot";
 
 export default function NavOptions(props: { position: string; pots: IPot[] }) {
   const pathname = usePathname();
-
   return (
     <div className="contents w-full">
-      <Link
+      <a
         href="/"
         className={`${props.position}_link 
         ${pathname === "/" && "bg-primary-500"}`}
       >
         <Icon name={"IconHome"} stroke="1" strokeLinejoin="miter" />
-        {props.position === "leftsidebar" ? (
-          <p className="text-light-1 max-lg:hidden flex relative">Home</p>
-        ) : (
-          <p className="text-subtle-medium text-light-1 max-sm:hidden">
-            {"Home".split(/\s+/)[0]}
-          </p>
-        )}
-      </Link>
+        <p className="text-dark-1 dark:text-light-1 flex relative">
+          Home
+        </p>
+      </a>
       {props.pots.map((pot) => {
         const isActive =
           (pathname.includes(pot.potName.toLowerCase()) &&
@@ -32,7 +27,7 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
           pathname === pot.potName.toLowerCase();
 
         return (
-          <Link
+          <a
             href={`/${pot.potName.toLowerCase()}`}
             key={pot._id}
             className={`${props.position}_link 
@@ -40,16 +35,10 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
           >
             {/*<i className={`ti ti-${pot.icon}`}></i>*/}
             <Icon name={pot.icon} stroke="1" strokeLinejoin="miter" />
-            {props.position === "leftsidebar" ? (
-              <p className="text-light-1 max-lg:hidden flex relative">
-                {pot.potName}
-              </p>
-            ) : (
-              <p className="text-subtle-medium text-light-1 max-sm:hidden">
-                {pot.potName.split(/\s+/)[0]}
-              </p>
-            )}
-          </Link>
+            <p className="text-dark-1 dark:text-light-1 flex relative">
+              {pot.potName}
+            </p>
+          </a>
         );
       })}
     </div>
