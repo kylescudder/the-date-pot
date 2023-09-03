@@ -8,6 +8,7 @@ import { convertBase64ToFile } from "../utils";
 import UserGroupPot, { IUserGroupPot } from "../models/user-group-pot";
 import Pot from "../models/pot";
 import mongoose from "mongoose";
+import { IUserGroup } from "../models/user-group";
 
 export async function getUserInfo(id: string) {
   try {
@@ -68,6 +69,17 @@ export async function getUserGroupPots(id: string) {
     );
     pots.sort((a, b) => a!.potName.localeCompare(b!.potName));
     return pots;
+  } catch (error: any) {
+    throw new Error(`Failed to create/update user: ${error.message}`);
+  }
+}
+export async function getUserGroup(id: string) {
+  try {
+    connectToDB();
+
+    return await UserGroupPot.find({
+      groupOwnerID: id,
+    });
   } catch (error: any) {
     throw new Error(`Failed to create/update user: ${error.message}`);
   }
