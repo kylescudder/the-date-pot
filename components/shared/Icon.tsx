@@ -37,7 +37,8 @@ export default function Icon(props: IconProps) {
   }
 
   return (
-    <IconComponent className="text-light-1"
+    <IconComponent
+      className="text-dark-1 dark:text-light-1"
       {...(props.stroke && { stroke: props.stroke })}
       {...(props.strokeLinejoin && { strokeLinejoin: props.strokeLinejoin })}
     />

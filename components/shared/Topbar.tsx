@@ -20,10 +20,11 @@ export default function Topbar() {
             strokeLinejoin="miter"
             height={28}
             width={28}
+            className="text-dark-1 dark:text-light-1 max-sm:hidden"
           />
           <p
             className="text-heading3-bold 
-				text-light-1 max-xs:hidden"
+				  text-dark-1 dark:text-light-1 max-xs:hidden"
           >
             The Date Pot
           </p>
