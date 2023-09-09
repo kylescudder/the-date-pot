@@ -60,7 +60,6 @@ export async function getUserGroupPots(id: string) {
     const userGroupPots: IUserGroupPot[] = await UserGroupPot.find({
       userID: id,
     });
-    console.log(userGroupPots)
     const pots = await Promise.all(
       userGroupPots.map(async (element) => {
         const pot = await Pot.findOne({ _id: element.potID });
@@ -77,7 +76,7 @@ export async function getUserGroup(id: string) {
   try {
     connectToDB();
 
-    return await UserGroupPot.find({
+    return await UserGroup.findOne({
       groupOwnerID: id,
     });
   } catch (error: any) {
