@@ -8,7 +8,7 @@ import { convertBase64ToFile } from "../utils";
 import UserGroupPot, { IUserGroupPot } from "../models/user-group-pot";
 import Pot from "../models/pot";
 import mongoose from "mongoose";
-import { IUserGroup } from "../models/user-group";
+import UserGroup, { IUserGroup } from "../models/user-group";
 
 export async function getUserInfo(id: string) {
   try {
