@@ -10,6 +10,8 @@ import { getUserGroupPots, getUserInfo } from "@/lib/actions/user.actions";
 import { IUser } from "@/lib/models/user";
 import { redirect } from "next/navigation";
 import { IPot } from "@/lib/models/pot";
+import ThemeRegistry from "../ThemeRegistry";
+import { Toast } from "@/components/shared/Toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,26 +25,29 @@ export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
-  }) {
-    const user = await currentUser();
-    if (!user) return null;
+}) {
+  const user = await currentUser();
+  if (!user) return null;
 
-    const userInfo: IUser = await getUserInfo(user.id);
-    if (!userInfo?.onboarded) redirect("/onboarding");
+  const userInfo: IUser = await getUserInfo(user.id);
+  if (!userInfo?.onboarded) redirect("/onboarding");
 
-    const pots: IPot[] = await getUserGroupPots(userInfo._id);
-    return (
-      <ClerkProvider
-        appearance={{
-          baseTheme: dark,
-        }}
-      >
-        <html lang="en">
-          <body className={inter.className}>
+  const pots: IPot[] = await getUserGroupPots(userInfo._id);
+  return (
+    <ClerkProvider
+      appearance={{
+        baseTheme: dark,
+      }}
+    >
+      <html lang="en">
+        <body className={inter.className}>
+          <ThemeRegistry options={{ key: "mui" }}>
             <Topbar pots={pots} />
             <MainContent pots={pots} children={children} />
-          </body>
-        </html>
-      </ClerkProvider>
-    );
-  }
+            <Toast />
+          </ThemeRegistry>
+        </body>
+      </html>
+    </ClerkProvider>
+  );
+}

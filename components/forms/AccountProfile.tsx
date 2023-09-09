@@ -16,7 +16,6 @@ import { ChangeEvent } from "react";
 import Image from "next/image";
 import { IUser } from "@/lib/models/user";
 import { updateUser } from "@/lib/actions/user.actions";
-import { Types } from "mongoose";
 
 interface Props {
   user: IUser;

@@ -2,7 +2,6 @@
 
 import CustomThemeProvider from "@/components/shared/CustomThemeProvider";
 import LeftSidebar from "./LeftSidebar";
-import RightSidebar from "./RightSidebar";
 import { IPot } from "@/lib/models/pot";
 
 export const MainContent = (props: {
@@ -16,7 +15,6 @@ export const MainContent = (props: {
 				<section className="main-container">
 					<div className="w-full max-w-4xl">{props.children}</div>
 				</section>
-				<RightSidebar />
 			</main>
 		</CustomThemeProvider>
 	);

@@ -5,7 +5,7 @@
 @layer components {
   /* main */
   .main-container {
-    @apply flex min-h-screen flex-1 flex-col items-center bg-light-1 dark:bg-dark-1 px-6 pb-10 pt-28 max-md:pb-32 sm:px-10;
+    @apply flex min-h-screen flex-1 flex-col items-center bg-light-1 dark:bg-dark-1 px-6 pb-10 pt-16 max-md:pb-32 sm:px-10;
   }
 
   /* Head Text */
@@ -14,9 +14,6 @@
   }
   .topbar {
     @apply fixed top-0 z-30 flex w-full items-center justify-between bg-light-2 dark:bg-dark-2 px-6 py-3;
-  }
-  .rightsidebar {
-    @apply sticky right-0 top-0 z-20 flex h-screen w-fit flex-col justify-between gap-12 overflow-auto border-l border-l-light-4 dark:border-l-dark-4 bg-light-2 dark:bg-dark-2 px-10 pb-6 pt-28 max-xl:hidden;
   }
 }
 .bottombar_link {
@@ -30,6 +27,21 @@
 }
 .bottombar {
   @apply fixed bottom-0 z-10 w-full rounded-t-3xl bg-glassmorphism p-4 backdrop-blur-lg xs:px-7 md:hidden;
+}
+.vinylPage {
+  max-width: calc(100vw - 3rem);
+}
+.mui-m9glnp-MuiPaper-root-MuiDialog-paper {
+  @apply bg-light-2 dark:bg-dark-2 text-dark-1 dark:text-light-1 !important;
+}
+.focus-visible\:ring-2:focus-visible {
+  @apply border-primary-500 !important;
+}
+.tabulator-row {
+  /*@apply py-2*/
+}
+.tabulator-cell {
+  @apply py-2
 }
 .tabler-icon {
   color: white;

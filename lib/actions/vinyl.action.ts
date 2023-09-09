@@ -1,44 +1,67 @@
-"use server"
+"use server";
 
-import Vinyl from "../models/vinyl";
+import { currentUser } from "@clerk/nextjs";
+import Vinyl, { IVinyl } from "../models/vinyl";
 import { connectToDB } from "../mongoose";
+import { getUserGroup, getUserInfo } from "./user.actions";
+import mongoose from "mongoose";
 
 export async function getVinylList(id: string) {
-	try {
-		console.log('getVinylList')
+  try {
     connectToDB();
-		
-    const list = await Vinyl.find({
-			userGroupID: id,
+
+    return await Vinyl.find({
+      userGroupID: id,
     });
-		console.log('list: ', list)
-		return list
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`);
+    throw new Error(`Failed to find vinyls: ${error.message}`);
   }
 }
+export async function getVinyl(id: string) {
+  try {
+    connectToDB();
 
-//export async function updateUser(userData: IUser, path: string) {
-//  try {
-//    connectToDB();
+    const user = await currentUser();
+    if (!user) return null;
+    const userInfo = await getUserInfo(user?.id);
+    const userGroup = await getUserGroup(userInfo._id);
 
-//		await User.findOneAndUpdate(
-//			{ clerkId: userData.clerkId }, {
-//			_id: userData._id,
-//			username: userData.username,
-//			clerkId: userData.clerkId,
-//			name: userData.name,
-//			bio: userData.bio,
-//			onboarded: true
-//    }, { upsert: true, new: true })
+    return await Vinyl.findOne({
+      _id: new mongoose.Types.ObjectId(id),
+      userGroupID: new mongoose.Types.ObjectId(userGroup._id),
+    });
+  } catch (error: any) {
+    throw new Error(`Failed to find vinyl: ${error.message}`);
+  }
+}
+export async function updateVinyl(vinylData: IVinyl) {
+  try {
+    connectToDB();
 
-//    const file: File = convertBase64ToFile(userData.image)
-//    clerkClient.users.updateUserProfileImage(userData.clerkId, { file: file }).catch(err => console.table(err.errors));
-    
-//    if (path === "/profile/edit") {
-//      revalidatePath(path);
-//    }
-//  } catch (error: any) {
-//    throw new Error(`Failed to create/update user: ${error.message}`);
-//  }
-//}
+    const user = await currentUser();
+    if (!user) return null;
+    const userInfo = await getUserInfo(user?.id);
+    const userGroup = await getUserGroup(userInfo._id);
+
+    const newId = new mongoose.Types.ObjectId();
+    if (vinylData._id === "") {
+      vinylData._id = newId.toString();
+    }
+
+    return await Vinyl.findOneAndUpdate(
+      { _id: new mongoose.Types.ObjectId(vinylData._id) },
+      {
+        _id: new mongoose.Types.ObjectId(vinylData._id),
+        name: vinylData.name,
+        artistName: vinylData.artistName,
+        purchased: vinylData.purchased,
+        archive: vinylData.archive,
+        addedByID: new mongoose.Types.ObjectId(userInfo._id),
+        userGroupID: new mongoose.Types.ObjectId(userGroup._id),
+      },
+      { upsert: true, new: true }
+    );
+  } catch (error: any) {
+    throw new Error(`Failed to create/update vinyl: ${error.message}`);
+  }
+}
