@@ -27,7 +27,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
 
   const form = useForm({
     defaultValues: {
-      // _id: props.vinyl._id ? props.vinyl._id : "",
+      _id: props.vinyl._id ? props.vinyl._id : "",
       name: props.vinyl.name ? props.vinyl.name : "",
       artistName: props.vinyl.artistName ? props.vinyl.artistName : "",
       purchased: props.vinyl.purchased ? props.vinyl.purchased : false,
