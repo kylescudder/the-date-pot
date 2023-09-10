@@ -22,7 +22,7 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
 
   const handleSearchClickOpen = () => {
     setSearchOpen(true);
-    focusRef.current.focus();
+    focusRef.current?.focus();
   };
 
   const router = useRouter();

@@ -26,17 +26,17 @@ export async function updateUser(userData: IUser, path: string) {
     connectToDB();
     const newId = new mongoose.Types.ObjectId();
     console.log(userData.image);
-    const newUser = await User.findOneAndUpdate(
-      { clerkId: userData.clerkId },
-      {
-        username: userData.username,
-        clerkId: userData.clerkId,
-        name: userData.name,
-        bio: userData.bio,
-        onboarded: true,
-      },
-      { upsert: true, new: true }
-    );
+    //await User.findOneAndUpdate(
+    //  { clerkId: userData.clerkId },
+    //  {
+    //    username: userData.username,
+    //    clerkId: userData.clerkId,
+    //    name: userData.name,
+    //    bio: userData.bio,
+    //    onboarded: true,
+    //  },
+    //  { upsert: true, new: true }
+    //);
     if (userData.image) {
       if (!userData.image.includes("https://img.clerk.com")) {
         const file: File = convertBase64ToFile(userData.image);
