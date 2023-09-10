@@ -92,7 +92,7 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
     setOpen(data);
   };
 
-  const focusRef = useRef(null);
+  const focusRef = useRef<HTMLInputElement>(null);
   const newVinyl = {
     _id: "",
     name: "",
