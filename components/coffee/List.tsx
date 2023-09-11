@@ -19,6 +19,7 @@ export default function CoffeeList(props: { coffees: ICoffee[] }) {
   const [filteredCoffees, setFilteredCoffees] = useState(props.coffees);
   const [open, setOpen] = React.useState(false);
   const [searchOpen, setSearchOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -98,8 +99,10 @@ export default function CoffeeList(props: { coffees: ICoffee[] }) {
     userGroupID: "",
     addedByID: "",
     archive: false,
-  } 
-  return (
+  };
+  return loading ? (
+    <span className="loader"></span>
+  ) : (
     <div>
       <div className="flex mb-4">
         <div
