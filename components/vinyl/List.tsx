@@ -13,6 +13,7 @@ import AddVinyl from "./AddVinyl";
 import { Button } from "../ui/button";
 import { IconFilePlus, IconSearch } from "@tabler/icons-react";
 import FullScreenModal from "../shared/FullScreenModal";
+import Loading from "../shared/Loading";
 
 export default function VinylList(props: { vinyls: IVinyl[] }) {
   const [searchValue, setSearchValue] = useState("");
@@ -104,7 +105,7 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
     userGroupID: "",
   };
   return loading ? (
-    <span className="loader"></span>
+    <Loading />
   ) : (
     <div>
       <div className="flex mb-4">

@@ -13,6 +13,7 @@ import { IconFilePlus, IconSearch } from "@tabler/icons-react";
 import FullScreenModal from "../shared/FullScreenModal";
 import { ICoffee } from "@/lib/models/coffee";
 import AddCoffee from "./AddCoffee";
+import Loading from "../shared/Loading";
 
 export default function CoffeeList(props: { coffees: ICoffee[] }) {
   const [searchValue, setSearchValue] = useState("");
@@ -101,7 +102,7 @@ export default function CoffeeList(props: { coffees: ICoffee[] }) {
     archive: false,
   };
   return loading ? (
-    <span className="loader"></span>
+    <Loading />
   ) : (
     <div>
       <div className="flex mb-4">
