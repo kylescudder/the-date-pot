@@ -147,7 +147,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
             )}
           />
           <Button className="bg-primary-500 text-light-1" type="submit">
-            Add Vinyl
+            {props.vinyl._id === '' ? "Add" : "Update" } Vinyl
           </Button>
         </form>
       </Form>
