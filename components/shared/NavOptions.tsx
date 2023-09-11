@@ -21,10 +21,14 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
         </p>
       </a>
       {props.pots.map((pot) => {
+        const potNameDepluralised = pot.potName.endsWith("s")
+          ? pot.potName.substring(0, pot.potName.length - 1).toLowerCase()
+          : pot.potName.toLowerCase();
+        
         const isActive =
-          (pathname.includes(pot.potName.toLowerCase()) &&
-            pot.potName.toLowerCase().length > 1) ||
-          pathname === pot.potName.toLowerCase();
+          (pathname.includes(potNameDepluralised) &&
+            potNameDepluralised.length > 1) ||
+          pathname === potNameDepluralised
 
         return (
           <a
