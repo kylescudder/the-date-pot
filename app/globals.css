@@ -31,6 +31,9 @@
 .vinylPage {
   max-width: calc(100vw - 3rem);
 }
+.tabulator-cell > span > svg {
+  @apply inline !important;
+}
 .MuiDialog-paper {
   @apply bg-light-2 dark:bg-dark-2 text-dark-1 dark:text-light-1 !important;
 }
