@@ -19,6 +19,7 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
   const [filteredVinyls, setFilteredVinyls] = useState(props.vinyls);
   const [open, setOpen] = React.useState(false);
   const [searchOpen, setSearchOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -101,8 +102,10 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
     archive: false,
     addedByID: "",
     userGroupID: "",
-  } 
-  return (
+  };
+  return loading ? (
+    <span className="loader"></span>
+  ) : (
     <div>
       <div className="flex mb-4">
         <div
