@@ -49,6 +49,7 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
   useEffect(() => {
     const tabulatorOptions: Tabulator.Options = {
       responsiveLayout: "hide",
+      placeholder: "No vinyls...",
       rowHeight: 40,
       columns: [
         {
