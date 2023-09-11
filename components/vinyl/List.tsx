@@ -3,7 +3,11 @@
 import { IVinyl } from "@/lib/models/vinyl";
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Tabulator, { TabulatorFull , RowComponent, CellComponent } from "tabulator-tables";
+import Tabulator, {
+  TabulatorFull,
+  RowComponent,
+  CellComponent,
+} from "tabulator-tables";
 import "tabulator-tables/dist/css/tabulator_midnight.min.css";
 import AddVinyl from "./AddVinyl";
 import { Button } from "../ui/button";
@@ -53,11 +57,6 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
           vertAlign: "middle",
           resizable: false,
           responsive: 0,
-          cellClick: function (e: UIEvent, cell: CellComponent) {
-            const row: RowComponent = cell.getRow();
-            const data = row.getData();
-            router.push(`vinyl/${data._id}`);
-          },
         },
         {
           title: "Artist",
@@ -82,6 +81,11 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
       "#tabulator-placeholder",
       tabulatorOptions
     );
+    tabulatorInstance.on("rowClick", function (e: UIEvent, row: RowComponent) {
+      setLoading(true);
+      const data = row.getData();
+      router.push(`vinyl/${data._id}`);
+    });
   }, [filteredVinyls]);
 
   const pullData = (data: boolean) => {
