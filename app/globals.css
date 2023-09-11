@@ -332,3 +332,64 @@ Note: Beware of modifying this element as it can break the animations - you shou
 }
 
 /*END Slide menu*/
+
+.loader {
+  animation: rotation 1s linear infinite;
+  @apply mx-auto mt-36 
+  border-l-dark-2 
+  border-t-dark-2 
+  border-r-dark-2 
+  border-b-transparent
+  dark:border-l-light-2 
+  dark:border-t-light-2 
+  dark:border-r-light-2 
+  dark:border-b-transparent
+  border-4
+  w-12
+  h-12
+  rounded-full
+  flex
+  justify-center
+  items-center
+  relative
+  box-border
+}
+
+.loader::after {
+  content: '';  
+  animation: rotationBack 0.5s linear infinite;
+  transform-origin: center center;
+  @apply box-border
+  absolute
+  left-0
+  right-0
+  top-0
+  bottom-0
+  m-auto
+  border-4
+  border-l-transparent
+  border-t-primary-500
+  border-r-primary-500
+  border-b-primary-500
+  w-6
+  h-6
+  rounded-full
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} 
+    
+@keyframes rotationBack {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
