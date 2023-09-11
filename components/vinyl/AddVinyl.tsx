@@ -50,7 +50,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
 
     const vinyl = await updateVinyl(payload);
     if (pathname.includes("/vinyl/")) {
-      successToast(vinyl);
+      successToast(vinyl.name);
       setChangesMade(true);
     } else {
       router.push(`/vinyl/${vinyl._id}`);

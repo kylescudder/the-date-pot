@@ -3,8 +3,8 @@
 import { toast } from 'react-toastify'
 import { IVinyl } from '../models/vinyl'
 
-export const successToast = async (vinylItem: IVinyl) => {
-	toast.success(`${vinylItem.name} updated! 🥳`, {
+export const successToast = async (name: string) => {
+	toast.success(`${name} updated! 🥳`, {
     position: "top-right",
     autoClose: 2500,
     hideProgressBar: false,
