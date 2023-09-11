@@ -40,13 +40,13 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
 
   const onSubmit = async (values: formUser) => {
     const payload: IVinyl = {
-      _id: "",
+      _id: props.vinyl._id ? props.vinyl._id : "",
       name: values.name,
       artistName: values.artistName,
       purchased: values.purchased,
-      archive: false,
-      addedByID: "",
-      userGroupID: "",
+      archive: props.vinyl.archive ? props.vinyl.archive : false,
+      addedByID: props.vinyl.addedByID ? props.vinyl.addedByID : "",
+      userGroupID: props.vinyl.userGroupID ? props.vinyl.userGroupID : "",
     };
     const vinyl = await updateVinyl(payload);
     if (pathname.includes("/vinyl/")) {
