@@ -6,11 +6,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { useForm } from "react-hook-form";
 import { usePathname, useRouter } from "next/navigation";
 import { IVinyl } from "@/lib/models/vinyl";
-import { updateVinyl } from "@/lib/actions/vinyl.action";
+import { archiveVinyl, updateVinyl } from "@/lib/actions/vinyl.action";
 import Checkbox from "../ui/checkbox";
 import { Button } from "../ui/button";
-import { successToast } from "@/lib/actions/toast.actions";
+import { archiveToast, successToast } from "@/lib/actions/toast.actions";
 import { IconArrowNarrowLeft } from "@tabler/icons-react";
+import { IconArchive } from "@tabler/icons-react";
 
 export default function AddVinyl(props: { vinyl: IVinyl }) {
   const router = useRouter();
@@ -26,7 +27,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
     addedByID: string;
     userGroupID: string;
   }
-  
+
   const form = useForm({
     defaultValues: {
       _id: props.vinyl._id ? props.vinyl._id : "",
@@ -38,7 +39,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
       userGroupID: props.vinyl.userGroupID ? props.vinyl.userGroupID : "",
     },
   });
-  
+
   const onSubmit = async (values: formVinyl) => {
     const payload: IVinyl = {
       ...props.vinyl,
@@ -65,15 +66,33 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
     }
   };
 
+  const handleArchive = async () => {
+    await archiveVinyl(props.vinyl._id);
+    archiveToast(props.vinyl.name);
+    setTimeout(() => {
+      const url = `${window.location.protocol}//${window.location.host}`;
+      window.location.href = `${url}/vinyls`;
+    }, 1000);
+  };
+
   return (
     <div>
-      <IconArrowNarrowLeft
-        onClick={handleBack}
-        aria-label="back"
-        className={`dark:text-light-1 text-dark-1 ${
-          props.vinyl._id === "" ? "hidden" : ""
-        }`}
-      />
+      <div className="flex justify-between items-center">
+        <IconArrowNarrowLeft
+          onClick={handleBack}
+          aria-label="back"
+          className={`dark:text-light-1 text-dark-1 ${
+            props.vinyl._id === "" ? "hidden" : ""
+          }`}
+        />
+        <IconArchive
+          onClick={handleArchive}
+          aria-label="archive"
+          className={`dark:text-light-1 text-dark-1 ${
+            props.vinyl._id === "" ? "hidden" : ""
+          }`}
+        />
+      </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

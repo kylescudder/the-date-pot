@@ -65,3 +65,17 @@ export async function updateVinyl(vinylData: IVinyl) {
     throw new Error(`Failed to create/update vinyl: ${error.message}`);
   }
 }
+export async function archiveVinyl(id: string) {
+  try {
+    connectToDB();
+
+    return await Vinyl.findOneAndUpdate(
+      { _id: new mongoose.Types.ObjectId(id) },
+      {
+        archive: true
+      }
+    );
+  } catch (error: any) {
+    throw new Error(`Failed to archive vinyl: ${error.message}`);
+  }
+}
