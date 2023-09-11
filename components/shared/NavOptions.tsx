@@ -25,6 +25,10 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
           ? pot.potName.substring(0, pot.potName.length - 1).toLowerCase()
           : pot.potName.toLowerCase();
         
+        const potNamePluralised = !pot.potName.endsWith("s")
+          ? `${pot.potName}s`.toLowerCase()
+          : pot.potName.toLowerCase();
+        console.log(potNamePluralised)
         const isActive =
           (pathname.includes(potNameDepluralised) &&
             potNameDepluralised.length > 1) ||
@@ -32,12 +36,11 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
 
         return (
           <a
-            href={`/${pot.potName.toLowerCase()}`}
+            href={`/${potNamePluralised}`}
             key={pot._id}
             className={`${props.position}_link 
 					${isActive && "bg-primary-500"}`}
           >
-            {/*<i className={`ti ti-${pot.icon}`}></i>*/}
             <Icon name={pot.icon} stroke="1" strokeLinejoin="miter" />
             <p className="text-dark-1 dark:text-light-1 flex relative">
               {pot.potName}
