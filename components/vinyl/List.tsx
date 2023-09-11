@@ -2,8 +2,8 @@
 
 import { IVinyl } from "@/lib/models/vinyl";
 import React, { useEffect, useRef, useState } from "react";
-import { TabulatorFull as Tabulator, RowComponent } from "tabulator-tables";
 import { useRouter } from "next/navigation";
+import Tabulator, { TabulatorFull , RowComponent, CellComponent } from "tabulator-tables";
 import "tabulator-tables/dist/css/tabulator_midnight.min.css";
 import AddVinyl from "./AddVinyl";
 import { Button } from "../ui/button";
@@ -47,7 +47,7 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
   }, [searchValue, props.vinyls]);
 
   useEffect(() => {
-    const tabulatorOptions = {
+    const tabulatorOptions: Tabulator.Options = {
       responsiveLayout: "hide",
       rowHeight: 40,
       columns: [
@@ -57,7 +57,7 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
           vertAlign: "middle",
           resizable: false,
           responsive: 0,
-          cellClick: function (_e, cell) {
+          cellClick: function (e: UIEvent, cell: CellComponent) {
             const row: RowComponent = cell.getRow();
             const data = row.getData();
             router.push(`vinyl/${data._id}`);
@@ -72,7 +72,7 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
           responsive: 1,
         },
       ],
-      rowFormatter: function (row) {
+      rowFormatter: function (row: RowComponent) {
         var data = row.getData();
         row.getElement().style.backgroundColor =
           data.purchased == true ? "#5865F2" : "#FDFD96";
@@ -82,7 +82,7 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
       data: filteredVinyls,
       layout: "fitColumns",
     };
-    const tabulatorInstance = new Tabulator(
+    const tabulatorInstance = new TabulatorFull(
       "#tabulator-placeholder",
       tabulatorOptions
     );
