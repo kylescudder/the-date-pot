@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Input } from "../ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { useForm } from "react-hook-form";
@@ -15,6 +15,7 @@ import { IconArrowNarrowLeft } from "@tabler/icons-react";
 export default function AddVinyl(props: { vinyl: IVinyl }) {
   const router = useRouter();
   const pathname = usePathname();
+  const [changesMade, setChangesMade] = useState<boolean>(false);
 
   interface formUser {
     _id: string;
@@ -25,7 +26,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
     addedByID: string;
     userGroupID: string;
   }
-
+  
   const form = useForm({
     defaultValues: {
       _id: props.vinyl._id ? props.vinyl._id : "",
@@ -37,7 +38,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
       userGroupID: props.vinyl.userGroupID ? props.vinyl.userGroupID : "",
     },
   });
-
+  
   const onSubmit = async (values: formUser) => {
     const payload: IVinyl = {
       _id: props.vinyl._id ? props.vinyl._id : "",
@@ -51,13 +52,19 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
     const vinyl = await updateVinyl(payload);
     if (pathname.includes("/vinyl/")) {
       successToast(vinyl);
+      setChangesMade(true)
     } else {
       router.push(`/vinyl/${vinyl._id}`);
     }
   };
 
   const handleBack = () => {
-    router.back();
+    if (changesMade) {
+      const url = `${window.location.protocol}//${window.location.host}`;
+      window.location.href = `${url}/vinyls`;
+    } else {
+      router.back();
+    }
   };
 
   return (
