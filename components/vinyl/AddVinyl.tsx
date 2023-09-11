@@ -17,7 +17,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
   const pathname = usePathname();
   const [changesMade, setChangesMade] = useState<boolean>(false);
 
-  interface formUser {
+  interface formVinyl {
     _id: string;
     name: string;
     artistName: string;
@@ -39,7 +39,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
     },
   });
   
-  const onSubmit = async (values: formUser) => {
+  const onSubmit = async (values: formVinyl) => {
     const payload: IVinyl = {
       _id: props.vinyl._id ? props.vinyl._id : "",
       name: values.name,
