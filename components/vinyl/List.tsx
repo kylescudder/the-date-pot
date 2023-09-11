@@ -137,7 +137,7 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
           <IconFilePlus width={24} height={24} strokeLinejoin="miter" />
         </Button>
       </div>
-      <FullScreenModal open={open} func={pullData} form={<AddVinyl vinyl={newVinyl} />} />
+      <FullScreenModal open={open} func={pullData} form={<AddVinyl vinyl={newVinyl} />} title="Add Vinyl" />
       <div id="tabulator-placeholder"></div>
     </div>
   );

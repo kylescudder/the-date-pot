@@ -23,6 +23,7 @@ export default function FullScreenModal(props: {
   open: boolean;
   func: (open: boolean) => void;
   form: React.ReactElement;
+  title: string;
 }) {
   const handleClose = () => {
     setOpen(false);
@@ -53,6 +54,7 @@ export default function FullScreenModal(props: {
             <IconCross width={24} height={24} strokeLinejoin="miter" />
           </IconButton>
           <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+            {props.title}
           </Typography>
         </Toolbar>
       </AppBar>
