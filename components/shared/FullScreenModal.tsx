@@ -1,7 +1,14 @@
-import { AppBar, Dialog, IconButton, Slide, Toolbar, Typography } from '@mui/material';
-import { IconCross } from '@tabler/icons-react';
-import React, { useEffect, useState } from 'react'
-import { TransitionProps } from '@mui/material/transitions';
+import {
+  AppBar,
+  Dialog,
+  IconButton,
+  Slide,
+  Toolbar,
+  Typography
+} from "@mui/material";
+import { IconCross } from "@tabler/icons-react";
+import React, { useEffect, useState } from "react";
+import { TransitionProps } from "@mui/material/transitions";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -14,20 +21,20 @@ const Transition = React.forwardRef(function Transition(
 
 export default function FullScreenModal(props: {
   open: boolean;
-	func: (open: boolean) => void;
-	form: React.ReactElement;
+  func: (open: boolean) => void;
+  form: React.ReactElement;
 }) {
   const handleClose = () => {
     setOpen(false);
     props.func(false);
-	};
-	
-	const [open, setOpen] = useState<boolean>(props.open);
+  };
+
+  const [open, setOpen] = useState<boolean>(props.open);
 
   useEffect(() => {
     setOpen(props.open);
-	}, [props.open]);
-	
+  }, [props.open]);
+
   return (
     <Dialog
       fullScreen
@@ -46,11 +53,10 @@ export default function FullScreenModal(props: {
             <IconCross width={24} height={24} strokeLinejoin="miter" />
           </IconButton>
           <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-            Add Vinyl
           </Typography>
         </Toolbar>
-			</AppBar>
-			{props.form}
+      </AppBar>
+      {props.form}
     </Dialog>
   );
 }
