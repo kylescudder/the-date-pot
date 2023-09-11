@@ -12,6 +12,7 @@ export async function getVinylList(id: string) {
 
     return await Vinyl.find({
       userGroupID: id,
+      archive: false
     });
   } catch (error: any) {
     throw new Error(`Failed to find vinyls: ${error.message}`);
