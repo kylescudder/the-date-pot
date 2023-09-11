@@ -31,7 +31,7 @@
 .vinylPage {
   max-width: calc(100vw - 3rem);
 }
-.mui-m9glnp-MuiPaper-root-MuiDialog-paper {
+.MuiDialog-paper {
   @apply bg-light-2 dark:bg-dark-2 text-dark-1 dark:text-light-1 !important;
 }
 .focus-visible\:ring-2:focus-visible {
