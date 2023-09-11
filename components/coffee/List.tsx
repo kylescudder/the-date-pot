@@ -2,7 +2,11 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Tabulator, { TabulatorFull , RowComponent, CellComponent } from "tabulator-tables";
+import Tabulator, {
+  TabulatorFull,
+  RowComponent,
+  CellComponent,
+} from "tabulator-tables";
 import "tabulator-tables/dist/css/tabulator_midnight.min.css";
 import { Button } from "../ui/button";
 import { IconFilePlus, IconSearch } from "@tabler/icons-react";
@@ -30,9 +34,8 @@ export default function CoffeeList(props: { coffees: ICoffee[] }) {
   useEffect(() => {
     if (searchValue !== "") {
       const lowercaseSearchValue = searchValue.toLowerCase();
-      const filtered = props.coffees.filter(
-        (coffee) =>
-          coffee.coffeeName.toLowerCase().includes(lowercaseSearchValue)
+      const filtered = props.coffees.filter((coffee) =>
+        coffee.coffeeName.toLowerCase().includes(lowercaseSearchValue)
       );
       setFilteredCoffees(filtered);
     } else {
@@ -61,22 +64,12 @@ export default function CoffeeList(props: { coffees: ICoffee[] }) {
         {
           title: "Rating",
           field: "avgRating",
-          //vertAlign: "middle",
-          //resizable: false,
-          //responsive: 0,
+          vertAlign: "middle",
+          resizable: false,
+          responsive: 0,
           formatter: "star",
-          //cellClick: function (e: UIEvent, cell: CellComponent) {
-          //  const row: RowComponent = cell.getRow();
-          //  const data = row.getData();
-          //  router.push(`coffee/${data._id}`);
-          //},
-        }
+        },
       ],
-      rowFormatter: function (row: RowComponent) {
-        var data = row.getData();
-        //row.getElement().style.backgroundColor = "#FDFD96";
-        //row.getElement().style.color = "white";
-      },
       data: filteredCoffees,
       layout: "fitColumns",
     };
@@ -84,6 +77,11 @@ export default function CoffeeList(props: { coffees: ICoffee[] }) {
       "#tabulator-placeholder",
       tabulatorOptions
     );
+    tabulatorInstance.on("rowClick", function (e: UIEvent, row: RowComponent) {
+      setLoading(true);
+      const data = row.getData();
+      router.push(`vinyl/${data._id}`);
+    });
   }, [filteredCoffees]);
 
   const pullData = (data: boolean) => {
@@ -136,7 +134,12 @@ export default function CoffeeList(props: { coffees: ICoffee[] }) {
           <IconFilePlus width={24} height={24} strokeLinejoin="miter" />
         </Button>
       </div>
-      <FullScreenModal open={open} func={pullData} form={<AddCoffee coffee={newCoffee} />} title="Add Coffee" />
+      <FullScreenModal
+        open={open}
+        func={pullData}
+        form={<AddCoffee coffee={newCoffee} />}
+        title="Add Coffee"
+      />
       <div id="tabulator-placeholder"></div>
     </div>
   );
