@@ -36,12 +36,7 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
           vinyl.name.toLowerCase().includes(lowercaseSearchValue)
       );
       setFilteredVinyls(filtered);
-    }
-  }, [searchValue, props.vinyls]);
-
-  // Update filteredVinyls immediately when searchValue is cleared
-  useEffect(() => {
-    if (searchValue === "") {
+    } else {
       setFilteredVinyls(props.vinyls);
     }
   }, [searchValue, props.vinyls]);
