@@ -28,7 +28,7 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
         const potNamePluralised = !pot.potName.endsWith("s")
           ? `${pot.potName}s`.toLowerCase()
           : pot.potName.toLowerCase();
-        console.log(potNamePluralised)
+
         const isActive =
           (pathname.includes(potNameDepluralised) &&
             potNameDepluralised.length > 1) ||
