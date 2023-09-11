@@ -18,7 +18,7 @@ export default async function Coffees() {
 	const coffees: ICoffee[] = await getCoffeeList(userGroup._id);
 
 	return (
-    <div className="coffeePage">
+    <div className="listPage">
       <CoffeeList coffees={coffees} />
     </div>
   );

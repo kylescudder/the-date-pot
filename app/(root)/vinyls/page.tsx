@@ -18,7 +18,7 @@ export default async function Vinyls() {
 	const vinyls: IVinyl[] = await getVinylList(userGroup._id)
 
 	return (
-		<div className='vinylPage'>
+		<div className='listPage'>
 			<VinylList vinyls={vinyls} />
 		</div>
 	)
