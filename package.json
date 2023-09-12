@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "build-dev": "infisical run -- npm run dev",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -29,6 +30,7 @@
     "clsx": "^2.0.0",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
+    "infisical-node": "^1.4.3",
     "mongoose": "^7.5.1",
     "next": "13.4.19",
     "next-themes": "^0.2.1",
