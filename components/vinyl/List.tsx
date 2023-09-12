@@ -7,6 +7,7 @@ import {
   CellComponent,
   FormatterParams,
   EmptyCallback,
+  RowComponent,
 } from "tabulator-tables";
 import "tabulator-tables/dist/css/tabulator_midnight.min.css";
 import AddVinyl from "./AddVinyl";
@@ -27,12 +28,21 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
     addedByID: "",
     userGroupID: "",
   };
+
+  const formatter = (row: RowComponent) => {
+    var data = row.getData();
+    row.getElement().style.backgroundColor =
+      data.purchased == true ? "#5865F2" : "#FDFD96";
+    row.getElement().style.color = data.purchased == true ? "white" : "black";
+  };
+
   return loading ? (
     <Loading />
   ) : (
     <List
       records={props.vinyls}
       potName="vinyl"
+      rowFormatter={formatter}
       columns={[
         {
           title: "Name",
@@ -59,8 +69,12 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
           resizable: false,
           responsive: 2,
           minWidth: 200,
-          formatter:function(cell: CellComponent, _formatterParams: FormatterParams, _onRendered: EmptyCallback){
-            return cell.getValue() === true ? 'Yes' : 'No';
+          formatter: function (
+            cell: CellComponent,
+            _formatterParams: FormatterParams,
+            _onRendered: EmptyCallback
+          ) {
+            return cell.getValue() === true ? "Yes" : "No";
           },
         },
       ]}

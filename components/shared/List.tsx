@@ -16,8 +16,9 @@ export default function List(props: {
   records: any[];
   potName: string;
   columns: ColumnDefinition[];
-	filterColumns: string[];
-	addRecordComp: React.ReactElement
+  filterColumns: string[];
+  addRecordComp: React.ReactElement;
+  rowFormatter: any;
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [filteredRecords, setFilteredRecords] = useState(props.records);
@@ -35,8 +36,8 @@ export default function List(props: {
   };
 
   const router = useRouter();
-	
-	useEffect(() => {
+
+  useEffect(() => {
     if (searchValue !== "") {
       const lowercaseSearchValue = searchValue.toLowerCase();
       const filtered = props.records.filter((record) =>
@@ -50,13 +51,13 @@ export default function List(props: {
     }
   }, [searchValue, props.records, props.filterColumns]);
 
-
   useEffect(() => {
     const tabulatorOptions: Tabulator.Options = {
       responsiveLayout: "hide",
       placeholder: `No ${props.potName}s...`,
       rowHeight: 40,
       columns: props.columns,
+      rowFormatter: props.rowFormatter,
       data: filteredRecords,
       layout: "fitColumns",
       dataLoaderLoading: "Loading",
@@ -69,7 +70,7 @@ export default function List(props: {
       setLoading(true);
       const data = row.getData();
       router.push(`${props.potName}/${data._id}`);
-		});
+    });
   }, [filteredRecords]);
 
   const pullData = (data: boolean) => {
@@ -119,7 +120,7 @@ export default function List(props: {
       <FullScreenModal
         open={open}
         func={pullData}
-				form={props.addRecordComp}
+        form={props.addRecordComp}
         title="Add Coffee"
       />
       <div id="tabulator-placeholder"></div>

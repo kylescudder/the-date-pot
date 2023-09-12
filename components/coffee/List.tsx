@@ -2,10 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import {
-  RowComponent,
-  CellComponent,
-} from "tabulator-tables";
+import { RowComponent, CellComponent } from "tabulator-tables";
 import "tabulator-tables/dist/css/tabulator_midnight.min.css";
 import { ICoffee } from "@/lib/models/coffee";
 import AddCoffee from "./AddCoffee";
@@ -30,8 +27,11 @@ export default function CoffeeList(props: { coffees: ICoffee[] }) {
   return loading ? (
     <Loading />
   ) : (
-      <List records={props.coffees} potName="coffee" columns={
-        [
+    <List
+      records={props.coffees}
+      potName="coffee"
+      rowFormatter={null}
+      columns={[
         {
           title: "Name",
           field: "coffeeName",
@@ -72,7 +72,9 @@ export default function CoffeeList(props: { coffees: ICoffee[] }) {
           formatter: "star",
           minWidth: 200,
         },
-      ]
-      } filterColumns={["coffeeName"]} addRecordComp={<AddCoffee coffee={newCoffee} />} />
+      ]}
+      filterColumns={["coffeeName"]}
+      addRecordComp={<AddCoffee coffee={newCoffee} />}
+    />
   );
 }
