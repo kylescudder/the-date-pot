@@ -43,34 +43,37 @@ export default function CoffeeList(props: { coffees: ICoffee[] }) {
             const data = row.getData();
             router.push(`coffee/${data._id}`);
           },
-          minWidth: 200,
+          minWidth: 250,
         },
         {
           title: "Rating",
           field: "avgRating",
           vertAlign: "middle",
+          hozAlign: "center",
           resizable: false,
           responsive: 1,
           formatter: "star",
-          minWidth: 200,
+          minWidth: 100,
         },
         {
           title: "Experience",
           field: "avgExperience",
           vertAlign: "middle",
+          hozAlign: "center",
           resizable: false,
           responsive: 2,
           formatter: "star",
-          minWidth: 200,
+          minWidth: 100,
         },
         {
           title: "Taste",
           field: "avgTaste",
           vertAlign: "middle",
+          hozAlign: "center",
           resizable: false,
           responsive: 3,
           formatter: "star",
-          minWidth: 200,
+          minWidth: 100,
         },
       ]}
       filterColumns={["coffeeName"]}
