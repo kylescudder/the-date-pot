@@ -7,6 +7,8 @@ import Tabulator, {
   TabulatorFull,
   RowComponent,
   CellComponent,
+  FormatterParams,
+  EmptyCallback,
 } from "tabulator-tables";
 import "tabulator-tables/dist/css/tabulator_midnight.min.css";
 import AddVinyl from "./AddVinyl";
@@ -59,6 +61,7 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
           vertAlign: "middle",
           resizable: false,
           responsive: 0,
+          minWidth: 200,
         },
         {
           title: "Artist",
@@ -67,6 +70,19 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
           vertAlign: "middle",
           resizable: false,
           responsive: 1,
+          minWidth: 200,
+        },
+        {
+          title: "Purchased",
+          field: "purchased",
+          hozAlign: "left",
+          vertAlign: "middle",
+          resizable: false,
+          responsive: 2,
+          minWidth: 200,
+          formatter:function(cell: CellComponent, _formatterParams: FormatterParams, _onRendered: EmptyCallback){
+            return cell.getValue() === true ? 'Yes' : 'No';
+          },
         },
       ],
       rowFormatter: function (row: RowComponent) {
