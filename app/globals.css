@@ -34,6 +34,12 @@
 .MuiDialog-paper {
   @apply bg-light-2 dark:bg-dark-2 text-dark-1 dark:text-light-1 !important;
 }
+.MuiRating-iconEmpty {
+  @apply dark:text-light-3
+}
+.MuiSvgIcon-root {
+  @apply w-10 h-10 !important;
+}
 .focus-visible\:ring-2:focus-visible {
   @apply border-primary-500 !important;
 }

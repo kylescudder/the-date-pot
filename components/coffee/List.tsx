@@ -74,7 +74,7 @@ export default function CoffeeList(props: { coffees: ICoffee[] }) {
         },
       ]}
       filterColumns={["coffeeName"]}
-      addRecordComp={<AddCoffee coffee={newCoffee} />}
+      addRecordComp={<AddCoffee coffee={newCoffee} ratings={null} />}
     />
   );
 }

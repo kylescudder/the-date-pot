@@ -11,8 +11,13 @@ import { IconArrowNarrowLeft } from "@tabler/icons-react";
 import { IconArchive } from "@tabler/icons-react";
 import { ICoffee } from "@/lib/models/coffee";
 import { archiveCoffee, updateCoffee } from "@/lib/actions/coffee.action";
+import { ICoffeeRating } from "@/lib/models/coffee-rating";
+import Rating from "@mui/material/Rating";
 
-export default function AddCoffee(props: { coffee: ICoffee }) {
+export default function AddCoffee(props: {
+  coffee: ICoffee;
+  ratings: ICoffeeRating[] | null;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const [changesMade, setChangesMade] = useState<boolean>(false);
@@ -117,6 +122,71 @@ export default function AddCoffee(props: { coffee: ICoffee }) {
               </FormItem>
             )}
           />
+          {
+            props.ratings !== null ? (
+              props.ratings.map((rating: ICoffeeRating) => {
+                const [experience, setExperience] = useState<number>(
+                  rating.experience
+                );
+                const [taste, setTaste] = useState<number>(rating.taste);
+                return (
+                  <div className="rounded-md overflow-hidden shadow-lg bg-dark-4 w-full">
+                    <div className="px-6 py-4">
+                      <div className="font-bold text-xl mb-2 text-dark-1 dark:text-light-1">
+                        {rating.username}
+                      </div>
+                      <p className="text-base flex items-center">
+                        {" "}
+                        {/* Use flex to align vertically */}
+                        <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+                          Experience
+                        </span>
+                        <Rating
+                          name="experience"
+                          value={experience}
+                          precision={0.5}
+                          size="large"
+                          onChange={(
+                            _event: React.ChangeEvent<{}>,
+                            newValue: number | null
+                          ) => {
+                            console.log(newValue);
+                            if (newValue !== null) {
+                              setExperience(newValue!);
+                            }
+                          }}
+                        />
+                      </p>
+                      <p className="text-base flex items-center pt-2">
+                        {" "}
+                        {/* Use flex to align vertically */}
+                        <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+                          Taste
+                        </span>
+                        <Rating
+                          name="taste"
+                          value={rating.taste}
+                          precision={0.5}
+                          size="large"
+                          onChange={(
+                            _event: React.ChangeEvent<{}>,
+                            newValue: number | null
+                          ) => {
+                            if (newValue !== null) {
+                              setTaste(newValue!);
+                            }
+                          }}
+                        />
+                      </p>
+                    </div>
+                    <div className="px-6 pt-4 pb-2"></div>
+                  </div>
+                );
+              })
+            ) : (
+                <></>
+            )
+          }
           {/*<FormField
             control={form.control}
             name="artistName"

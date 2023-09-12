@@ -7,6 +7,7 @@ export interface ICoffeeRating {
   experience: number;
   taste: number;
   userID: string;
+  username: string;
 }
 interface CoffeeRatingClass {
   _id: mongoose.Types.ObjectId;
@@ -14,6 +15,7 @@ interface CoffeeRatingClass {
   experience: number;
   taste: number;
   userID: mongoose.Types.ObjectId;
+  username: string;
 }
 const CoffeeRatingSchema = new mongoose.Schema<CoffeeRatingClass>({
   _id: { type: mongoose.Schema.Types.ObjectId },
@@ -21,6 +23,7 @@ const CoffeeRatingSchema = new mongoose.Schema<CoffeeRatingClass>({
   experience: { type: Number },
   taste: { type: Number },
   userID: { type: mongoose.Schema.Types.ObjectId },
+  username: { type: String }
 });
 
 const CoffeeRating =

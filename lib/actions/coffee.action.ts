@@ -6,6 +6,7 @@ import { getUserGroup, getUserInfo } from "./user.actions";
 import mongoose from "mongoose";
 import Coffee, { ICoffee } from "../models/coffee";
 import CoffeeRating, { ICoffeeRating } from "../models/coffee-rating";
+import User, { IUser } from "../models/user";
 
 export async function getCoffeeList(id: string) {
   try {
@@ -33,7 +34,7 @@ export async function getCoffeeList(id: string) {
 
         element.avgExperience = experience /= coffeeRatings.length;
         element.avgTaste = taste /= coffeeRatings.length;
-        const avg = (experience + taste / coffeeRatings.length) / 2
+        const avg = ((experience + taste) / coffeeRatings.length)
         element.avgRating = Math.round(avg * 2) / 2;
       })
     );
@@ -57,6 +58,27 @@ export async function getCoffee(id: string) {
     });
   } catch (error: any) {
     throw new Error(`Failed to find coffee: ${error.message}`);
+  }
+}
+export async function getCoffeeRatings(id: string) {
+  try {
+    connectToDB();
+
+    const ratings = await CoffeeRating.find({
+      coffeeID: id,
+    });
+
+    await Promise.all(
+      ratings.map(async (rating) => {
+        const u = await User.findById({
+          _id: rating.userID,
+        });
+        rating.username = u.name
+      })
+    );
+    return ratings;
+  } catch (error: any) {
+    throw new Error(`Failed to find coffee ratings: ${error.message}`);
   }
 }
 export async function updateCoffee(coffeeData: ICoffee) {
