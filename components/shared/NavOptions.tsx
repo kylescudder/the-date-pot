@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Icon from "./Icon";
 import { IPot } from "@/lib/models/pot";
