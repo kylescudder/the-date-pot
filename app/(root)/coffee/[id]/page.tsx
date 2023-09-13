@@ -8,6 +8,6 @@ import React from 'react'
 
 export default async function Coffee({ params }: { params: { id: string } }) {
 	const coffee: ICoffee = await getCoffee(params.id);
-	const ratings: ICoffeeRating = await getCoffeeRatings(params.id)
+	const ratings: ICoffeeRating[] = await getCoffeeRatings(params.id)
   return <AddCoffee coffee={coffee} ratings={ratings} />;
 }
