@@ -10,7 +10,6 @@ import { archiveVinyl, updateVinyl } from "@/lib/actions/vinyl.action";
 import Checkbox from "../ui/checkbox";
 import { Button } from "../ui/button";
 import { archiveToast, successToast } from "@/lib/actions/toast.actions";
-import { IconArrowNarrowLeft } from "@tabler/icons-react";
 import { IconArchive } from "@tabler/icons-react";
 import BackButton from "../shared/BackButton";
 

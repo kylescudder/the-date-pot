@@ -6,9 +6,14 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { useForm } from "react-hook-form";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "../ui/button";
-import { archiveToast, successToast } from "@/lib/actions/toast.actions";
-import { IconArrowNarrowLeft } from "@tabler/icons-react";
-import { IconArchive } from "@tabler/icons-react";
+import {
+  archiveToast,
+  successToast,
+} from "@/lib/actions/toast.actions";
+import {
+  IconArchive,
+  IconSquareRoundedMinusFilled,
+} from "@tabler/icons-react";
 import { ICoffee } from "@/lib/models/coffee";
 import { archiveCoffee, updateCoffee } from "@/lib/actions/coffee.action";
 import { ICoffeeRating } from "@/lib/models/coffee-rating";
