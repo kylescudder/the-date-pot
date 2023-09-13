@@ -25,15 +25,13 @@ export default function BackButton(props: {
 
 	return (
     <Button
-      className="bg-primary-500 text-light-1"
+      className={`bg-primary-500 text-light-1 ${
+        props.record._id === "" ? "hidden" : ""
+      }`}
       onClick={handleBack}
       aria-label="back"
     >
-      <IconArrowNarrowLeft
-        className={`dark:text-light-1 text-dark-1 ${
-          props.record._id === "" ? "hidden" : ""
-        }`}
-      />
+      <IconArrowNarrowLeft className="dark:text-light-1 text-dark-1" />
     </Button>
   );
 }

@@ -76,15 +76,13 @@ export default function AddCoffee(props: {
       <div className="flex justify-between items-center">
         <BackButton record={props.coffee} changesMade={changesMade} />
         <Button
-          className="bg-red-600 text-light-1"
+          className={`bg-red-600 text-light-1 ${
+            props.coffee._id === "" ? "hidden" : ""
+          }`}
           onClick={handleArchive}
           aria-label="archive"
         >
-          <IconArchive
-            className={`dark:text-light-1 text-dark-1 ${
-              props.coffee._id === "" ? "hidden" : ""
-            }`}
-          />
+          <IconArchive className="dark:text-light-1 text-dark-1" />
         </Button>
       </div>
       <Form {...form}>

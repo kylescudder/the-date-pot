@@ -72,15 +72,13 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
       <div className="flex justify-between items-center">
         <BackButton record={props.vinyl} changesMade={changesMade} />
         <Button
-          className="bg-red-600 text-light-1"
+          className={`bg-red-600 text-light-1 ${
+            props.vinyl._id === "" ? "hidden" : ""
+          }`}
           onClick={handleArchive}
           aria-label="archive"
         >
-          <IconArchive
-            className={`dark:text-light-1 text-dark-1 ${
-              props.vinyl._id === "" ? "hidden" : ""
-            }`}
-          />
+          <IconArchive className="dark:text-light-1 text-dark-1" />
         </Button>
       </div>
       <Form {...form}>
