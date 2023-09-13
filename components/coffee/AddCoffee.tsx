@@ -13,6 +13,7 @@ import { ICoffee } from "@/lib/models/coffee";
 import { archiveCoffee, updateCoffee } from "@/lib/actions/coffee.action";
 import { ICoffeeRating } from "@/lib/models/coffee-rating";
 import Rating from "@mui/material/Rating";
+import BackButton from "../shared/BackButton";
 
 export default function AddCoffee(props: {
   coffee: ICoffee;
@@ -61,15 +62,6 @@ export default function AddCoffee(props: {
     }
   };
 
-  const handleBack = () => {
-    if (changesMade) {
-      const url = `${window.location.protocol}//${window.location.host}`;
-      window.location.href = `${url}/coffees`;
-    } else {
-      router.back();
-    }
-  };
-
   const handleArchive = async () => {
     await archiveCoffee(props.coffee._id);
     archiveToast(props.coffee.coffeeName);
@@ -82,20 +74,18 @@ export default function AddCoffee(props: {
   return (
     <div>
       <div className="flex justify-between items-center">
-        <IconArrowNarrowLeft
-          onClick={handleBack}
-          aria-label="back"
-          className={`dark:text-light-1 text-dark-1 ${
-            props.coffee._id === "" ? "hidden" : ""
-          }`}
-        />
-        <IconArchive
+        <BackButton record={props.coffee} changesMade={changesMade} />
+        <Button
+          className="bg-red-600 text-light-1"
           onClick={handleArchive}
           aria-label="archive"
-          className={`dark:text-light-1 text-dark-1 ${
-            props.coffee._id === "" ? "hidden" : ""
-          }`}
-        />
+        >
+          <IconArchive
+            className={`dark:text-light-1 text-dark-1 ${
+              props.coffee._id === "" ? "hidden" : ""
+            }`}
+          />
+        </Button>
       </div>
       <Form {...form}>
         <form

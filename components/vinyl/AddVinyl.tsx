@@ -12,6 +12,7 @@ import { Button } from "../ui/button";
 import { archiveToast, successToast } from "@/lib/actions/toast.actions";
 import { IconArrowNarrowLeft } from "@tabler/icons-react";
 import { IconArchive } from "@tabler/icons-react";
+import BackButton from "../shared/BackButton";
 
 export default function AddVinyl(props: { vinyl: IVinyl }) {
   const router = useRouter();
@@ -57,15 +58,6 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
     }
   };
 
-  const handleBack = () => {
-    if (changesMade) {
-      const url = `${window.location.protocol}//${window.location.host}`;
-      window.location.href = `${url}/vinyls`;
-    } else {
-      router.back();
-    }
-  };
-
   const handleArchive = async () => {
     await archiveVinyl(props.vinyl._id);
     archiveToast(props.vinyl.name);
@@ -78,20 +70,18 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
   return (
     <div>
       <div className="flex justify-between items-center">
-        <IconArrowNarrowLeft
-          onClick={handleBack}
-          aria-label="back"
-          className={`dark:text-light-1 text-dark-1 ${
-            props.vinyl._id === "" ? "hidden" : ""
-          }`}
-        />
-        <IconArchive
+        <BackButton record={props.vinyl} changesMade={changesMade} />
+        <Button
+          className="bg-red-600 text-light-1"
           onClick={handleArchive}
           aria-label="archive"
-          className={`dark:text-light-1 text-dark-1 ${
-            props.vinyl._id === "" ? "hidden" : ""
-          }`}
-        />
+        >
+          <IconArchive
+            className={`dark:text-light-1 text-dark-1 ${
+              props.vinyl._id === "" ? "hidden" : ""
+            }`}
+          />
+        </Button>
       </div>
       <Form {...form}>
         <form
