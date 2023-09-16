@@ -137,8 +137,8 @@ devDependencies:
     specifier: ^2.8.3
     version: 2.8.3
   '@types/tabulator-tables':
-    specifier: ^5.5.1
-    version: 5.5.1
+    specifier: ^5.5.2
+    version: 5.5.2
 
 packages:
 
@@ -2589,8 +2589,8 @@ packages:
     resolution: {integrity: sha512-n4sx2bqL0mW1tvDf/loQ+aMX7GQD3lc3fkCMC55VFNDu/vBOabO+LTIeXKM14xK0ppk5TUGcWRjiSpIlUpghKw==}
     dev: false
 
-  /@types/tabulator-tables@5.5.1:
-    resolution: {integrity: sha512-9BLTMVTQEgF3abMTCVP5V/awy3pukxNStRt3sb0tfiGjqyuvBE7h0h7LXGrVr7Bqsb2uiTqg4rtn//vx2/MAMw==}
+  /@types/tabulator-tables@5.5.2:
+    resolution: {integrity: sha512-8MNNuFsX6Z50QC3jx7tl3/hLOf53DlzJXd8pS7IxDqKcRXqJa8SYGxWBVkz9zJ/uN2GXcB8NmFiV3srt3xjCIA==}
     dev: true
 
   /@types/trusted-types@2.0.3:

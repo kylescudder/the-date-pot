@@ -55,6 +55,6 @@
   },
   "devDependencies": {
     "@types/react-burger-menu": "^2.8.3",
-    "@types/tabulator-tables": "^5.5.1"
+    "@types/tabulator-tables": "^5.5.2"
   }
 }
