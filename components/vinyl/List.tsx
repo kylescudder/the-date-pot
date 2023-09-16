@@ -41,7 +41,7 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
   ) : (
     <List
       records={props.vinyls}
-      potName="vinyl"
+      potName="Vinyl"
       rowFormatter={formatter}
       columns={[
         {
