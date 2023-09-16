@@ -32,6 +32,7 @@ export default async function page() {
         Complete your profile now to use the Date Pot
       </p>
       <section className="mt-9 bg-light-2 dark:bg-dark-2 p-10">
+        <AccountProfile user={userData} btnTitle="Continue" />
       </section>
     </main>
   );
