@@ -69,7 +69,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
   return (
     <div>
       <div className="flex justify-between items-center">
-        <BackButton record={props.vinyl} changesMade={changesMade} />
+        <BackButton record={props.vinyl} changesMade={changesMade} page="vinyls" />
         <Button
           className={`bg-red-600 text-light-1 ${
             props.vinyl._id === "" ? "hidden" : ""

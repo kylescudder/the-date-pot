@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { IconArrowNarrowLeft } from '@tabler/icons-react';
+import { Button } from '@mantine/core';
 
 export default function BackButton(props: {
   record: any,
-  changesMade: boolean
+  changesMade: boolean;
+  page: string;
 }) {
   const [changesMade, setChangesMade] = useState<boolean>(props.changesMade);
 
@@ -17,7 +18,7 @@ export default function BackButton(props: {
 	  const handleBack = () => {
       if (changesMade) {
         const url = `${window.location.protocol}//${window.location.host}`;
-        window.location.href = `${url}/vinyls`;
+        window.location.href = `${url}/${props.page}`;
       } else {
         router.back();
       }
@@ -25,6 +26,7 @@ export default function BackButton(props: {
 
 	return (
     <Button
+      radius="md"
       className={`bg-primary-500 text-light-1 ${
         props.record._id === "" ? "hidden" : ""
       }`}
