@@ -215,18 +215,6 @@ export default function AddCoffee(props: {
                       className="text-red-600 float-right"
                     />
                   </div>
-                  <div className="text-base flex items-center pt-5">
-                    <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
-                      Experience
-                    </span>
-                    <Rating
-                      name="experience"
-                      value={rating.experience}
-                      onChange={(value) => handleExperienceChange(value, i)}
-                      fractions={2}
-                      size="xl"
-                    />
-                  </div>
                   <div className="text-base flex items-center pt-2">
                     <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
                       Taste
@@ -235,6 +223,18 @@ export default function AddCoffee(props: {
                       name="taste"
                       value={rating.taste}
                       onChange={(value) => handleTasteChange(value, i)}
+                      fractions={2}
+                      size="xl"
+                    />
+                  </div>
+                  <div className="text-base flex items-center pt-5">
+                    <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+                      Experience
+                    </span>
+                    <Rating
+                      name="experience"
+                      value={rating.experience}
+                      onChange={(value) => handleExperienceChange(value, i)}
                       fractions={2}
                       size="xl"
                     />

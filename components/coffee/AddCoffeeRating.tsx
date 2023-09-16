@@ -85,17 +85,6 @@ export default function AddCoffeeRating(props: {
         data={options}
         {...form.getInputProps("userID")}
       />
-      <div className="text-base flex items-center pt-5">
-        <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
-          Experience
-        </span>
-        <Rating
-          name="experience"
-          fractions={2}
-          size="xl"
-          {...form.getInputProps("experience")}
-        />
-      </div>
       <div className="text-base flex items-center pt-2">
         <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
           Taste
@@ -105,6 +94,17 @@ export default function AddCoffeeRating(props: {
           fractions={2}
           size="xl"
           {...form.getInputProps("taste")}
+        />
+      </div>
+      <div className="text-base flex items-center pt-5">
+        <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+          Experience
+        </span>
+        <Rating
+          name="experience"
+          fractions={2}
+          size="xl"
+          {...form.getInputProps("experience")}
         />
       </div>
       <Button radius="md" className="bg-primary-500 text-light-1" type="submit">
