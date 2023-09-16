@@ -161,14 +161,6 @@ export default function AddCoffee(props: {
         />
         <Button
           radius="md"
-          className="bg-green-600 text-light-1"
-          onClick={() => setOpen(true)}
-          aria-label="add"
-        >
-          <IconCirclePlus className="dark:text-light-1 text-dark-1" />
-        </Button>
-        <Button
-          radius="md"
           className={`bg-red-600 text-light-1 ${
             props.coffee._id === "" ? "hidden" : ""
           }`}
@@ -184,14 +176,27 @@ export default function AddCoffee(props: {
           props.coffee._id === "" ? "px-6" : ""
         }`}
       >
-        <TextInput
-          label="Name"
-          radius="md"
-          placeholder="The best coffee shop in the world"
-          className="text-dark-2 dark:text-light-2"
-          size="lg"
-          {...form.getInputProps("coffeeName")}
-        />
+        <div className="flex justify-between">
+          <div className="flex-grow pr-2">
+            <TextInput
+              label="Name"
+              radius="md"
+              placeholder="The best coffee shop in the world"
+              className="text-dark-2 dark:text-light-2"
+              {...form.getInputProps("coffeeName")}
+            />
+          </div>
+          <div className="mt-auto">
+            <Button
+              radius="md"
+              className="bg-green-600 text-light-1 r-0"
+              onClick={() => setOpen(true)}
+              aria-label="add"
+            >
+              <IconCirclePlus className="dark:text-light-1 text-dark-1" />
+            </Button>
+          </div>
+        </div>
         {coffeeRatings.length !== 0 ? (
           coffeeRatings.map((rating: ICoffeeRating, i: number) => {
             console.log("rating: ", rating);
