@@ -10,7 +10,6 @@ import { getUserGroupPots, getUserInfo } from "@/lib/actions/user.actions";
 import { IUser } from "@/lib/models/user";
 import { redirect } from "next/navigation";
 import { IPot } from "@/lib/models/pot";
-import ThemeRegistry from "../ThemeRegistry";
 import { Toast } from "@/components/shared/Toast";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -109,11 +108,9 @@ export default async function RootLayout({
     >
       <html lang="en">
         <body className={inter.className}>
-          <ThemeRegistry options={{ key: "mui" }}>
             <Topbar pots={pots} />
             <MainContent pots={pots} children={children} />
             <Toast />
-          </ThemeRegistry>
         </body>
       </html>
     </ClerkProvider>
