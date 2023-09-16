@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,6 +15,7 @@ import { ChangeEvent } from "react";
 import Image from "next/image";
 import { IUser } from "@/lib/models/user";
 import { updateUser } from "@/lib/actions/user.actions";
+import { Button } from "@mantine/core";
 
 interface Props {
   user: IUser;
@@ -176,7 +176,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
             </FormItem>
           )}
         />
-        <Button className="bg-primary-500" type="submit">
+        <Button radius="md" className="bg-primary-500" type="submit">
           {btnTitle}
         </Button>
       </form>

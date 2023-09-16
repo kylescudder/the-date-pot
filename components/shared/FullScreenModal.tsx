@@ -1,23 +1,6 @@
-import {
-  AppBar,
-  Dialog,
-  IconButton,
-  Slide,
-  Toolbar,
-  Typography
-} from "@mui/material";
+import { Modal } from "@mantine/core";
 import { IconCross } from "@tabler/icons-react";
 import React, { useEffect, useState } from "react";
-import { TransitionProps } from "@mui/material/transitions";
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 export default function FullScreenModal(props: {
   open: boolean;
@@ -35,30 +18,28 @@ export default function FullScreenModal(props: {
   useEffect(() => {
     setOpen(props.open);
   }, [props.open]);
-
   return (
-    <Dialog
-      fullScreen
-      open={open}
+    <Modal.Root
+      opened={open}
       onClose={handleClose}
-      TransitionComponent={Transition}
+      fullScreen
+      transitionProps={{ transition: "slide-up", duration: 200 }}
     >
-      <AppBar sx={{ position: "relative" }}>
-        <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
+      <Modal.Content className="bg-light-1 dark:bg-dark-1">
+        <Modal.Header className="bg-light-1 dark:bg-dark-1">
+          <IconCross
             onClick={handleClose}
             aria-label="close"
-          >
-            <IconCross width={24} height={24} strokeLinejoin="miter" />
-          </IconButton>
-          <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+            width={24}
+            height={24}
+            strokeLinejoin="miter"
+          />
+          <Modal.Title className="text-dark-1 dark:text-light-1">
             {props.title}
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      {props.form}
-    </Dialog>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{props.form}</Modal.Body>
+      </Modal.Content>
+    </Modal.Root>
   );
 }
