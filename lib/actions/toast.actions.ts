@@ -28,3 +28,16 @@ export const archiveToast = async (name: string) => {
     theme: "dark",
   });
 };
+
+export const deleteToast = async (name: string) => {
+  toast.error(`${name}'s rating deleted 🗑️`, {
+    position: "top-right",
+    autoClose: 1000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+  });
+};
