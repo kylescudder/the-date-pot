@@ -183,6 +183,7 @@ export default function AddCoffee(props: {
               radius="md"
               placeholder="The best coffee shop in the world"
               className="text-dark-2 dark:text-light-2"
+              size="md"
               {...form.getInputProps("coffeeName")}
             />
           </div>
@@ -192,6 +193,7 @@ export default function AddCoffee(props: {
               className="bg-green-600 text-light-1 r-0"
               onClick={() => setOpen(true)}
               aria-label="add"
+              size="md"
             >
               <IconCirclePlus className="dark:text-light-1 text-dark-1" />
             </Button>

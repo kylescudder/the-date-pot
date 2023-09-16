@@ -77,7 +77,7 @@ export default function AddCoffeeRating(props: {
     >
       <Select
         radius="md"
-        size="lg"
+        size="md"
         clearable
         transitionProps={{ transition: "pop-bottom-left", duration: 200 }}
         label="Your favorite framework/library"

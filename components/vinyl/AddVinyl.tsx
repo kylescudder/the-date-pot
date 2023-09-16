@@ -66,7 +66,11 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
   return (
     <div>
       <div className="flex justify-between items-center">
-        <BackButton record={props.vinyl} changesMade={changesMade} page="vinyls" />
+        <BackButton
+          record={props.vinyl}
+          changesMade={changesMade}
+          page="vinyls"
+        />
         <Button
           className={`bg-red-600 text-light-1 ${
             props.vinyl._id === "" ? "hidden" : ""
@@ -88,7 +92,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
           radius="md"
           placeholder="The next AOTY"
           className="bg-dark-2 text-dark-2 dark:text-light-2"
-          size="lg"
+          size="md"
           {...form.getInputProps("name")}
         />
         <TextInput
@@ -96,7 +100,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
           radius="md"
           placeholder="GOATs only plz"
           className="text-dark-2 dark:text-light-2"
-          size="lg"
+          size="md"
           {...form.getInputProps("artistName")}
         />
         <Checkbox
@@ -104,7 +108,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
           radius="md"
           label={<p className="text-dark-1 dark:text-light-1">Purchased</p>}
           className="text-dark-2 dark:text-light-2"
-          size="lg"
+          size="md"
           {...form.getInputProps("purchased", { type: "checkbox" })}
         />
         <Button
