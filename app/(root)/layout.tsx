@@ -6,11 +6,12 @@ import { dark } from "@clerk/themes";
 import "../globals.css";
 import Topbar from "@/components/shared/Topbar";
 import { MainContent } from "@/components/shared/MainContent";
-import { getUserGroupPots, getUserInfo } from "@/lib/actions/user.actions";
+import { getUserInfo } from "@/lib/actions/user.actions";
 import { IUser } from "@/lib/models/user";
 import { redirect } from "next/navigation";
 import { IPot } from "@/lib/models/pot";
 import { Toast } from "@/components/shared/Toast";
+import { getPots } from "@/lib/actions/pot.actions";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -99,7 +100,7 @@ export default async function RootLayout({
   const userInfo: IUser = await getUserInfo(user.id);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
-  const pots: IPot[] = await getUserGroupPots(userInfo._id);
+  const pots: IPot[] = await getPots();
   return (
     <ClerkProvider
       appearance={{

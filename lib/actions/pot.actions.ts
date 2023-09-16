@@ -1,37 +1,21 @@
-//"use server"
+"use server"
 
-//import { revalidatePath } from "next/cache";
-//import User, { IUser } from "../models/user";
-//import { connectToDB } from "../mongoose";
-//import { clerkClient } from "@clerk/nextjs";
-//import { convertBase64ToFile } from "../utils";
+import mongoose from "mongoose";
+import Pot, { IPot } from "../models/pot";
+import { IUser } from "../models/user";
+import UserGroup, { IUserGroup } from "../models/user-group";
+import { connectToDB } from "../mongoose";
+import UserGroupPot from "../models/user-group-pot";
 
-//export async function getUser(id: string) {
-//  try {
-//    connectToDB();
+export async function getPots() {
+  try {
+    connectToDB();
 
-//   const userGroupPots: IUserGroupPot[] = await UserGroupPot.find({
-//			userID: req.params.id
-//		})
-//		if (!userGroupPots) {
-//			return res
-//				.status(404)
-//				.json({ success: false, error: 'User pots not found' })
-//		}
-//		const pots = await Promise.all(userGroupPots.map(async (element) => {
-//			const pot = await Pot.findOne({ _id: element.potID })
-//			return pot
-//		}))
-//		pots.sort((a, b) => a!.potName.localeCompare(b!.potName))
-//		return res.status(200).json({ success: true, data: pots })
-//	} catch (err) {
-//		return res.status(400).json({ success: false, error: err })
-//	}
-//  } catch (error: any) {
-//    throw new Error(`Failed to create/update user: ${error.message}`);
-//  }
-//}
-
+    return await Pot.find();
+  } catch (error: any) {
+    throw new Error(`Failed to get pots: ${error.message}`);
+  }
+}
 //export async function updateUser(userData: IUser, path: string) {
 //  try {
 //    connectToDB();
