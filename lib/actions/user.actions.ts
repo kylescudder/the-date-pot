@@ -5,10 +5,8 @@ import User, { IUser } from "../models/user";
 import { connectToDB } from "../mongoose";
 import { clerkClient, currentUser } from "@clerk/nextjs";
 import { convertBase64ToFile } from "../utils";
-import UserGroupPot, { IUserGroupPot } from "../models/user-group-pot";
-import Pot from "../models/pot";
 import mongoose from "mongoose";
-import UserGroup, { IUserGroup } from "../models/user-group";
+import UserGroup from "../models/user-group";
 
 export async function getUserInfo(id: string) {
   try {
@@ -84,14 +82,12 @@ export async function getGroupUsers() {
     const userInfo: IUser = await getUserInfo(user.id);
     const groupUsers = await getUserGroup(userInfo._id);
 
-    const users: IUser[] = await Promise.all(
-      groupUsers.users.map(async (element: string) => {
-        const user = await User.findOne({ _id: element });
-        return user;
-      })
-    );
-
-    return users;
+    const idArray: string[] = []
+    groupUsers.users.map(async (element: string) => {
+      idArray.push(element)
+    })
+    
+    return await User.find({ _id: idArray });
   } catch (error: any) {
     throw new Error(`Failed to create/update user: ${error.message}`);
   }
