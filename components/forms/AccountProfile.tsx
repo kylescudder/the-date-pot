@@ -34,10 +34,10 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
     },
   });
   interface formUser {
-    image: string,
-    username: string,
-    name: string,
-    bio: string,
+    image: string;
+    username: string;
+    name: string;
+    bio: string;
   }
   const onSubmit = async (values: formUser) => {
     const payload: IUser = {
