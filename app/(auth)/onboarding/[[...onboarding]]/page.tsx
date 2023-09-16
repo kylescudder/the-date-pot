@@ -19,7 +19,7 @@ export default async function page() {
     username: userInfo ? userInfo?.username : user.emailAddresses[0].emailAddress,
     name: userInfo?.name ? userInfo?.name : user.firstName ?? "",
     bio: userInfo?.bio ? userInfo?.bio : "",
-    image: userInfo ? userInfo.image : user?.imageUrl,
+    image: userInfo?.image ? userInfo.image : user?.imageUrl,
     onboarded: userInfo ? userInfo?.onboarded : false,
   };
   return (
