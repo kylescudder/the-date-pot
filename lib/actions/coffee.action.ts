@@ -81,6 +81,43 @@ export async function getCoffeeRatings(id: string) {
     throw new Error(`Failed to find coffee ratings: ${error.message}`);
   }
 }
+export async function deleteCoffeeRating(id: string) {
+  try {
+    connectToDB();
+
+    await CoffeeRating.deleteOne({
+      _id: id,
+    });
+  } catch (error: any) {
+    throw new Error(`Failed to find coffee ratings: ${error.message}`);
+  }
+}
+export async function updateCoffeeRating(coffeeRatingData: ICoffeeRating) {
+  try {
+    connectToDB();
+
+    const newId = new mongoose.Types.ObjectId();
+    if (coffeeRatingData._id === "") {
+      coffeeRatingData._id = newId.toString();
+    }
+
+    const rating = await CoffeeRating.findByIdAndUpdate(
+      { _id: new mongoose.Types.ObjectId(coffeeRatingData._id) },
+      {
+        _id: new mongoose.Types.ObjectId(coffeeRatingData._id),
+        coffeeID: new mongoose.Types.ObjectId(coffeeRatingData.coffeeID),
+        userID: new mongoose.Types.ObjectId(coffeeRatingData.userID),
+        experience: coffeeRatingData.experience,
+        taste: coffeeRatingData.taste,
+      },
+      { upsert: true, new: true }
+    );
+
+    return rating;
+  } catch (error: any) {
+    throw new Error(`Failed to create/update coffee ratings: ${error.message}`);
+  }
+}
 export async function updateCoffee(coffeeData: ICoffee) {
   try {
     connectToDB();
@@ -122,5 +159,12 @@ export async function archiveCoffee(id: string) {
     );
   } catch (error: any) {
     throw new Error(`Failed to archive coffee: ${error.message}`);
+  }
+}
+export async function getNewCoffeeID() {
+  try {
+    return new mongoose.Types.ObjectId().toString();
+  } catch (error: any) {
+    throw new Error(`Failed to get new coffee ID: ${error.message}`);
   }
 }

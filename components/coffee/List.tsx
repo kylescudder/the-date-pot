@@ -8,11 +8,17 @@ import { ICoffee } from "@/lib/models/coffee";
 import AddCoffee from "./AddCoffee";
 import Loading from "../shared/Loading";
 import List from "../shared/List";
+import { ICoffeeRating } from "@/lib/models/coffee-rating";
+import { IUser } from "@/lib/models/user";
 
-export default function CoffeeList(props: { coffees: ICoffee[] }) {
+export default function CoffeeList(props: {
+  coffees: ICoffee[],
+  users: IUser[]
+}) {
   const [loading, setLoading] = React.useState(false);
 
   const router = useRouter();
+  const ratings: ICoffeeRating[] = []
 
   const newCoffee = {
     _id: "",
@@ -29,7 +35,7 @@ export default function CoffeeList(props: { coffees: ICoffee[] }) {
   ) : (
     <List
       records={props.coffees}
-      potName="coffee"
+      potName="Coffee"
       rowFormatter={null}
       columns={[
         {
@@ -77,7 +83,7 @@ export default function CoffeeList(props: { coffees: ICoffee[] }) {
         },
       ]}
       filterColumns={["coffeeName"]}
-      addRecordComp={<AddCoffee coffee={newCoffee} ratings={null} />}
+      addRecordComp={<AddCoffee coffee={newCoffee} ratings={ratings} users={props.users} />}
     />
   );
 }

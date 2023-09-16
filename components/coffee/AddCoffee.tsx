@@ -1,32 +1,48 @@
 "use client";
 
-import React, { useState } from "react";
-import { Input } from "../ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Button } from "../ui/button";
 import {
   archiveToast,
+  deleteToast,
   successToast,
 } from "@/lib/actions/toast.actions";
 import {
   IconArchive,
-  IconSquareRoundedMinusFilled,
+  IconCircleXFilled,
+  IconCirclePlus,
 } from "@tabler/icons-react";
 import { ICoffee } from "@/lib/models/coffee";
-import { archiveCoffee, updateCoffee } from "@/lib/actions/coffee.action";
+import {
+  archiveCoffee,
+  deleteCoffeeRating,
+  updateCoffee,
+  updateCoffeeRating,
+} from "@/lib/actions/coffee.action";
 import { ICoffeeRating } from "@/lib/models/coffee-rating";
-import Rating from "@mui/material/Rating";
+import { useForm } from "@mantine/form";
+import { Button, Rating, TextInput } from "@mantine/core";
 import BackButton from "../shared/BackButton";
+import { IUser } from "@/lib/models/user";
+import FormModal from "../shared/FormModal";
+import AddCoffeeRating from "./AddCoffeeRating";
+import FullScreenModal from "../shared/FullScreenModal";
 
 export default function AddCoffee(props: {
   coffee: ICoffee;
-  ratings: ICoffeeRating[] | null;
+  ratings: ICoffeeRating[];
+  users: IUser[];
 }) {
   const router = useRouter();
   const pathname = usePathname();
   const [changesMade, setChangesMade] = useState<boolean>(false);
+  const [coffeeRatings, setCoffeeRatings] = useState<ICoffeeRating[]>(
+    props.ratings
+  );
+  const [itemVisibility, setItemVisibility] = useState<boolean[]>(
+    props.ratings.map(() => true)
+  );
+  const [open, setOpen] = useState<boolean>(false);
 
   interface formCoffee {
     _id: string;
@@ -39,8 +55,17 @@ export default function AddCoffee(props: {
     avgRating: number;
   }
 
+  const coffeeRating: ICoffeeRating = {
+    _id: "",
+    coffeeID: "",
+    experience: 0,
+    taste: 0,
+    userID: "",
+    username: "",
+  };
+
   const form = useForm({
-    defaultValues: {
+    initialValues: {
       _id: props.coffee._id ? props.coffee._id : "",
       archive: props.coffee.archive ? props.coffee.archive : false,
       coffeeName: props.coffee.coffeeName ? props.coffee.coffeeName : "",
@@ -52,6 +77,18 @@ export default function AddCoffee(props: {
     },
   });
 
+  const handleRemoveRecord = async (id: string, index: number) => {
+    const updatedArray = await coffeeRatings.filter(
+      (item, i) => item.userID !== id
+    );
+    setCoffeeRatings(updatedArray);
+    if (id !== "") {
+      await deleteCoffeeRating(id);
+    }
+    const rating = await coffeeRatings.filter((item) => item.userID === id);
+    deleteToast(rating[0].username);
+  };
+
   const onSubmit = async (values: formCoffee) => {
     const payload: ICoffee = {
       ...props.coffee,
@@ -59,12 +96,28 @@ export default function AddCoffee(props: {
     };
 
     const coffee = await updateCoffee(payload);
+    coffeeRatings.map(async (rating: ICoffeeRating) => {
+      const updatedRating = {
+        ...rating,
+        coffeeID: coffee._id,
+      };
+      await updateCoffeeRating(updatedRating);
+    });
     if (pathname.includes("/coffee/")) {
       successToast(coffee.coffeeName);
       setChangesMade(true);
     } else {
       router.push(`/coffee/${coffee._id}`);
     }
+  };
+
+  const pullData = (data: boolean) => {
+    setOpen(data);
+  };
+
+  const pullRating = async (data: ICoffeeRating) => {
+    const newCatList = [...coffeeRatings, data];
+    setCoffeeRatings(newCatList);
   };
 
   const handleArchive = async () => {
@@ -76,11 +129,46 @@ export default function AddCoffee(props: {
     }, 1000);
   };
 
+  const handleExperienceChange = (experience: number, i: number) => {
+    // Make a copy of the current coffeeRatings array
+    const updatedCoffeeRatings = [...coffeeRatings];
+
+    // Update the experience property of the rating at index i
+    updatedCoffeeRatings[i].experience = experience;
+
+    // Set the updated coffeeRatings array back to state
+    setCoffeeRatings(updatedCoffeeRatings);
+  };
+
+  const handleTasteChange = (taste: number, i: number) => {
+    // Make a copy of the current coffeeRatings array
+    const updatedCoffeeRatings = [...coffeeRatings];
+
+    // Update the taste property of the rating at index i
+    updatedCoffeeRatings[i].taste = taste;
+
+    // Set the updated coffeeRatings array back to state
+    setCoffeeRatings(updatedCoffeeRatings);
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center">
-        <BackButton record={props.coffee} changesMade={changesMade} />
+        <BackButton
+          record={props.coffee}
+          changesMade={changesMade}
+          page="coffees"
+        />
         <Button
+          radius="md"
+          className="bg-green-600 text-light-1"
+          onClick={() => setOpen(true)}
+          aria-label="add"
+        >
+          <IconCirclePlus className="dark:text-light-1 text-dark-1" />
+        </Button>
+        <Button
+          radius="md"
           className={`bg-red-600 text-light-1 ${
             props.coffee._id === "" ? "hidden" : ""
           }`}
@@ -90,129 +178,97 @@ export default function AddCoffee(props: {
           <IconArchive className="dark:text-light-1 text-dark-1" />
         </Button>
       </div>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className={`flex flex-col justify-start gap-10 pt-4 ${
-            props.coffee._id === "" ? "px-6" : ""
-          }`}
-        >
-          <FormField
-            control={form.control}
-            name="coffeeName"
-            render={({ field }) => (
-              <FormItem className="flex flex-col gap-3 w=full">
-                <FormLabel className="text-base-semibold text-dark-2 dark:text-light-2">
-                  Name
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    className="account-form_input no-focus text-dark-2 dark:text-light-2"
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          {
-            props.ratings !== null ? (
-              props.ratings.map((rating: ICoffeeRating) => {
-                const [experience, setExperience] = useState<number>(
-                  rating.experience
-                );
-                const [taste, setTaste] = useState<number>(rating.taste);
-                return (
-                  <div className="rounded-md overflow-hidden shadow-lg bg-dark-4 w-full">
-                    <div className="px-6 py-4">
-                      <div className="font-bold text-xl mb-2 text-dark-1 dark:text-light-1">
-                        {rating.username}
-                      </div>
-                      <p className="text-base flex items-center">
-                        {" "}
-                        {/* Use flex to align vertically */}
-                        <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
-                          Experience
-                        </span>
-                        <Rating
-                          name="experience"
-                          value={experience}
-                          precision={0.5}
-                          size="large"
-                          onChange={(
-                            _event: React.ChangeEvent<{}>,
-                            newValue: number | null
-                          ) => {
-                            console.log(newValue);
-                            if (newValue !== null) {
-                              setExperience(newValue!);
-                            }
-                          }}
-                        />
-                      </p>
-                      <p className="text-base flex items-center pt-2">
-                        {" "}
-                        {/* Use flex to align vertically */}
-                        <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
-                          Taste
-                        </span>
-                        <Rating
-                          name="taste"
-                          value={rating.taste}
-                          precision={0.5}
-                          size="large"
-                          onChange={(
-                            _event: React.ChangeEvent<{}>,
-                            newValue: number | null
-                          ) => {
-                            if (newValue !== null) {
-                              setTaste(newValue!);
-                            }
-                          }}
-                        />
-                      </p>
-                    </div>
-                    <div className="px-6 pt-4 pb-2"></div>
+      <form
+        onSubmit={form.onSubmit((values) => onSubmit(values))}
+        className={`flex flex-col justify-start gap-10 pt-4 ${
+          props.coffee._id === "" ? "px-6" : ""
+        }`}
+      >
+        <TextInput
+          label="Name"
+          radius="md"
+          placeholder="The best coffee shop in the world"
+          className="text-dark-2 dark:text-light-2"
+          size="lg"
+          {...form.getInputProps("coffeeName")}
+        />
+        {coffeeRatings.length !== 0 ? (
+          coffeeRatings.map((rating: ICoffeeRating, i: number) => {
+            console.log("rating: ", rating);
+            return (
+              <div
+                key={rating.userID}
+                className="rounded-md overflow-hidden shadow-lg bg-gray-400 dark:bg-dark-4 w-full"
+              >
+                <div className="px-6 py-4">
+                  <div className="font-bold w-1/2 contents text-xl mb-2 text-dark-1 dark:text-light-1">
+                    {rating.username}
                   </div>
-                );
-              })
-            ) : (
-                <></>
-            )
-          }
-          {/*<FormField
-            control={form.control}
-            name="artistName"
-            render={({ field }) => (
-              <FormItem className="flex flex-col gap-3 w=full">
-                <FormLabel className="text-base-semibold text-dark-2 dark:text-light-2">
-                  Artist
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    className="account-form_input no-focus text-dark-2 dark:text-light-2"
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
+                  <div className="w-1/2 contents">
+                    <IconCircleXFilled
+                      onClick={() => handleRemoveRecord(rating.userID, i)}
+                      className="text-red-600 float-right"
+                    />
+                  </div>
+                  <div className="text-base flex items-center pt-5">
+                    <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+                      Experience
+                    </span>
+                    <Rating
+                      name="experience"
+                      value={rating.experience}
+                      onChange={(value) => handleExperienceChange(value, i)}
+                      fractions={2}
+                      size="xl"
+                    />
+                  </div>
+                  <div className="text-base flex items-center pt-2">
+                    <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+                      Taste
+                    </span>
+                    <Rating
+                      name="taste"
+                      value={rating.taste}
+                      onChange={(value) => handleTasteChange(value, i)}
+                      fractions={2}
+                      size="xl"
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div className="rounded-md overflow-hidden shadow-lg bg-gray-400 dark:bg-dark-4 w-full">
+            <div className="px-6 py-4">
+              <div className="font-bold w-1/2 contents text-xl mb-2 text-dark-1 dark:text-light-1">
+                Please add a rating!
+              </div>
+            </div>
+          </div>
+        )}
+        <Button
+          radius="md"
+          className="bg-primary-500 text-light-1"
+          type="submit"
+        >
+          {props.coffee._id === "" ? "Add" : "Update"} Coffee
+        </Button>
+      </form>
+      <FullScreenModal
+        open={open}
+        func={pullData}
+        form={
+          <AddCoffeeRating
+            coffee={props.coffee}
+            coffeeRating={coffeeRating}
+            func={pullData}
+            addRating={pullRating}
+            users={props.users}
           />
-          <FormField
-            name="purchased"
-            render={({ field }) => (
-              <FormItem className="flex flex-col gap-3 w=full">
-                <FormControl>
-                  <Checkbox text="Purchased" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />*/}
-          <Button className="bg-primary-500 text-light-1" type="submit">
-            {props.coffee._id === "" ? "Add" : "Update"} Coffee
-          </Button>
-        </form>
-      </Form>
+        }
+        title="Add Rating"
+      />
     </div>
   );
 }

@@ -31,14 +31,17 @@
 .tabulator-cell > span > svg {
   @apply inline !important;
 }
-.MuiDialog-paper {
-  @apply bg-light-2 dark:bg-dark-2 text-dark-1 dark:text-light-1 !important;
+.mantine-TextInput-label,
+.mantine-Select-label {
+  @apply text-dark-1 dark:text-light-1
 }
-.MuiRating-iconEmpty {
-  @apply dark:text-light-3
+
+.mantine-TextInput-input,
+.mantine-Select-input {
+  @apply bg-light-2 text-dark-1 dark:bg-dark-2 dark:text-light-1
 }
-.MuiSvgIcon-root {
-  @apply w-10 h-10 !important;
+.mantine-Checkbox-input:checked {
+  @apply bg-primary-500
 }
 .focus-visible\:ring-2:focus-visible {
   @apply border-primary-500 !important;

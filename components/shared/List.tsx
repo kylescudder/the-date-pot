@@ -8,9 +8,9 @@ import Tabulator, {
   ColumnDefinition,
 } from "tabulator-tables";
 import "tabulator-tables/dist/css/tabulator_midnight.min.css";
-import { Button } from "../ui/button";
 import { IconFilePlus, IconSearch } from "@tabler/icons-react";
 import FullScreenModal from "../shared/FullScreenModal";
+import { Button } from "@mantine/core";
 
 export default function List(props: {
   records: any[];
@@ -69,7 +69,7 @@ export default function List(props: {
     tabulatorInstance.on("rowClick", function (e: UIEvent, row: RowComponent) {
       setLoading(true);
       const data = row.getData();
-      router.push(`${props.potName}/${data._id}`);
+      router.push(`${props.potName.toLowerCase()}/${data._id}`);
     });
   }, [filteredRecords]);
 
@@ -81,7 +81,6 @@ export default function List(props: {
 
   return (
     <div>
-      <p>test</p>
       <div className="flex mb-4">
         <div
           className={`relative ${
@@ -103,6 +102,7 @@ export default function List(props: {
           />
         </div>
         <Button
+          radius="md"
           className={`${
             searchOpen ? "hidden" : "absolute right-6"
           } bg-primary-500 text-light-1`}
@@ -111,6 +111,7 @@ export default function List(props: {
           <IconSearch width={24} height={24} strokeLinejoin="miter" />
         </Button>
         <Button
+          radius="md"
           className="bg-primary-500 text-light-1 absolute left-6"
           onClick={handleClickOpen}
         >
@@ -121,7 +122,7 @@ export default function List(props: {
         open={open}
         func={pullData}
         form={props.addRecordComp}
-        title="Add Coffee"
+        title={`Add ${props.potName}`}
       />
       <div id="tabulator-placeholder"></div>
     </div>
