@@ -161,14 +161,6 @@ export default function AddCoffee(props: {
         />
         <Button
           radius="md"
-          className="bg-green-600 text-light-1"
-          onClick={() => setOpen(true)}
-          aria-label="add"
-        >
-          <IconCirclePlus className="dark:text-light-1 text-dark-1" />
-        </Button>
-        <Button
-          radius="md"
           className={`bg-red-600 text-light-1 ${
             props.coffee._id === "" ? "hidden" : ""
           }`}
