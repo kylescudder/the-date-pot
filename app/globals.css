@@ -3,11 +3,6 @@
 @tailwind utilities;
 
 @layer components {
-  /* main */
-  /* Head Text */
-  .head-text {
-    @apply text-heading2-bold text-dark-1 dark:text-light-1;
-  }
   .topbar {
     @apply fixed top-0 z-30 flex w-full items-center justify-between bg-light-2 dark:bg-dark-2 px-6 py-3;
   }
