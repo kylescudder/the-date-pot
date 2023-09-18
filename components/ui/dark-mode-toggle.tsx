@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { Label } from "@/components/ui/label";
 
 export const DarkModeToggle = () => {
   const [mounted, setMounted] = useState(false);
@@ -25,9 +24,9 @@ export const DarkModeToggle = () => {
         className="toggle--checkbox"
         onChange={() => setTheme(theme === "dark" ? "light" : "dark")}
       />
-      <Label htmlFor="toggle" className="toggle--label float-right mr-2">
+      <label htmlFor="toggle" className="toggle--label float-right mr-2">
         <span className="toggle--label-background" />
-      </Label>
+      </label>
     </div>
   );
 };
