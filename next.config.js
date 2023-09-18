@@ -3,6 +3,7 @@ const withPWA = require("@ducanh2912/next-pwa").default({
   register: true,
   skipWaiting: true,
 });
+const { withSentryConfig } = require("@sentry/nextjs");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
@@ -33,3 +34,18 @@ const nextConfig = {
 };
 
 module.exports = withPWA(nextConfig);
+module.exports = withSentryConfig(
+  module.exports,
+  {
+    silent: true,
+    org: "kyle-scudder",
+    project: "the-date-pit",
+  },
+  {
+    widenClientFileUpload: true,
+    transpileClientSDK: true,
+    tunnelRoute: "/monitoring",
+    hideSourceMaps: true,
+    disableLogger: true,
+  }
+);
