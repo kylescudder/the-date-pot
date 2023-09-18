@@ -23,7 +23,7 @@
     "@mantine/form": "^6.0.20",
     "@mantine/hooks": "^6.0.20",
     "@mantine/modals": "^6.0.20",
-    "@mantine/next": "^6.0.20",
+    "@mantine/next": "^6.0.21",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@sentry/nextjs": "^7.69.0",
