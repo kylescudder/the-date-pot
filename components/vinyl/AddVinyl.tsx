@@ -91,7 +91,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
           label="Name"
           radius="md"
           placeholder="The next AOTY"
-          className="bg-dark-2 text-dark-2 dark:text-light-2"
+          className="text-dark-2 dark:text-light-2"
           size="md"
           {...form.getInputProps("name")}
         />
