@@ -17,8 +17,6 @@ import List from "../shared/List";
 export default function VinylList(props: { vinyls: IVinyl[] }) {
   const [loading, setLoading] = React.useState(false);
 
-  const router = useRouter();
-
   const newVinyl = {
     _id: "",
     name: "",
