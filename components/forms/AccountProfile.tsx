@@ -140,47 +140,45 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem className="flex flex-col gap-3 w=full">
-              <FormLabel className="text-base-semibold text-dark-2 dark:text-light-2">
-                Username
-              </FormLabel>
-              <FormControl>
-                <Input
-                  type="text"
-                  className="account-form_input no-focus"
-                  {...field}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="bio"
-          render={({ field }) => (
-            <FormItem className="flex flex-col gap-3 w=full">
-              <FormLabel className="text-base-semibold text-dark-2 dark:text-light-2">
-                Bio
-              </FormLabel>
-              <FormControl>
-                <Textarea
-                  rows={10}
-                  className="account-form_input no-focus"
-                  {...field}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <Button radius="md" className="bg-primary-500" type="submit">
-          {btnTitle}
-        </Button>
-      </form>
-    </Form>
+      )}
+      <FileInput
+        label="Profile Picture"
+        radius="md"
+        placeholder="Show us your pretty face"
+        className="text-dark-2 dark:text-light-2"
+        size="md"
+        {...form.getInputProps("image")}
+        onChange={(e) => handleImage(e!)}
+      />
+      <TextInput
+        label="Name"
+        radius="md"
+        placeholder="What's your name girl, what's you sign?"
+        className="text-dark-2 dark:text-light-2"
+        size="md"
+        {...form.getInputProps("name")}
+      />
+      <TextInput
+        label="Username"
+        radius="md"
+        placeholder="your email address plz"
+        className="text-dark-2 dark:text-light-2"
+        size="md"
+        {...form.getInputProps("username")}
+      />
+      <Textarea
+        label="Bio"
+        radius="md"
+        placeholder="Tell me a little bit about yourself..."
+        className="text-lg leading-6 font-semibold text-dark-2 dark:text-light-2"
+        size="md"
+        minRows={8}
+        {...form.getInputProps("bio")}
+      />
+      <Button radius="md" size="md" className="bg-primary-500" type="submit">
+        {btnTitle}
+      </Button>
+    </form>
   );
 };
 
