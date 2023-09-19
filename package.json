@@ -34,7 +34,7 @@
     "autoprefixer": "10.4.15",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
-    "dayjs": "^1.11.9",
+    "dayjs": "^1.11.10",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
     "infisical-node": "^1.4.3",
