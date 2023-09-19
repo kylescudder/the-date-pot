@@ -11,16 +11,24 @@ import {
 import { archiveToast, successToast } from "@/lib/actions/toast.actions";
 import { IconArchive } from "@tabler/icons-react";
 import BackButton from "../shared/BackButton";
-import { Button, TextInput } from "@mantine/core";
+import { Button, MultiSelect, TextInput } from "@mantine/core";
 import Map from "../shared/Map";
+import { ICuisine } from "@/lib/models/cuisine";
+import { option } from "@/lib/models/select-options";
 
 export default function AddRestaurant(props: {
   restaurant: IRestaurant,
-  longLat: number[]
+  longLat: number[],
+  cuisineList: ICuisine[]
 }) {
   const router = useRouter();
   const pathname = usePathname();
   const [changesMade, setChangesMade] = useState<boolean>(false);
+
+  const options: option[] = props.cuisineList.map((user: ICuisine) => ({
+    value: user.cuisine,
+    label: user.cuisine,
+  }));
 
   interface formRestaurant {
     _id: string;
@@ -28,6 +36,9 @@ export default function AddRestaurant(props: {
     address: string;
     archive: boolean;
     userGroupID: string;
+    cuisines: [
+      string
+    ]
   }
 
   const form = useForm({
@@ -41,6 +52,7 @@ export default function AddRestaurant(props: {
       userGroupID: props.restaurant.userGroupID
         ? props.restaurant.userGroupID
         : "",
+      cuisines: props.restaurant.cuisines ? props.restaurant.cuisines : []
     },
   });
 
@@ -49,6 +61,7 @@ export default function AddRestaurant(props: {
       ...props.restaurant,
       restaurantName: values.restaurantName,
       address: values.address,
+      cuisines: values.cuisines,
     };
 
     const restaurant = await updateRestaurant(payload);
@@ -100,6 +113,17 @@ export default function AddRestaurant(props: {
           className="text-dark-2 dark:text-light-2"
           size="md"
           {...form.getInputProps("restaurantName")}
+        />
+        <MultiSelect
+          multiple={true}
+          radius="md"
+          size="md"
+          clearable
+          transitionProps={{ transition: "pop-bottom-left", duration: 200 }}
+          label="Cuisine"
+          placeholder="Pick some"
+          data={options}
+          {...form.getInputProps("cuisines")}
         />
         <TextInput
           label="Address"
