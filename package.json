@@ -36,7 +36,7 @@
     "clsx": "^2.0.0",
     "dayjs": "^1.11.9",
     "eslint": "8.49.0",
-    "eslint-config-next": "13.4.19",
+    "eslint-config-next": "13.5.0",
     "infisical-node": "^1.4.3",
     "mongoose": "^7.5.2",
     "next": "13.4.19",
