@@ -6,6 +6,7 @@ import { getNewCoffeeID, updateCoffeeRating } from "@/lib/actions/coffee.action"
 import { IUser } from "@/lib/models/user";
 import { Button, Rating, Select } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { option } from "@/lib/models/select-options";
 
 export default function AddCoffeeRating(props: {
   coffee: ICoffee;
@@ -14,11 +15,7 @@ export default function AddCoffeeRating(props: {
   addRating: (data: ICoffeeRating) => void;
   func: (data: boolean) => void;
 }) {
-  type userOption = {
-    value: string;
-    label: string;
-  };
-  const options: userOption[] = props.users.map((user: IUser) => ({
+  const options: option[] = props.users.map((user: IUser) => ({
     value: user._id,
     label: user.name,
   }));
@@ -80,7 +77,7 @@ export default function AddCoffeeRating(props: {
         size="md"
         clearable
         transitionProps={{ transition: "pop-bottom-left", duration: 200 }}
-        label="Your favorite framework/library"
+        label="Who?"
         placeholder="Pick one"
         data={options}
         {...form.getInputProps("userID")}
