@@ -9,8 +9,8 @@ dependencies:
     specifier: ^4.23.5
     version: 4.23.5(next@13.5.1)(react-dom@18.2.0)(react@18.2.0)
   '@clerk/themes':
-    specifier: ^1.7.5
-    version: 1.7.5(react@18.2.0)
+    specifier: ^1.7.6
+    version: 1.7.6(react@18.2.0)
   '@ducanh2912/next-pwa':
     specifier: ^9.7.0
     version: 9.7.0(next@13.5.1)(webpack@5.88.2)
@@ -1563,8 +1563,8 @@ packages:
       swr: 2.2.0(react@18.2.0)
     dev: false
 
-  /@clerk/themes@1.7.5(react@18.2.0):
-    resolution: {integrity: sha512-kIdCIBSCp6t1saGAzbelcfZi5P+L3+CuVFwSjpulwGTRxeOOs/S8hB4CAHVbTwfxPw5Ms+AnN4dXJKHjSnxPIg==}
+  /@clerk/themes@1.7.6(react@18.2.0):
+    resolution: {integrity: sha512-K3nxz3PZX52GmICqKKg/PJ2xtxTOw96Tjxnsb/T4syxMyLmoBBkTnL3Jx96D6zsvSblD+Ujb23z5epSeyQiwtQ==}
     engines: {node: '>=14'}
     peerDependencies:
       react: '>=16'
