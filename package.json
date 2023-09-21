@@ -39,7 +39,7 @@
     "eslint-config-next": "13.5.1",
     "infisical-node": "^1.4.3",
     "mongoose": "^7.5.2",
-    "next": "13.5.1",
+    "next": "13.5.2",
     "next-themes": "^0.2.1",
     "postcss": "8.4.30",
     "react": "18.2.0",
