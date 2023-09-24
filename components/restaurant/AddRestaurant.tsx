@@ -190,7 +190,12 @@ export default function AddRestaurant(props: {
           size="md"
           {...form.getInputProps("address")}
         />
-        <Map longLat={props.longLat} title={props.restaurant.restaurantName} />
+        {props.longLat[0] !== 0 && props.longLat[1] !== 0 && (
+          <Map
+            longLat={props.longLat}
+            title={props.restaurant.restaurantName}
+          />
+        )}
         <div className="flex justify-between">
           <div className="flex-grow pr-2">
             <p className="text-dark-1 dark:text-light-1 pt-3 text-3xl font-semibold">
