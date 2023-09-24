@@ -53,15 +53,15 @@ dependencies:
   '@radix-ui/react-slot':
     specifier: ^1.0.2
     version: 1.0.2(@types/react@18.2.22)(react@18.2.0)
+  '@react-google-maps/api':
+    specifier: ^2.19.2
+    version: 2.19.2(react-dom@18.2.0)(react@18.2.0)
   '@sentry/nextjs':
     specifier: ^7.69.0
     version: 7.69.0(next@13.5.1)(react@18.2.0)(webpack@5.88.2)
   '@tabler/icons-react':
     specifier: ^2.34.0
     version: 2.34.0(react@18.2.0)
-  '@types/googlemaps':
-    specifier: ^3.43.3
-    version: 3.43.3
   '@types/node':
     specifier: 20.6.2
     version: 20.6.2
@@ -2732,11 +2732,6 @@ packages:
 
   /@types/google.maps@3.53.5:
     resolution: {integrity: sha512-HoRq4Te8J6krH7hj+TfdYepqegoKZCj3kkaK5gf+ySFSHLvyqYkDvkrtbcVJXQ6QBphQ0h1TF7p4J6sOh4r/zg==}
-    dev: false
-
-  /@types/googlemaps@3.43.3:
-    resolution: {integrity: sha512-ZWNoz/O8MPEpiajvj7QiqCY8tTLFNqNZ/a+s+zTV58wFVNAvvqV4bdGfnsjTb5Cs4V6wEsLrX8XRhmnyYJ2Tdg==}
-    deprecated: 'Types for the Google Maps browser API have moved to @types/google.maps. Note: these types are not for the googlemaps npm package, which is a Node API.'
     dev: false
 
   /@types/http-errors@2.0.1:
