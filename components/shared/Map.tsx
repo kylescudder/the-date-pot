@@ -4,7 +4,7 @@ const GoogleMap = (props: {
   longLat: number[],
   title: string
 }) => {
-  const mapContainerRef = useRef(null);
+  const mapContainerRef = useRef<HTMLDivElement>(document.createElement("div"));
 
   useEffect(() => {
     // Initialize the map
