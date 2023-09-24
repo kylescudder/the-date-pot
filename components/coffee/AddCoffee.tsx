@@ -176,16 +176,19 @@ export default function AddCoffee(props: {
           props.coffee._id === "" ? "px-6" : ""
         }`}
       >
+        <TextInput
+          label="Name"
+          radius="md"
+          placeholder="The best coffee shop in the world"
+          className="text-dark-2 dark:text-light-2"
+          size="md"
+          {...form.getInputProps("coffeeName")}
+        />
         <div className="flex justify-between">
           <div className="flex-grow pr-2">
-            <TextInput
-              label="Name"
-              radius="md"
-              placeholder="The best coffee shop in the world"
-              className="text-dark-2 dark:text-light-2"
-              size="md"
-              {...form.getInputProps("coffeeName")}
-            />
+            <p className="text-dark-1 dark:text-light-1 pt-3 text-3xl font-semibold">
+              Ratings
+            </p>
           </div>
           <div className="mt-auto">
             <Button
