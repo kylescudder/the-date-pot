@@ -10,9 +10,15 @@ import "tabulator-tables/dist/css/tabulator_midnight.min.css";
 import AddRestaurant from "./AddRestaurant";
 import Loading from "../shared/Loading";
 import List from "../shared/List";
+import { ICuisine } from "@/lib/models/cuisine";
+import { IWhen } from "@/lib/models/when";
 
 export default function RestaurantList(props: {
-  restaurants: IRestaurant[]
+  restaurants: IRestaurant[];
+  cuisineList: ICuisine[];
+  whenList: IWhen[];
+  longLat: number[];
+
 }) {
   const [loading, setLoading] = React.useState(false);
 
@@ -57,7 +63,14 @@ export default function RestaurantList(props: {
         },
       ]}
       filterColumns={["restaurantName", "address"]}
-      addRecordComp={<AddRestaurant restaurant={newRestaurant} />}
+      addRecordComp={
+        <AddRestaurant
+          restaurant={newRestaurant}
+          longLat={props.longLat}
+          cuisineList={props.cuisineList}
+          whenList={props.whenList}
+        />
+      }
     />
   );
 }
