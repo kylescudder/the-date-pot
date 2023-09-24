@@ -22,12 +22,15 @@ export default function RestaurantList(props: {
 }) {
   const [loading, setLoading] = React.useState(false);
 
-  const newRestaurant = {
+  const newRestaurant: IRestaurant = {
     _id: "",
     restaurantName: "",
     address: "",
     archive: false,
     userGroupID: "",
+    cuisines: [],
+    whens: [],
+    notes: []
   };
 
   const formatter = (row: RowComponent) => {
