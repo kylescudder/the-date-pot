@@ -13,9 +13,9 @@ export default function AddRestaurantNote(props: {
 }) {
   const [note, setNote] = useState<string>('')
   
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setNote(e.target.value)
-  }
+  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setNote(e.target.value);
+  };
   const handleSubmit = async () => {
     await addRestaurantNote(note, props.restaurant._id)
     props.func(false);
