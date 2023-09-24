@@ -16,11 +16,7 @@ import {
 } from "@/lib/actions/toast.actions";
 import { IconArchive, IconCirclePlus } from "@tabler/icons-react";
 import BackButton from "../shared/BackButton";
-import {
-  Button,
-  MultiSelect,
-  TextInput,
-} from "@mantine/core";
+import { Button, MultiSelect, TextInput } from "@mantine/core";
 import Map from "../shared/Map";
 import { ICuisine } from "@/lib/models/cuisine";
 import { option } from "@/lib/models/select-options";
