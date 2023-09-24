@@ -186,7 +186,7 @@ export default function AddCoffee(props: {
         />
         <div className="flex justify-between">
           <div className="flex-grow pr-2">
-            <p className="text-dark-1 dark:text-light-1 pt-3 text-3xl font-semibold">
+            <p className="text-dark-1 dark:text-light-1 pt-3 text-3xl font-black">
               Ratings
             </p>
           </div>
@@ -211,7 +211,7 @@ export default function AddCoffee(props: {
                 className="rounded-md overflow-hidden shadow-lg bg-gray-400 dark:bg-dark-4 w-full"
               >
                 <div className="px-6 py-4">
-                  <div className="font-bold w-1/2 contents text-xl mb-2 text-dark-1 dark:text-light-1">
+                  <div className="font-black w-1/2 contents text-xl mb-2 text-dark-1 dark:text-light-1">
                     {rating.username}
                   </div>
                   <div className="w-1/2 contents">
@@ -221,7 +221,7 @@ export default function AddCoffee(props: {
                     />
                   </div>
                   <div className="text-base flex items-center pt-2">
-                    <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+                    <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-black text-gray-700 mr-2">
                       Taste
                     </span>
                     <Rating
@@ -233,7 +233,7 @@ export default function AddCoffee(props: {
                     />
                   </div>
                   <div className="text-base flex items-center pt-5">
-                    <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+                    <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-black text-gray-700 mr-2">
                       Experience
                     </span>
                     <Rating

@@ -15,7 +15,7 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
         ${pathname === "/" && "bg-primary-500"}`}
       >
         <Icon name={"IconHome"} stroke="1" strokeLinejoin="miter" />
-        <p className="text-dark-1 dark:text-light-1 flex relative">
+        <p className="text-dark-1 dark:text-light-1 flex relative font-black">
           Home
         </p>
       </a>
@@ -41,7 +41,7 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
 					${isActive && "bg-primary-500"}`}
           >
             <Icon name={pot.icon} stroke="1" strokeLinejoin="miter" />
-            <p className="text-dark-1 dark:text-light-1 flex relative">
+            <p className="text-dark-1 dark:text-light-1 flex relative font-black">
               {pot.potName}
             </p>
           </a>
