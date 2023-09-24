@@ -58,6 +58,7 @@ export async function updateRestaurant(restaurantData: IRestaurant) {
         archive: restaurantData.archive,
         userGroupID: new mongoose.Types.ObjectId(userGroup._id),
         cuisines: restaurantData.cuisines,
+        whens: restaurantData.whens,
       },
       { upsert: true, new: true }
     );

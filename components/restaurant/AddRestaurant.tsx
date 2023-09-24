@@ -11,24 +11,35 @@ import {
 import { archiveToast, successToast } from "@/lib/actions/toast.actions";
 import { IconArchive } from "@tabler/icons-react";
 import BackButton from "../shared/BackButton";
-import { Button, MultiSelect, TextInput } from "@mantine/core";
+import {
+  Button,
+  MultiSelect,
+  TextInput,
+} from "@mantine/core";
 import Map from "../shared/Map";
 import { ICuisine } from "@/lib/models/cuisine";
 import { option } from "@/lib/models/select-options";
+import { IWhen } from "@/lib/models/when";
 
 export default function AddRestaurant(props: {
-  restaurant: IRestaurant,
-  longLat: number[],
-  cuisineList: ICuisine[]
+  restaurant: IRestaurant;
+  longLat: number[];
+  cuisineList: ICuisine[];
+  whenList: IWhen[];
 }) {
   const router = useRouter();
   const pathname = usePathname();
   const [changesMade, setChangesMade] = useState<boolean>(false);
 
-  const options: option[] = props.cuisineList.map((user: ICuisine) => ({
+  const cuisineOptions: option[] = props.cuisineList.map((user: ICuisine) => ({
     value: user.cuisine,
     label: user.cuisine,
   }));
+  const whenOptions: option[] = props.whenList.map((user: IWhen) => ({
+    value: user.when,
+    label: user.when,
+  }));
+
 
   interface formRestaurant {
     _id: string;
@@ -36,9 +47,8 @@ export default function AddRestaurant(props: {
     address: string;
     archive: boolean;
     userGroupID: string;
-    cuisines: [
-      string
-    ]
+    cuisines: string[];
+    whens: string[];
   }
 
   const form = useForm({
@@ -52,7 +62,8 @@ export default function AddRestaurant(props: {
       userGroupID: props.restaurant.userGroupID
         ? props.restaurant.userGroupID
         : "",
-      cuisines: props.restaurant.cuisines ? props.restaurant.cuisines : []
+      cuisines: props.restaurant.cuisines ? props.restaurant.cuisines : [""],
+      whens: props.restaurant.whens ? props.restaurant.whens : [""],
     },
   });
 
@@ -62,6 +73,7 @@ export default function AddRestaurant(props: {
       restaurantName: values.restaurantName,
       address: values.address,
       cuisines: values.cuisines,
+      whens: values.whens,
     };
 
     const restaurant = await updateRestaurant(payload);
@@ -122,8 +134,19 @@ export default function AddRestaurant(props: {
           transitionProps={{ transition: "pop-bottom-left", duration: 200 }}
           label="Cuisine"
           placeholder="Pick some"
-          data={options}
+          data={cuisineOptions}
           {...form.getInputProps("cuisines")}
+        />
+        <MultiSelect
+          multiple={true}
+          radius="md"
+          size="md"
+          clearable
+          transitionProps={{ transition: "pop-bottom-left", duration: 200 }}
+          label="When"
+          placeholder="Pick some"
+          data={whenOptions}
+          {...form.getInputProps("whens")}
         />
         <TextInput
           label="Address"
