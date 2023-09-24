@@ -9,6 +9,7 @@ export interface IRestaurant {
   userGroupID: string;
   cuisines: string[];
   whens: string[];
+  notes: string[];
 }
 interface RestaurantClass {
   _id: mongoose.Types.ObjectId;
@@ -18,6 +19,7 @@ interface RestaurantClass {
   userGroupID: mongoose.Types.ObjectId;
   cuisines: string[];
   whens: string[];
+  notes: string[];
 }
 const RestaurantSchema = new mongoose.Schema<RestaurantClass>({
   _id: { type: mongoose.Schema.Types.ObjectId },
@@ -27,6 +29,7 @@ const RestaurantSchema = new mongoose.Schema<RestaurantClass>({
   userGroupID: { type: mongoose.Schema.Types.ObjectId },
   cuisines: [{ type: String }],
   whens: [{ type: String }],
+  notes: [{ type: String }],
 });
 
 const Restaurant =

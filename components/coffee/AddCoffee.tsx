@@ -86,7 +86,7 @@ export default function AddCoffee(props: {
       await deleteCoffeeRating(id);
     }
     const rating = await coffeeRatings.filter((item) => item.userID === id);
-    deleteToast(rating[0].username);
+    deleteToast(`${rating[0].username}'s rating`);
   };
 
   const onSubmit = async (values: formCoffee) => {

@@ -30,7 +30,7 @@ export const archiveToast = async (name: string) => {
 };
 
 export const deleteToast = async (name: string) => {
-  toast.error(`${name}'s rating deleted 🗑️`, {
+  toast.error(`${name} deleted 🗑️`, {
     position: "top-right",
     autoClose: 1000,
     hideProgressBar: false,

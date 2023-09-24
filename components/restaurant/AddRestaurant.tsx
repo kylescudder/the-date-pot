@@ -1,15 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { usePathname, useRouter } from "next/navigation";
 import { IRestaurant } from "@/lib/models/restaurant";
 import {
   archiveRestaurant,
+  deleteRestaurantNote,
   updateRestaurant,
 } from "@/lib/actions/restaurant.action";
-import { archiveToast, successToast } from "@/lib/actions/toast.actions";
-import { IconArchive } from "@tabler/icons-react";
+import {
+  archiveToast,
+  deleteToast,
+  successToast,
+} from "@/lib/actions/toast.actions";
+import { IconArchive, IconCirclePlus } from "@tabler/icons-react";
 import BackButton from "../shared/BackButton";
 import {
   Button,
@@ -20,6 +25,9 @@ import Map from "../shared/Map";
 import { ICuisine } from "@/lib/models/cuisine";
 import { option } from "@/lib/models/select-options";
 import { IWhen } from "@/lib/models/when";
+import NoteCard from "./NoteCard";
+import FullScreenModal from "../shared/FullScreenModal";
+import AddRestaurantNote from "./AddRestaurantNote";
 
 export default function AddRestaurant(props: {
   restaurant: IRestaurant;
@@ -29,7 +37,13 @@ export default function AddRestaurant(props: {
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const [notes, setNotes] = useState(props.restaurant.notes || []);
   const [changesMade, setChangesMade] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    setChangesMade(true);
+  }, [notes]);
 
   const cuisineOptions: option[] = props.cuisineList.map((user: ICuisine) => ({
     value: user.cuisine,
@@ -40,6 +54,7 @@ export default function AddRestaurant(props: {
     label: user.when,
   }));
 
+  const restaurantNote: string = "";
 
   interface formRestaurant {
     _id: string;
@@ -49,6 +64,7 @@ export default function AddRestaurant(props: {
     userGroupID: string;
     cuisines: string[];
     whens: string[];
+    notes: string[];
   }
 
   const form = useForm({
@@ -64,6 +80,7 @@ export default function AddRestaurant(props: {
         : "",
       cuisines: props.restaurant.cuisines ? props.restaurant.cuisines : [""],
       whens: props.restaurant.whens ? props.restaurant.whens : [""],
+      notes: props.restaurant.notes ? props.restaurant.notes : [""],
     },
   });
 
@@ -74,10 +91,11 @@ export default function AddRestaurant(props: {
       address: values.address,
       cuisines: values.cuisines,
       whens: values.whens,
+      notes: values.notes,
     };
 
     const restaurant = await updateRestaurant(payload);
-    if (pathname.includes("/vinyl/")) {
+    if (pathname.includes("/restaurant/")) {
       successToast(restaurant.restaurantName);
       setChangesMade(true);
     } else {
@@ -92,6 +110,22 @@ export default function AddRestaurant(props: {
       const url = `${window.location.protocol}//${window.location.host}`;
       window.location.href = `${url}/restaurants`;
     }, 1000);
+  };
+
+  const pullNote = async (note: string) => {
+    const updatedNotes = notes.filter((item) => item !== note);
+    setNotes(updatedNotes);
+    await deleteRestaurantNote(note, props.restaurant._id);
+    deleteToast("Note");
+  };
+
+  const pullAddNote = async (note: string) => {
+    const newNoteList = [...notes, note];
+    setNotes(newNoteList);
+  };
+
+  const pullData = (data: boolean) => {
+    setOpen(data);
   };
 
   return (
@@ -157,6 +191,27 @@ export default function AddRestaurant(props: {
           {...form.getInputProps("address")}
         />
         <Map longLat={props.longLat} title={props.restaurant.restaurantName} />
+        <div className="flex justify-between">
+          <div className="flex-grow pr-2">
+            <p className="text-dark-1 dark:text-light-1 pt-3 text-3xl font-semibold">
+              Notes
+            </p>
+          </div>
+          <div className="mt-auto">
+            <Button
+              radius="md"
+              className="bg-green-600 text-light-1 r-0"
+              onClick={() => setOpen(true)}
+              aria-label="add"
+              size="md"
+            >
+              <IconCirclePlus className="dark:text-light-1 text-dark-1" />
+            </Button>
+          </div>
+        </div>
+        {notes.map((note: string) => {
+          return <NoteCard key={note} note={note} func={pullNote} />;
+        })}
         <Button
           radius="md"
           className="bg-primary-500 text-light-1"
@@ -165,6 +220,19 @@ export default function AddRestaurant(props: {
           {props.restaurant._id === "" ? "Add" : "Update"} Restaurant
         </Button>
       </form>
+      <FullScreenModal
+        open={open}
+        func={pullData}
+        form={
+          <AddRestaurantNote
+            restaurant={props.restaurant}
+            restaurantNote={restaurantNote}
+            func={pullData}
+            addNote={pullAddNote}
+          />
+        }
+        title="Add Note"
+      />
     </div>
   );
 }

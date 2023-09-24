@@ -66,6 +66,38 @@ export async function updateRestaurant(restaurantData: IRestaurant) {
     throw new Error(`Failed to create/update restaurant: ${error.message}`);
   }
 }
+export async function deleteRestaurantNote(note: string, id: string) {
+  try {
+    connectToDB();
+
+    return await Restaurant.findOneAndUpdate(
+      { _id: new mongoose.Types.ObjectId(id) },
+      {
+        $pullAll: {
+          notes: [note],
+        },
+      }
+    );
+  } catch (error: any) {
+    throw new Error(`Failed to delete note: ${error.message}`);
+  }
+}
+export async function addRestaurantNote(note: string, id: string) {
+  try {
+    connectToDB();
+
+    return await Restaurant.findOneAndUpdate(
+      { _id: new mongoose.Types.ObjectId(id) },
+      {
+        $push: {
+          notes: [note],
+        },
+      }
+    );
+  } catch (error: any) {
+    throw new Error(`Failed to delete note: ${error.message}`);
+  }
+}
 export async function archiveRestaurant(id: string) {
   try {
     connectToDB();

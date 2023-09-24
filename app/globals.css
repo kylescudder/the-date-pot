@@ -27,12 +27,14 @@
   @apply inline !important;
 }
 .mantine-TextInput-label,
+.mantine-Textarea-label,
 .mantine-Select-label,
 .mantine-MultiSelect-label {
   @apply text-dark-1 dark:text-light-1
 }
 
 .mantine-TextInput-input,
+.mantine-Textarea-input,
 .mantine-Select-input,
 .mantine-MultiSelect-input {
   @apply bg-light-2 text-dark-1 dark:bg-dark-2 dark:text-light-1
