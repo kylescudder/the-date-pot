@@ -83,7 +83,7 @@ export default function AddCoffeeRating(props: {
         {...form.getInputProps("userID")}
       />
       <div className="text-base flex items-center pt-2">
-        <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+        <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-black text-gray-700 mr-2">
           Taste
         </span>
         <Rating
@@ -94,7 +94,7 @@ export default function AddCoffeeRating(props: {
         />
       </div>
       <div className="text-base flex items-center pt-5">
-        <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+        <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-black text-gray-700 mr-2">
           Experience
         </span>
         <Rating
