@@ -38,7 +38,7 @@
     "dayjs": "^1.11.10",
     "eslint": "8.50.0",
     "eslint-config-next": "13.5.3",
-    "infisical-node": "^1.4.3",
+    "infisical-node": "^1.5.0",
     "mongoose": "^7.5.3",
     "next": "13.5.3",
     "next-themes": "^0.2.1",
