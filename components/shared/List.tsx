@@ -10,7 +10,7 @@ import Tabulator, {
 import "tabulator-tables/dist/css/tabulator_midnight.min.css";
 import { IconFilePlus, IconSearch } from "@tabler/icons-react";
 import FullScreenModal from "../shared/FullScreenModal";
-import { Button } from "@mantine/core";
+import { Button, Input } from "@mantine/core";
 
 export default function List(props: {
   records: any[];
@@ -43,11 +43,10 @@ export default function List(props: {
       const filtered = props.records.filter((record) =>
         props.filterColumns.some((element) => {
           if (record[element] !== undefined) {
-            return record[element].toLowerCase().includes(lowercaseSearchValue)
+            return record[element].toLowerCase().includes(lowercaseSearchValue);
           }
-          return false
-        }
-        )
+          return false;
+        })
       );
       setFilteredRecords(filtered);
     } else {
@@ -91,18 +90,17 @@ export default function List(props: {
             searchOpen ? "w-4/5" : "w-0 overflow-hidden"
           } ml-auto transition-all duration-300 ease-in-out`}
         >
-          {/*
-           */}
-          <input
+          <Input
             ref={focusRef}
-            type="text"
-            placeholder="Search by name or experience"
+            placeholder="Search..."
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             className={`${
               searchOpen ? "w-full" : "w-0"
-            } px-4 py-2 rounded-full border outline-none focus:ring focus:ring-primary-500
+            } pl-2
             dark:text-light-2 text-dark-2`}
+            radius="md"
+            size="sm"
           />
         </div>
         <Button
