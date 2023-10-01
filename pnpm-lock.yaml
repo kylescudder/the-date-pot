@@ -36,8 +36,8 @@ dependencies:
     specifier: ^6.0.20
     version: 6.0.20(@mantine/core@6.0.20)(@mantine/hooks@6.0.20)(dayjs@1.11.10)(react@18.2.0)
   '@mantine/form':
-    specifier: ^7.0.1
-    version: 7.0.1(react@18.2.0)
+    specifier: ^7.1.0
+    version: 7.1.0(react@18.2.0)
   '@mantine/hooks':
     specifier: ^6.0.20
     version: 6.0.20(react@18.2.0)
@@ -1931,8 +1931,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@mantine/form@7.0.1(react@18.2.0):
-    resolution: {integrity: sha512-L8+n2FG8om+ahAwHWP4RSAM9YFUP5eph82vPRpvteTYSys+uLPrA4tdrrqS74KdmpJoVcRkMFah3hRZk/1xbsQ==}
+  /@mantine/form@7.1.0(react@18.2.0):
+    resolution: {integrity: sha512-Iu7Ecs2kFdvwakpvInOlmKRdMxy8XKiDAs9SjuVuRs4w/MWNEqWW6ecj1LGByfr2hyoIMyX+lhOQ/7IxgEaFjg==}
     peerDependencies:
       react: ^18.2.0
     dependencies:
