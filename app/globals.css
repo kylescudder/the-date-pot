@@ -29,10 +29,13 @@
 .mantine-TextInput-label,
 .mantine-Textarea-label,
 .mantine-Select-label,
-.mantine-MultiSelect-label {
-  @apply text-dark-1 dark:text-light-1
+.mantine-MultiSelect-label,
+.mantine-Modal-title {
+  @apply text-dark-1 dark:text-light-1 font-black
 }
-
+.mantine-Button-label {
+  @apply font-light
+}
 .mantine-TextInput-input,
 .mantine-Textarea-input,
 .mantine-Select-input,

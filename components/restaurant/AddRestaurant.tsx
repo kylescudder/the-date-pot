@@ -194,7 +194,7 @@ export default function AddRestaurant(props: {
         )}
         <div className="flex justify-between">
           <div className="flex-grow pr-2">
-            <p className="text-dark-1 dark:text-light-1 pt-3 text-3xl font-semibold">
+            <p className="text-dark-1 dark:text-light-1 pt-3 text-3xl font-black">
               Notes
             </p>
           </div>
