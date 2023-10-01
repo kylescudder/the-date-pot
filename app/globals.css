@@ -55,11 +55,10 @@
 .focus-visible\:ring-2:focus-visible {
   @apply border-primary-500 !important;
 }
-.tabulator-row {
-  /*@apply py-2*/
-}
-.tabulator-cell {
-  @apply py-2
+.tabulator-cell,
+.tabulator-header,
+.tabulator-col {
+  @apply border-0 !important
 }
 .tabler-icon {
   color: white;
