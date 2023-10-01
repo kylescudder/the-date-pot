@@ -14,6 +14,9 @@ export default async function Restaurant({ params }: { params: { id: string } })
   const restaurant: IRestaurant = await getRestaurant(params.id);
   const cuisineList: ICuisine[] = await getCuisineList();
   const whenList: IWhen[] = await getWhenList();
-  const longLat: number[] = await getLongLat(restaurant.address);
+  let longLat: number[] = []
+  if (restaurant.address !== undefined && restaurant.address !== "") {
+    longLat = await getLongLat(restaurant.address);
+  }
   return <AddRestaurant restaurant={restaurant} longLat={longLat} cuisineList={cuisineList} whenList={whenList} />;
 }

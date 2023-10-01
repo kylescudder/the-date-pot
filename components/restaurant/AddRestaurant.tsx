@@ -24,6 +24,7 @@ import { IWhen } from "@/lib/models/when";
 import NoteCard from "./NoteCard";
 import FullScreenModal from "../shared/FullScreenModal";
 import AddRestaurantNote from "./AddRestaurantNote";
+import ReloadMapPlaceholder from "../shared/ReloadMapPlaceholder";
 
 export default function AddRestaurant(props: {
   restaurant: IRestaurant;
@@ -36,10 +37,16 @@ export default function AddRestaurant(props: {
   const [notes, setNotes] = useState(props.restaurant.notes || []);
   const [changesMade, setChangesMade] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
-
+  const [address, setAddress] = useState<string>(props.restaurant.address);
+  console.log(props.longLat[0]);
+  console.log(props.longLat[1]);
   useEffect(() => {
     setChangesMade(true);
   }, [notes]);
+
+  useEffect(() => {
+    console.log(address);
+  }, [address]);
 
   const cuisineOptions: option[] = props.cuisineList.map((user: ICuisine) => ({
     value: user.cuisine,
@@ -94,6 +101,10 @@ export default function AddRestaurant(props: {
     if (pathname.includes("/restaurant/")) {
       successToast(restaurant.restaurantName);
       setChangesMade(true);
+
+      if (payload.address !== "") {
+        setAddress(payload.address);
+      }
     } else {
       router.push(`/restaurant/${restaurant._id}`);
     }
@@ -186,12 +197,16 @@ export default function AddRestaurant(props: {
           size="md"
           {...form.getInputProps("address")}
         />
-        {props.longLat[0] !== 0 && props.longLat[1] !== 0 && (
+        {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
           <Map
             longLat={props.longLat}
             title={props.restaurant.restaurantName}
           />
         )}
+        {address !== undefined &&
+          address !== "" &&
+          props.longLat[0] === undefined &&
+          props.longLat[1] === undefined && <ReloadMapPlaceholder />}
         <div className="flex justify-between">
           <div className="flex-grow pr-2">
             <p className="text-dark-1 dark:text-light-1 pt-3 text-3xl font-black">
