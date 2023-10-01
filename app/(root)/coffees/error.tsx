@@ -10,7 +10,7 @@ export default function Error({
   return (
     <div className="min-h-full flex items-center justify-center ">
       <div className="p-6 rounded-lg shadow-md">
-        <p className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-red-500">
+        <p className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-red-500 pb-2">
           Oops! Something went wrong.
         </p>
         <p className="text-light-1 font-extrabold mt-2">
