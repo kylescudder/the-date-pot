@@ -26,6 +26,9 @@ dependencies:
   '@emotion/styled':
     specifier: ^11.11.0
     version: 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.24)(react@18.2.0)
+  '@fontsource/ubuntu':
+    specifier: ^5.0.8
+    version: 5.0.8
   '@hookform/resolvers':
     specifier: ^3.3.1
     version: 3.3.1(react-hook-form@7.46.2)
@@ -1815,6 +1818,10 @@ packages:
 
   /@floating-ui/utils@0.1.2:
     resolution: {integrity: sha512-ou3elfqG/hZsbmF4bxeJhPHIf3G2pm0ujc39hYEZrfVqt7Vk/Zji6CXc3W0pmYM8BW1g40U+akTl9DKZhFhInQ==}
+    dev: false
+
+  /@fontsource/ubuntu@5.0.8:
+    resolution: {integrity: sha512-lZY64hVXrnkt/+5jRfm0uMiRv+lmrIdnATAnDj1SPqebmI2UDf3KC9p4rOkIYsBOjOsD6seJ82GIQE067DSvWw==}
     dev: false
 
   /@googlemaps/js-api-loader@1.16.2:
