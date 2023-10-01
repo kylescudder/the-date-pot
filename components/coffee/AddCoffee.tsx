@@ -186,7 +186,7 @@ export default function AddCoffee(props: {
         />
         <div className="flex justify-between">
           <div className="flex-grow pr-2">
-            <p className="text-dark-1 dark:text-light-1 pt-3 text-3xl font-black">
+            <p className="text-dark-1 dark:text-light-1 pt-3 inline-block text-base font-black">
               Ratings
             </p>
           </div>

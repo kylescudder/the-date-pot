@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: "Ubuntu", sans-serif;
+}
 @layer components {
   .topbar {
     @apply fixed top-0 z-30 flex w-full items-center justify-between bg-light-2 dark:bg-dark-2 px-6 py-3;

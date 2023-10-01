@@ -1,6 +1,5 @@
 import React from "react";
 import type { Metadata } from "next";
-import { Ubuntu } from "next/font/google";
 import { ClerkProvider, currentUser } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import "../globals.css";
@@ -12,11 +11,7 @@ import { redirect } from "next/navigation";
 import { IPot } from "@/lib/models/pot";
 import { Toast } from "@/components/shared/Toast";
 import { getPots } from "@/lib/actions/pot.actions";
-
-const ubuntu = Ubuntu({
-  subsets: ["latin"],
-  weight: ["300"]
-});
+import "@fontsource/ubuntu";
 
 export const metadata: Metadata = {
   title: "The Date Pot",
@@ -111,10 +106,10 @@ export default async function RootLayout({
       }}
     >
       <html lang="en">
-        <body className={ubuntu.className}>
-            <Topbar pots={pots} />
-            <MainContent pots={pots} children={children} />
-            <Toast />
+        <body>
+          <Topbar pots={pots} />
+          <MainContent pots={pots} children={children} />
+          <Toast />
         </body>
       </html>
     </ClerkProvider>
