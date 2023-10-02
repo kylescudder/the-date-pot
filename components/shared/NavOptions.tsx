@@ -23,15 +23,22 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
         const potNameDepluralised = pot.potName.endsWith("s")
           ? pot.potName.substring(0, pot.potName.length - 1).toLowerCase()
           : pot.potName.toLowerCase();
-        
-        const potNamePluralised = !pot.potName.endsWith("s")
-          ? `${pot.potName}s`.toLowerCase()
-          : pot.potName.toLowerCase();
+
+        let potNamePluralised = ""
+        if (pot.potName.endsWith("y")) {
+          // Pluralisation of names that end in y
+          potNamePluralised = `${pot.potName.substring(0, pot.potName.length - 1)}ies`.toLowerCase()
+        } else if (!pot.potName.endsWith("s")) {
+          // Pluralisation of names that don't end in s
+          potNamePluralised = `${pot.potName}s`.toLowerCase()
+        } else {
+          potNamePluralised = pot.potName.toLowerCase();
+        }
 
         const isActive =
           (pathname.includes(potNameDepluralised) &&
             potNameDepluralised.length > 1) ||
-          pathname === potNameDepluralised
+          pathname === potNameDepluralised;
 
         return (
           <a
