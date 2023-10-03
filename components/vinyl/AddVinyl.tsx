@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { IVinyl } from "@/lib/models/vinyl";
 import { archiveVinyl, updateVinyl } from "@/lib/actions/vinyl.action";
 import { archiveToast, successToast } from "@/lib/actions/toast.actions";
-import { IconArchive } from "@tabler/icons-react";
+import { IconTrash } from "@tabler/icons-react";
 import BackButton from "../shared/BackButton";
 import { Button, Checkbox, TextInput } from "@mantine/core";
 
@@ -78,7 +78,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
           onClick={handleArchive}
           aria-label="archive"
         >
-          <IconArchive className="dark:text-light-1 text-dark-1" />
+          <IconTrash className="dark:text-light-1 text-dark-1" />
         </Button>
       </div>
       <form
