@@ -14,7 +14,7 @@ import {
   deleteToast,
   successToast,
 } from "@/lib/actions/toast.actions";
-import { IconArchive, IconCirclePlus } from "@tabler/icons-react";
+import { IconTrash, IconCirclePlus } from "@tabler/icons-react";
 import BackButton from "../shared/BackButton";
 import { Button, MultiSelect, TextInput } from "@mantine/core";
 import Map from "../shared/Map";
@@ -150,7 +150,7 @@ export default function AddRestaurant(props: {
           onClick={handleArchive}
           aria-label="archive"
         >
-          <IconArchive className="dark:text-light-1 text-dark-1" />
+          <IconTrash className="dark:text-light-1 text-dark-1" />
         </Button>
       </div>
       <form

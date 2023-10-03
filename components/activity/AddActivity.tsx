@@ -12,7 +12,7 @@ import {
   archiveToast,
   successToast,
 } from "@/lib/actions/toast.actions";
-import { IconArchive } from "@tabler/icons-react";
+import { IconTrash } from "@tabler/icons-react";
 import BackButton from "../shared/BackButton";
 import { Button, Select, TextInput } from "@mantine/core";
 import Map from "../shared/Map";
@@ -111,7 +111,7 @@ export default function AddActivity(props: {
           onClick={handleArchive}
           aria-label="archive"
         >
-          <IconArchive className="dark:text-light-1 text-dark-1" />
+          <IconTrash className="dark:text-light-1 text-dark-1" />
         </Button>
       </div>
       <form

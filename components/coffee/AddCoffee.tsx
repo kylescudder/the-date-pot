@@ -8,7 +8,7 @@ import {
   successToast,
 } from "@/lib/actions/toast.actions";
 import {
-  IconArchive,
+  IconTrash,
   IconCircleXFilled,
   IconCirclePlus,
 } from "@tabler/icons-react";
@@ -167,7 +167,7 @@ export default function AddCoffee(props: {
           onClick={handleArchive}
           aria-label="archive"
         >
-          <IconArchive className="dark:text-light-1 text-dark-1" />
+          <IconTrash className="dark:text-light-1 text-dark-1" />
         </Button>
       </div>
       <form
