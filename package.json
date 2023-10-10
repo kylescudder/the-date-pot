@@ -31,7 +31,7 @@
     "@sentry/nextjs": "^7.73.0",
     "@tabler/icons-react": "^2.38.0",
     "@types/node": "20.8.2",
-    "@types/react": "18.2.24",
+    "@types/react": "18.2.27",
     "@types/react-dom": "18.2.9",
     "autoprefixer": "10.4.16",
     "class-variance-authority": "^0.7.0",
