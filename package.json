@@ -40,7 +40,7 @@
     "eslint": "8.50.0",
     "eslint-config-next": "13.5.4",
     "infisical-node": "^1.5.0",
-    "mongoose": "^7.5.3",
+    "mongoose": "^7.6.2",
     "next": "13.5.4",
     "next-themes": "^0.2.1",
     "postcss": "8.4.31",
