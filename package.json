@@ -59,6 +59,6 @@
   "devDependencies": {
     "@types/google.maps": "^3.54.3",
     "@types/react-burger-menu": "^2.8.5",
-    "@types/tabulator-tables": "^5.5.2"
+    "@types/tabulator-tables": "^5.5.3"
   }
 }
