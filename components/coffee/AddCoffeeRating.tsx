@@ -104,7 +104,11 @@ export default function AddCoffeeRating(props: {
           {...form.getInputProps("experience")}
         />
       </div>
-      <Button radius="md" className="bg-primary-500 text-light-1" type="submit">
+      <Button
+        radius="md"
+        className="bg-primary-500 hover:bg-primary-hover text-light-1"
+        type="submit"
+      >
         {props.coffeeRating._id === "" ? "Add" : "Update"} Rating
       </Button>
     </form>

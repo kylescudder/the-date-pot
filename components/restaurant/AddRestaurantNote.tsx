@@ -31,7 +31,12 @@ export default function AddRestaurantNote(props: {
         placeholder="Penny for your thoughts?"
         onChange={handleChange}
       />
-      <Button radius="md" className="bg-primary-500 text-light-1 mt-3" type="button" onClick={handleSubmit}>
+      <Button
+        radius="md"
+        className="bg-primary-500 hover:bg-primary-hover text-light-1 mt-3"
+        type="button"
+        onClick={handleSubmit}
+      >
         {props.restaurant._id === "" ? "Add" : "Update"} Note
       </Button>
     </div>

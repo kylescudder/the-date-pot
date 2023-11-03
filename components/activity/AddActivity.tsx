@@ -105,7 +105,7 @@ export default function AddActivity(props: {
           page="activities"
         />
         <Button
-          className={`bg-red-600 text-light-1 ${
+          className={`bg-danger text-light-1 ${
             props.activity._id === "" ? "hidden" : ""
           }`}
           onClick={handleArchive}
@@ -155,7 +155,7 @@ export default function AddActivity(props: {
           props.longLat[1] === undefined && <ReloadMapPlaceholder />}
         <Button
           radius="md"
-          className="bg-primary-500 text-light-1"
+          className="bg-primary-500 hover:bg-primary-hover text-light-1"
           type="submit"
         >
           {props.activity._id === "" ? "Add" : "Update"} Activity

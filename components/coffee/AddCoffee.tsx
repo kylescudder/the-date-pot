@@ -8,9 +8,9 @@ import {
   successToast,
 } from "@/lib/actions/toast.actions";
 import {
-  IconTrash,
-  IconCircleXFilled,
+  IconTrash, 
   IconCirclePlus,
+  IconCircleMinus,
 } from "@tabler/icons-react";
 import { ICoffee } from "@/lib/models/coffee";
 import {
@@ -161,13 +161,13 @@ export default function AddCoffee(props: {
         />
         <Button
           radius="md"
-          className={`bg-red-600 text-light-1 ${
+          className={`bg-danger text-light-1 ${
             props.coffee._id === "" ? "hidden" : ""
           }`}
           onClick={handleArchive}
           aria-label="archive"
         >
-          <IconTrash className="dark:text-light-1 text-dark-1" />
+          <IconTrash className="text-light-1" />
         </Button>
       </div>
       <form
@@ -193,12 +193,12 @@ export default function AddCoffee(props: {
           <div className="mt-auto">
             <Button
               radius="md"
-              className="bg-green-600 text-light-1 r-0"
+              className="bg-success text-light-1 r-0"
               onClick={() => setOpen(true)}
               aria-label="add"
               size="md"
             >
-              <IconCirclePlus className="dark:text-light-1 text-dark-1" />
+              <IconCirclePlus className="text-light-1" />
             </Button>
           </div>
         </div>
@@ -208,16 +208,16 @@ export default function AddCoffee(props: {
             return (
               <div
                 key={rating.userID}
-                className="rounded-md overflow-hidden shadow-lg bg-gray-400 dark:bg-dark-4 w-full"
+                className="rounded-md overflow-hidden shadow-lg bg-light-3 dark:bg-dark-3 w-full"
               >
                 <div className="px-6 py-4">
                   <div className="font-black w-1/2 contents text-xl mb-2 text-dark-1 dark:text-light-1">
                     {rating.username}
                   </div>
                   <div className="w-1/2 contents">
-                    <IconCircleXFilled
+                    <IconCircleMinus
                       onClick={() => handleRemoveRecord(rating.userID, i)}
-                      className="text-red-600 float-right"
+                      className="text-danger float-right"
                     />
                   </div>
                   <div className="text-base flex items-center pt-2">
@@ -249,7 +249,7 @@ export default function AddCoffee(props: {
             );
           })
         ) : (
-          <div className="rounded-md overflow-hidden shadow-lg bg-gray-400 dark:bg-dark-4 w-full">
+          <div className="rounded-md overflow-hidden shadow-lg bg-light-4 dark:bg-dark-4 w-full">
             <div className="px-6 py-4">
               <div className="font-bold w-1/2 contents text-xl mb-2 text-dark-1 dark:text-light-1">
                 Please add a rating!
@@ -259,7 +259,7 @@ export default function AddCoffee(props: {
         )}
         <Button
           radius="md"
-          className="bg-primary-500 text-light-1"
+          className="bg-primary-500 hover:bg-primary-hover text-light-1"
           type="submit"
         >
           {props.coffee._id === "" ? "Add" : "Update"} Coffee

@@ -11,7 +11,7 @@ import "tabulator-tables/dist/css/tabulator_midnight.min.css";
 import { IconFilePlus, IconSearch } from "@tabler/icons-react";
 import FullScreenModal from "../shared/FullScreenModal";
 import { Button, Input } from "@mantine/core";
-
+  
 export default function List(props: {
   records: any[];
   potName: string;
@@ -95,9 +95,7 @@ export default function List(props: {
             placeholder="Search..."
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            className={`${
-              searchOpen ? "w-full" : "w-0"
-            } pl-2
+            className={`${searchOpen ? "w-full" : "w-0"} pl-2
             dark:text-light-2 text-dark-2`}
             radius="md"
             size="sm"
@@ -107,14 +105,14 @@ export default function List(props: {
           radius="md"
           className={`${
             searchOpen ? "hidden" : "absolute right-6"
-          } bg-primary-500 text-light-1`}
+          } bg-primary-500 hover:bg-primary-hover text-light-1`}
           onClick={handleSearchClickOpen}
         >
           <IconSearch width={24} height={24} strokeLinejoin="miter" />
         </Button>
         <Button
           radius="md"
-          className="bg-primary-500 text-light-1 absolute left-6"
+          className="bg-primary-500 hover:bg-primary-hover text-light-1 absolute left-6"
           onClick={handleClickOpen}
         >
           <IconFilePlus width={24} height={24} strokeLinejoin="miter" />

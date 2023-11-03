@@ -119,7 +119,12 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
         minRows={8}
         {...form.getInputProps("bio")}
       />
-      <Button radius="md" size="md" className="bg-primary-500" type="submit">
+      <Button
+        radius="md"
+        size="md"
+        className="bg-primary-500 hover:bg-primary-hover"
+        type="submit"
+      >
         {btnTitle}
       </Button>
     </form>
