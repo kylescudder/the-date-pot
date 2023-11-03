@@ -41,7 +41,7 @@
     "eslint-config-next": "13.5.6",
     "infisical-node": "^1.5.0",
     "mongoose": "^7.6.3",
-    "next": "13.5.6",
+    "next": "14.0.1",
     "next-themes": "^0.2.1",
     "postcss": "8.4.31",
     "react": "18.2.0",
