@@ -147,7 +147,7 @@ export default function AddActivity(props: {
           {...form.getInputProps("address")}
         />
         {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
-          <Map longLat={props.longLat} title={props.activity.activityName} />
+          //<Map longLat={props.longLat} title={props.activity.activityName} />
         )}
         {address !== undefined &&
           address !== "" &&
