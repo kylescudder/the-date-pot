@@ -19,7 +19,7 @@ export default function Topbar(props: { pots: IPot[] }) {
 			items-center gap-4"
         >
           <IconHomeHeart
-            stroke={1}
+            stroke={2}
             strokeLinejoin="miter"
             height={28}
             width={28}
@@ -36,7 +36,7 @@ export default function Topbar(props: { pots: IPot[] }) {
           burgerButtonClassName={"text-dark-1 dark:text-light-1"}
           customBurgerIcon={
             <IconHomeHeart
-              stroke={1}
+              stroke={2}
               strokeLinejoin="miter"
               height={28}
               width={28}

@@ -12,9 +12,9 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
       <a
         href="/"
         className={`${props.position}_link 
-        ${pathname === "/" && "bg-primary-500"}`}
+        ${pathname === "/" && "bg-primary-500 hover:bg-primary-hover"}`}
       >
-        <Icon name={"IconHome"} stroke="1" strokeLinejoin="miter" />
+        <Icon name={"IconHome"} stroke="2" strokeLinejoin="miter" isActive={false} />
         <p className="text-dark-1 dark:text-light-1 flex relative font-black">
           Home
         </p>
@@ -24,13 +24,16 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
           ? pot.potName.substring(0, pot.potName.length - 1).toLowerCase()
           : pot.potName.toLowerCase();
 
-        let potNamePluralised = ""
+        let potNamePluralised = "";
         if (pot.potName.endsWith("y")) {
           // Pluralisation of names that end in y
-          potNamePluralised = `${pot.potName.substring(0, pot.potName.length - 1)}ies`.toLowerCase()
+          potNamePluralised = `${pot.potName.substring(
+            0,
+            pot.potName.length - 1
+          )}ies`.toLowerCase();
         } else if (!pot.potName.endsWith("s")) {
           // Pluralisation of names that don't end in s
-          potNamePluralised = `${pot.potName}s`.toLowerCase()
+          potNamePluralised = `${pot.potName}s`.toLowerCase();
         } else {
           potNamePluralised = pot.potName.toLowerCase();
         }
@@ -45,10 +48,10 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
             href={`/${potNamePluralised}`}
             key={pot._id}
             className={`${props.position}_link 
-					${isActive && "bg-primary-500"}`}
+					${isActive && "bg-primary-500 hover:bg-primary-hover"}`}
           >
-            <Icon name={pot.icon} stroke="1" strokeLinejoin="miter" />
-            <p className="text-dark-1 dark:text-light-1 flex relative font-black">
+            <Icon name={pot.icon} stroke="2" strokeLinejoin="miter" isActive={isActive} />
+            <p className={`${isActive && "text-light-1"} text-dark-1 dark:text-light-1 flex relative font-black`}>
               {pot.potName}
             </p>
           </a>

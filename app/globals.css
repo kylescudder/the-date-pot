@@ -7,7 +7,7 @@ body {
 }
 @layer components {
   .topbar {
-    @apply fixed top-0 z-30 flex w-full items-center justify-between bg-light-2 dark:bg-dark-2 px-6 py-3;
+    @apply fixed top-0 z-30 flex w-full items-center justify-between bg-light-1 dark:bg-dark-1 px-6 py-3;
   }
 }
 .bottombar_link {
@@ -37,7 +37,7 @@ body {
   @apply text-dark-1 dark:text-light-1 font-black
 }
 .mantine-Button-label {
-  @apply font-light
+  @apply font-semibold
 }
 .mantine-TextInput-input,
 .mantine-Textarea-input,
@@ -66,10 +66,6 @@ body {
 .tabler-icon {
   color: white;
 }
-/*.icon-placeholder {
-  width: 24px;
-  height: 24px;
-}*/
 @media screen and (min-width: 768px) {
   .header {
     margin: 56px auto 0;
@@ -113,6 +109,8 @@ body {
 /*Dark mode slider*/
 
 :root {
+  --toastify-color-success: #B2AC88;
+  --toastify-color-error: #BE3455;
   /** sunny side **/
   --blue-background: #c2e9f6;
   --blue-border: #72cce3;

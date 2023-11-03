@@ -105,7 +105,7 @@ export default function AddActivity(props: {
           page="activities"
         />
         <Button
-          className={`bg-red-600 text-light-1 ${
+          className={`bg-danger text-light-1 ${
             props.activity._id === "" ? "hidden" : ""
           }`}
           onClick={handleArchive}
@@ -146,16 +146,16 @@ export default function AddActivity(props: {
           size="md"
           {...form.getInputProps("address")}
         />
-        {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
+        {/*{props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
           <Map longLat={props.longLat} title={props.activity.activityName} />
-        )}
+        )}*/}
         {address !== undefined &&
           address !== "" &&
           props.longLat[0] === undefined &&
           props.longLat[1] === undefined && <ReloadMapPlaceholder />}
         <Button
           radius="md"
-          className="bg-primary-500 text-light-1"
+          className="bg-primary-500 hover:bg-primary-hover text-light-1"
           type="submit"
         >
           {props.activity._id === "" ? "Add" : "Update"} Activity

@@ -4,6 +4,7 @@ interface IconProps {
   name: string;
   stroke?: string;
   strokeLinejoin?: string;
+  isActive: boolean;
 }
 
 export default function Icon(props: IconProps) {
@@ -38,7 +39,7 @@ export default function Icon(props: IconProps) {
 
   return (
     <IconComponent
-      className="text-dark-1 dark:text-light-1"
+      className={`${props.isActive && "text-light-1"} text-dark-1 dark:text-light-1`}
       {...(props.stroke && { stroke: props.stroke })}
       {...(props.strokeLinejoin && { strokeLinejoin: props.strokeLinejoin })}
     />

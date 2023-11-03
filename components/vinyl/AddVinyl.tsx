@@ -72,7 +72,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
           page="vinyls"
         />
         <Button
-          className={`bg-red-600 text-light-1 ${
+          className={`bg-danger text-light-1 ${
             props.vinyl._id === "" ? "hidden" : ""
           }`}
           onClick={handleArchive}
@@ -113,7 +113,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
         />
         <Button
           radius="md"
-          className="bg-primary-500 text-light-1"
+          className="bg-primary-500 hover:bg-primary-hover text-light-1"
           type="submit"
         >
           {props.vinyl._id === "" ? "Add" : "Update"} Vinyl

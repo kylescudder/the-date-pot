@@ -38,8 +38,7 @@ export default function AddRestaurant(props: {
   const [changesMade, setChangesMade] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [address, setAddress] = useState<string>(props.restaurant.address);
-  console.log(props.longLat[0]);
-  console.log(props.longLat[1]);
+
   useEffect(() => {
     setChangesMade(true);
   }, [notes]);
@@ -144,13 +143,13 @@ export default function AddRestaurant(props: {
           page="restaurants"
         />
         <Button
-          className={`bg-red-600 text-light-1 ${
+          className={`bg-danger text-light-1 ${
             props.restaurant._id === "" ? "hidden" : ""
           }`}
           onClick={handleArchive}
           aria-label="archive"
         >
-          <IconTrash className="dark:text-light-1 text-dark-1" />
+          <IconTrash className="text-light-1" />
         </Button>
       </div>
       <form
@@ -197,12 +196,12 @@ export default function AddRestaurant(props: {
           size="md"
           {...form.getInputProps("address")}
         />
-        {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
+        {/*{props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
           <Map
             longLat={props.longLat}
             title={props.restaurant.restaurantName}
           />
-        )}
+        )}*/}
         {address !== undefined &&
           address !== "" &&
           props.longLat[0] === undefined &&
@@ -216,12 +215,12 @@ export default function AddRestaurant(props: {
           <div className="mt-auto">
             <Button
               radius="md"
-              className="bg-green-600 text-light-1 r-0"
+              className="bg-success text-light-1 r-0"
               onClick={() => setOpen(true)}
               aria-label="add"
               size="md"
             >
-              <IconCirclePlus className="dark:text-light-1 text-dark-1" />
+              <IconCirclePlus className="text-light-1" />
             </Button>
           </div>
         </div>
@@ -230,7 +229,7 @@ export default function AddRestaurant(props: {
         })}
         <Button
           radius="md"
-          className="bg-primary-500 text-light-1"
+          className="bg-primary-500 hover:bg-primary-hover text-light-1"
           type="submit"
         >
           {props.restaurant._id === "" ? "Add" : "Update"} Restaurant

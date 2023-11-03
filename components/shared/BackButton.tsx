@@ -27,13 +27,13 @@ export default function BackButton(props: {
 	return (
     <Button
       radius="md"
-      className={`bg-primary-500 text-light-1 ${
+      className={`bg-primary-500 hover:bg-primary-hover ${
         props.record._id === "" ? "hidden" : ""
       }`}
       onClick={handleBack}
       aria-label="back"
     >
-      <IconArrowNarrowLeft className="dark:text-light-1 text-dark-1" />
+      <IconArrowNarrowLeft className="text-light-1" />
     </Button>
   );
 }
