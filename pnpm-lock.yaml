@@ -3176,8 +3176,8 @@ packages:
     engines: {node: '>=4'}
     dev: false
 
-  /axios@1.5.0:
-    resolution: {integrity: sha512-D4DdjDo5CY50Qms0qGQTTw6Q44jl7zRwY7bthds06pUGfChBCTcQs+N743eFWGEd6pRTMd6A+I87aWyFV5wiZQ==}
+  /axios@1.6.1:
+    resolution: {integrity: sha512-vfBmhDpKafglh0EldBEbVuoe7DyAavGSLWhuSm5ZSEKQnHhBf0xAAwybbNH1IkrJNGnS/VG4I5yxig1pCEXE4g==}
     dependencies:
       follow-redirects: 1.15.2
       form-data: 4.0.0
@@ -4637,7 +4637,7 @@ packages:
   /infisical-node@1.5.0:
     resolution: {integrity: sha512-mMdhhu50J7pI4Y89M2HMbNWRyRY6ian3oBIXW+pAWz1z8XWn5yT0ge6/YNXwTPKLnBuR1py+GwiNQUaqxkOXZw==}
     dependencies:
-      axios: 1.5.0
+      axios: 1.6.1
       dotenv: 16.3.1
       tweetnacl: 1.0.3
       tweetnacl-util: 0.15.1
