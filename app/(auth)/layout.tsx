@@ -2,10 +2,14 @@
 import "../globals.css";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { dark } from "@clerk/themes";
 
 const inter = Inter({ subsets: ["latin"] });
+
+export const viewport: Viewport = {
+  themeColor: "#877EFF",
+};
 
 export const metadata: Metadata = {
   title: "The Date Pot",
@@ -13,7 +17,6 @@ export const metadata: Metadata = {
     "A collection of films to watch, places to eat, things to do, coffee shops to rate and vinyls to buy with your loved one. This project is subject to change on a whim if I (and my loved ones) decide we want to change it.",
   applicationName: "The Date Pot",
   manifest: "/manifest.json",
-  themeColor: "#877EFF",
   icons: [
     {
       url: "/assets/maskable_icon_x48",
