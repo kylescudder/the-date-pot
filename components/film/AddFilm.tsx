@@ -66,12 +66,12 @@ export default function AddFilm(props: {
     initialValues: {
       _id: props.film._id ? props.film._id : "",
       addedByID: props.film.addedByID ? props.film.addedByID : "",
-      addedDate: props.film.addedDate ? props.film.addedDate : "",
+      addedDate: props.film.addedDate ? props.film.addedDate : new Date,
       archive: props.film.archive ? props.film.archive : false,
       filmName: props.film.filmName
         ? props.film.filmName
         : "",
-      releaseDate: props.film.releaseDate ? props.film.releaseDate : "",
+      releaseDate: props.film.releaseDate ? props.film.releaseDate : new Date,
       runTime: props.film.runTime ? props.film.runTime : 0,
       userGroupID: props.film.userGroupID
         ? props.film.userGroupID
