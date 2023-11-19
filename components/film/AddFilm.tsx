@@ -178,6 +178,7 @@ export default function AddFilm(props: {
           radius="md"
           size="md"
           clearable
+          searchable
           transitionProps={{ transition: "pop-bottom-left", duration: 200 }}
           label="Directors"
           placeholder="Pick some"
@@ -189,6 +190,7 @@ export default function AddFilm(props: {
           radius="md"
           size="md"
           clearable
+          searchable
           transitionProps={{ transition: "pop-bottom-left", duration: 200 }}
           label="Genres"
           placeholder="Pick some"
@@ -200,6 +202,7 @@ export default function AddFilm(props: {
           radius="md"
           size="md"
           clearable
+          searchable
           transitionProps={{ transition: "pop-bottom-left", duration: 200 }}
           label="Genres"
           placeholder="Pick some"
