@@ -32,9 +32,16 @@ body {
 .mantine-TextInput-label,
 .mantine-Textarea-label,
 .mantine-Select-label,
+.mantine-Select-item,
+.mantine-DatePickerInput-label,
+.mantine-DatePickerInput-calendarHeaderControl,
+.mantine-DatePickerInput-calendarHeaderLevel,
+.mantine-DatePickerInput-day,
 .mantine-MultiSelect-label,
+.mantine-NumberInput-label,
+.mantine-Checkbox-label,
 .mantine-Modal-title {
-  @apply text-dark-1 dark:text-light-1 font-black
+  @apply text-dark-1 dark:text-light-1
 }
 .mantine-Button-label {
   @apply font-semibold
@@ -42,6 +49,10 @@ body {
 .mantine-TextInput-input,
 .mantine-Textarea-input,
 .mantine-Select-input,
+.mantine-Select-dropdown,
+.mantine-DatePickerInput-input,
+.mantine-NumberInput-input,
+.mantine-NumberInput-control,
 .mantine-MultiSelect-input {
   @apply bg-light-2 text-dark-1 dark:bg-dark-2 dark:text-light-1
 }
@@ -52,8 +63,22 @@ body {
 .mantine-MultiSelect-value {
   @apply text-light-1
 }
-.mantine-Checkbox-input:checked {
+.mantine-Checkbox-input:checked,
+.mantine-NumberInput-control:not(:disabled):hover {
   @apply bg-primary-500
+}
+.mantine-Popover-dropdown {
+  @apply dark:bg-dark-4;
+}
+button[data-outside] {
+  @apply text-light-4 !important;
+}
+button[data-weekend] {
+  @apply text-red-500 !important;
+}
+button[data-selected],
+.mantine-Checkbox-input:checked {
+  @apply bg-primary-500 !important;
 }
 .focus-visible\:ring-2:focus-visible {
   @apply border-primary-500 !important;
