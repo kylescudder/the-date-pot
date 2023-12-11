@@ -52,7 +52,7 @@
     "styled-components": "^6.1.1",
     "tabulator-tables": "^5.5.2",
     "tailwind-merge": "^2.0.0",
-    "tailwindcss": "3.3.5",
+    "tailwindcss": "3.3.6",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.2.2"
   },
