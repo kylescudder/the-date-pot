@@ -143,8 +143,8 @@ dependencies:
 
 devDependencies:
   '@types/google.maps':
-    specifier: ^3.54.7
-    version: 3.54.7
+    specifier: ^3.54.10
+    version: 3.54.10
   '@types/react-burger-menu':
     specifier: ^2.8.7
     version: 2.8.7
@@ -2604,8 +2604,8 @@ packages:
     resolution: {integrity: sha512-HoRq4Te8J6krH7hj+TfdYepqegoKZCj3kkaK5gf+ySFSHLvyqYkDvkrtbcVJXQ6QBphQ0h1TF7p4J6sOh4r/zg==}
     dev: false
 
-  /@types/google.maps@3.54.7:
-    resolution: {integrity: sha512-L4OlEOw7GMdPJb5/eVXH7ZRBILPFaGbthRSOJtnnmDVEBV3Z8Y631whvAuahJyjpld460TuachEftDPXuqSD9A==}
+  /@types/google.maps@3.54.10:
+    resolution: {integrity: sha512-N6gwM01mKhooXaw+IKbUH7wJcIJCn8U60VoaVvom5EiQjmfgevhQ+0+/r17beXW5j8ad2x+WPr0iyOUodCw4/w==}
     dev: true
 
   /@types/http-errors@2.0.1:
