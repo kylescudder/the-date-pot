@@ -11,7 +11,7 @@
   "dependencies": {
     "@clerk/nextjs": "^4.27.7",
     "@clerk/themes": "^1.7.9",
-    "@ducanh2912/next-pwa": "^9.7.2",
+    "@ducanh2912/next-pwa": "^10.1.0",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.1",
     "@emotion/server": "^11.11.0",
