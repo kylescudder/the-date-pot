@@ -153,7 +153,6 @@ export default function AddFilm(props: {
           label="Release Date"
           radius="md"
           valueFormat="DD/MM/YYYY"
-          placeholder="How old?!"
           className="text-dark-2 dark:text-light-2"
           size="md"
           {...form.getInputProps("releaseDate")}
