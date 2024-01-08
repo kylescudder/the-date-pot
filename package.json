@@ -17,7 +17,7 @@
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@fontsource/ubuntu": "^5.0.8",
-    "@hookform/resolvers": "^3.3.2",
+    "@hookform/resolvers": "^3.3.4",
     "@mantine/core": "^6.0.20",
     "@mantine/dates": "^6.0.20",
     "@mantine/form": "^7.4.0",
