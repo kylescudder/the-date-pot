@@ -13,7 +13,7 @@
     "@clerk/themes": "^1.7.9",
     "@ducanh2912/next-pwa": "^10.1.0",
     "@emotion/cache": "^11.11.0",
-    "@emotion/react": "^11.11.1",
+    "@emotion/react": "^11.11.3",
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@fontsource/ubuntu": "^5.0.8",
