@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@clerk/nextjs": "^4.29.1",
+    "@clerk/nextjs": "^4.29.2",
     "@clerk/themes": "^1.7.9",
     "@ducanh2912/next-pwa": "^10.2.1",
     "@emotion/cache": "^11.11.0",
