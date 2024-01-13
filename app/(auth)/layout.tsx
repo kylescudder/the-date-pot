@@ -60,27 +60,27 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Things To Do",
+    title: "The Date Pot",
   },
   formatDetection: {
     telephone: false,
   },
   openGraph: {
     type: "website",
-    siteName: "Things To Do",
+    siteName: "The Date Pot",
     title: {
-      default: "Things To Do",
+      default: "The Date Pot",
       template: "% - PWA App",
     },
-    description: "All your To Dos, organised, simplified, accessible...",
+    description: "A collection of films to watch, places to eat, things to do, coffee shops to rate and vinyls to buy with your loved one. This project is subject to change on a whim if I (and my loved ones) decide we want to change it.",
   },
   twitter: {
     card: "summary",
     title: {
-      default: "Things To Do",
+      default: "The Date Pot",
       template: "% - PWA App",
     },
-    description: "All your To Dos, organised, simplified, accessible...",
+    description: "A collection of films to watch, places to eat, things to do, coffee shops to rate and vinyls to buy with your loved one. This project is subject to change on a whim if I (and my loved ones) decide we want to change it.",
   },
 };
 
