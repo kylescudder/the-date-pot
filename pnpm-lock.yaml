@@ -12,8 +12,8 @@ dependencies:
     specifier: ^1.7.9
     version: 1.7.9(react@18.2.0)
   '@ducanh2912/next-pwa':
-    specifier: ^10.2.1
-    version: 10.2.1(next@14.0.4)(webpack@5.88.2)
+    specifier: ^10.2.2
+    version: 10.2.2(next@14.0.4)(webpack@5.88.2)
   '@emotion/cache':
     specifier: ^11.11.0
     version: 11.11.0
@@ -1448,8 +1448,8 @@ packages:
       csstype: 3.1.1
     dev: false
 
-  /@ducanh2912/next-pwa@10.2.1(next@14.0.4)(webpack@5.88.2):
-    resolution: {integrity: sha512-T6nxzNBVFSb69WrYYatYNZW7o56rLzhQhjpa/QDCUxwr0FFlQ1AxK5T+teoenW/N5WD9Wmj4MrhGuTs6zgMkCg==}
+  /@ducanh2912/next-pwa@10.2.2(next@14.0.4)(webpack@5.88.2):
+    resolution: {integrity: sha512-4WCMTI8aGQlLbxBVmXlGQuTTvSkAUdxvZl6o18znW1jcOd64K7SmJcMbh+MdJDw6s5eqG/uAKfbmA0JMC/c9iQ==}
     peerDependencies:
       next: '>=14.0.0'
       webpack: '>=5.9.0'
