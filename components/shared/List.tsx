@@ -2,23 +2,23 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Tabulator, {
-  TabulatorFull,
-  RowComponent,
-  ColumnDefinition,
-} from "tabulator-tables";
-import "tabulator-tables/dist/css/tabulator_midnight.min.css";
+import {
+  ColDef,
+  RowClickedEvent,
+  RowStyle
+} from 'ag-grid-community';
 import { IconFilePlus, IconSearch } from "@tabler/icons-react";
 import FullScreenModal from "../shared/FullScreenModal";
 import { Button, Input } from "@mantine/core";
+import Grid from "./Grid";
   
 export default function List(props: {
   records: any[];
   potName: string;
-  columns: ColumnDefinition[];
+  columns: ColDef[];
   filterColumns: string[];
   addRecordComp: React.ReactElement;
-  rowFormatter: any;
+  rowFormatter: RowStyle;
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [filteredRecords, setFilteredRecords] = useState(props.records);
@@ -54,27 +54,12 @@ export default function List(props: {
     }
   }, [searchValue, props.records, props.filterColumns]);
 
-  useEffect(() => {
-    const tabulatorOptions: Tabulator.Options = {
-      responsiveLayout: "hide",
-      placeholder: `No ${props.potName}s...`,
-      rowHeight: 40,
-      columns: props.columns,
-      rowFormatter: props.rowFormatter,
-      data: filteredRecords,
-      layout: "fitColumns",
-      dataLoaderLoading: "Loading",
-    };
-    const tabulatorInstance = new TabulatorFull(
-      "#tabulator-placeholder",
-      tabulatorOptions
-    );
-    tabulatorInstance.on("rowClick", function (e: UIEvent, row: RowComponent) {
-      setLoading(true);
-      const data = row.getData();
-      router.push(`${props.potName.toLowerCase()}/${data._id}`);
-    });
-  }, [filteredRecords]);
+  const onRowClicked = (params: RowClickedEvent) => {
+    setLoading(true);
+    // Access row data using params.data
+    const rowData = params.data;
+    router.push(`${props.potName.toLowerCase()}/${rowData._id}`);
+  };
 
   const pullData = (data: boolean) => {
     setOpen(data);
@@ -124,7 +109,13 @@ export default function List(props: {
         form={props.addRecordComp}
         title={`Add ${props.potName}`}
       />
-      <div id="tabulator-placeholder"></div>
+      <Grid
+        records={filteredRecords}
+        columns={props.columns}
+        placeholder={`No ${props.potName}s...`}
+        rowClicked={onRowClicked}
+        rowFormatter={props.rowFormatter}
+      />
     </div>
   );
 }

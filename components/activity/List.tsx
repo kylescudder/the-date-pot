@@ -2,15 +2,9 @@
 
 import { IActivity } from "@/lib/models/activity";
 import React from "react";
-import {
-  RowComponent,
-} from "tabulator-tables";
-import "tabulator-tables/dist/css/tabulator_midnight.min.css";
 import AddActivity from "./AddActivity";
 import Loading from "../shared/Loading";
 import List from "../shared/List";
-import { ICuisine } from "@/lib/models/cuisine";
-import { IWhen } from "@/lib/models/when";
 import { IExpense } from "@/lib/models/expense";
 
 export default function ActivityList(props: {
@@ -30,35 +24,24 @@ export default function ActivityList(props: {
     expense: ""
   };
 
-  const formatter = (row: RowComponent) => {
-    //var data = row.getData();
-    //row.getElement().style.backgroundColor =
-    //  data.purchased == true ? "#5865F2" : "#FDFD96";
-    //row.getElement().style.color = data.purchased == true ? "white" : "black";
-  };
-
   return loading ? (
     <Loading />
   ) : (
     <List
       records={props.activities}
       potName="Activity"
-      rowFormatter={formatter}
+      rowFormatter={null}
       columns={[
         {
-          title: "Name",
+          headerName: "Name",
           field: "activityName",
-          vertAlign: "middle",
           resizable: false,
-          responsive: 0,
           minWidth: 200,
         },
         {
-          title: "Address",
+          headerName: "Address",
           field: "address",
-          vertAlign: "middle",
           resizable: false,
-          responsive: 1,
           minWidth: 200,
         },
       ]}

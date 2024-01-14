@@ -12,7 +12,7 @@ async function Page() {
   if (!userInfo?.onboarded) redirect("/onboarding");
 
   return (
-    <div>
+    <div className="h-screen">
       <UserButton afterSignOutUrl="/sign-in" />
     </div>
   );

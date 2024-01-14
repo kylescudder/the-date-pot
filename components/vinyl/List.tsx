@@ -2,14 +2,7 @@
 
 import { IVinyl } from "@/lib/models/vinyl";
 import React from "react";
-import { useRouter } from "next/navigation";
-import {
-  CellComponent,
-  FormatterParams,
-  EmptyCallback,
-  RowComponent,
-} from "tabulator-tables";
-import "tabulator-tables/dist/css/tabulator_midnight.min.css";
+import { ICellRendererParams, RowStyle } from "ag-grid-community";
 import AddVinyl from "./AddVinyl";
 import Loading from "../shared/Loading";
 import List from "../shared/List";
@@ -27,11 +20,8 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
     userGroupID: "",
   };
 
-  const formatter = (row: RowComponent) => {
-    var data = row.getData();
-    row.getElement().style.backgroundColor =
-      data.purchased == true ? "#5865F2" : "#FDFD96";
-    row.getElement().style.color = data.purchased == true ? "white" : "black";
+  const formatter = (params: { data: IVinyl }): RowStyle => {
+    return params.data.purchased ? {backgroundColor: '#5865F2', color: 'white'} : {backgroundColor: '#FDFD96', color: 'black'};
   };
 
   return loading ? (
@@ -43,37 +33,27 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
       rowFormatter={formatter}
       columns={[
         {
-          title: "Name",
+          headerName: "Name",
           field: "name",
-          vertAlign: "middle",
           resizable: false,
-          responsive: 0,
           minWidth: 200,
         },
         {
-          title: "Artist",
+          headerName: "Artist",
           field: "artistName",
-          hozAlign: "left",
-          vertAlign: "middle",
+          cellClass: "justify-center",
           resizable: false,
-          responsive: 1,
           minWidth: 200,
         },
         {
-          title: "Purchased",
+          headerName: "Purchased",
           field: "purchased",
-          hozAlign: "left",
-          vertAlign: "middle",
+          cellClass: "justify-center",
           resizable: false,
-          responsive: 2,
           minWidth: 200,
-          formatter: function (
-            cell: CellComponent,
-            _formatterParams: FormatterParams,
-            _onRendered: EmptyCallback
-          ) {
-            return cell.getValue() === true ? "Yes" : "No";
-          },
+          cellRenderer: ((params: ICellRendererParams) => {
+            return params.value === true ? "Yes" : "No";
+          }),
         },
       ]}
       filterColumns={["name", "artistName"]}

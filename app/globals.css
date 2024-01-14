@@ -26,9 +26,6 @@ body {
   max-width: calc(100vw - 3rem);
   min-height: calc(100vw - 3rem);
 }
-.tabulator-cell > span > svg {
-  @apply inline !important;
-}
 .mantine-TextInput-label,
 .mantine-Textarea-label,
 .mantine-Select-label,
@@ -82,11 +79,6 @@ button[data-selected],
 }
 .focus-visible\:ring-2:focus-visible {
   @apply border-primary-500 !important;
-}
-.tabulator-cell,
-.tabulator-header,
-.tabulator-col {
-  @apply border-0 !important
 }
 .tabler-icon {
   color: white;

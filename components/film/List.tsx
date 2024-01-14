@@ -2,11 +2,6 @@
 
 import { IFilm } from "@/lib/models/film";
 import React from "react";
-import { useRouter } from "next/navigation";
-import {
-  RowComponent,
-} from "tabulator-tables";
-import "tabulator-tables/dist/css/tabulator_midnight.min.css";
 import AddFilm from "./AddFilm";
 import Loading from "../shared/Loading";
 import List from "../shared/List";
@@ -38,59 +33,42 @@ export default function FilmList(props: {
     platforms: []
   };
 
-  const formatter = (row: RowComponent) => {
-    //var data = row.getData();
-    //row.getElement().style.backgroundColor =
-    //  data.purchased == true ? "#5865F2" : "#FDFD96";
-    //row.getElement().style.color = data.purchased == true ? "white" : "black";
-  };
-
   return loading ? (
     <Loading />
   ) : (
     <List
       records={props.films}
       potName="Film"
-      rowFormatter={formatter}
+      rowFormatter={null}
       columns={[
         {
-          title: "Name",
+          headerName: "Name",
           field: "filmName",
-          vertAlign: "middle",
           resizable: false,
-          responsive: 0,
           minWidth: 200,
         },
         {
-          title: "Run time",
+          headerName: "Run time",
           field: "runTime",
-          vertAlign: "middle",
           resizable: false,
-          responsive: 1,
           minWidth: 200,
         },
         {
-          title: "Directors",
+          headerName: "Directors",
           field: "directors",
-          vertAlign: "middle",
           resizable: false,
-          responsive: 2,
           minWidth: 200,
         },
         {
-          title: "Genre",
+          headerName: "Genre",
           field: "genres",
-          vertAlign: "middle",
           resizable: false,
-          responsive: 3,
           minWidth: 200,
         },
         {
-          title: "Platforms",
+          headerName: "Platforms",
           field: "platforms",
-          vertAlign: "middle",
           resizable: false,
-          responsive: 4,
           minWidth: 200,
         },
       ]}

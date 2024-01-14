@@ -2,14 +2,14 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { RowComponent, CellComponent } from "tabulator-tables";
-import "tabulator-tables/dist/css/tabulator_midnight.min.css";
 import { ICoffee } from "@/lib/models/coffee";
 import AddCoffee from "./AddCoffee";
 import Loading from "../shared/Loading";
 import List from "../shared/List";
 import { ICoffeeRating } from "@/lib/models/coffee-rating";
 import { IUser } from "@/lib/models/user";
+import { Rating } from "@mantine/core";
+import { ICellRendererParams } from "ag-grid-community";
 
 export default function CoffeeList(props: {
   coffees: ICoffee[],
@@ -17,7 +17,6 @@ export default function CoffeeList(props: {
 }) {
   const [loading, setLoading] = React.useState(false);
 
-  const router = useRouter();
   const ratings: ICoffeeRating[] = []
 
   const newCoffee = {
@@ -39,46 +38,64 @@ export default function CoffeeList(props: {
       rowFormatter={null}
       columns={[
         {
-          title: "Name",
+          headerName: "Name",
           field: "coffeeName",
-          vertAlign: "middle",
           resizable: false,
-          responsive: 0,
-          cellClick: function (e: UIEvent, cell: CellComponent) {
-            const row: RowComponent = cell.getRow();
-            const data = row.getData();
-            router.push(`coffee/${data._id}`);
-          },
+          cellClass: "justify-center",
           minWidth: 250,
         },
         {
-          title: "Rating",
+          headerName: "Rating",
           field: "avgRating",
-          vertAlign: "middle",
-          hozAlign: "center",
           resizable: false,
-          responsive: 1,
-          formatter: "star",
+          cellClass: "justify-center",
+          cellRenderer: ((params: ICellRendererParams) => {
+            return (
+              <Rating
+                name="average"
+                fractions={2}
+                size="xl"
+                readOnly
+                value={params.value}
+              />
+            )
+          }),
           minWidth: 100,
         },
         {
-          title: "Experience",
+          headerName: "Experience",
           field: "avgExperience",
-          vertAlign: "middle",
-          hozAlign: "center",
           resizable: false,
-          responsive: 2,
-          formatter: "star",
+          cellClass: "justify-center",
+          cellRenderer: ((params: ICellRendererParams) => {
+            return (
+              <Rating
+                name="experience"
+                fractions={2}
+                size="xl"
+                readOnly
+                value={params.value}
+              />
+            )
+          }),
           minWidth: 100,
         },
         {
-          title: "Taste",
+          headerName: "Taste",
           field: "avgTaste",
-          vertAlign: "middle",
-          hozAlign: "center",
           resizable: false,
-          responsive: 3,
-          formatter: "star",
+          cellClass: "justify-center",
+          cellRenderer: ((params: ICellRendererParams) => {
+            return (
+              <Rating
+                name="taste"
+                fractions={2}
+                size="xl"
+                readOnly
+                value={params.value}
+              />
+            )
+          }),
           minWidth: 100,
         },
       ]}

@@ -2,14 +2,14 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { RowComponent, CellComponent } from "tabulator-tables";
-import "tabulator-tables/dist/css/tabulator_midnight.min.css";
 import { IBeer } from "@/lib/models/beer";
 import AddBeer from "./AddBeer";
 import Loading from "../shared/Loading";
 import List from "../shared/List";
 import { IBeerRating } from "@/lib/models/beer-rating";
 import { IUser } from "@/lib/models/user";
+import { ICellRendererParams } from "ag-grid-community";
+import { Rating } from "@mantine/core";
 
 export default function BeerList(props: {
   beers: IBeer[],
@@ -39,46 +39,63 @@ export default function BeerList(props: {
       rowFormatter={null}
       columns={[
         {
-          title: "Name",
+          headerName: "Name",
           field: "beerName",
-          vertAlign: "middle",
           resizable: false,
-          responsive: 0,
-          cellClick: function (e: UIEvent, cell: CellComponent) {
-            const row: RowComponent = cell.getRow();
-            const data = row.getData();
-            router.push(`beer/${data._id}`);
-          },
           minWidth: 250,
         },
         {
-          title: "Rating",
+          headerName: "Rating",
           field: "avgRating",
-          vertAlign: "middle",
-          hozAlign: "center",
+          cellClass: "justify-center",
           resizable: false,
-          responsive: 1,
-          formatter: "star",
+          cellRenderer: ((params: ICellRendererParams) => {
+            return (
+              <Rating
+                name="average"
+                fractions={2}
+                size="xl"
+                readOnly
+                value={params.value}
+              />
+            )
+          }),
           minWidth: 100,
         },
         {
-          title: "Wankyness",
+          headerName: "Wankyness",
           field: "avgWankyness",
-          vertAlign: "middle",
-          hozAlign: "center",
+          cellClass: "justify-center",
           resizable: false,
-          responsive: 2,
-          formatter: "star",
+          cellRenderer: ((params: ICellRendererParams) => {
+            return (
+              <Rating
+                name="wankyness"
+                fractions={2}
+                size="xl"
+                readOnly
+                value={params.value}
+              />
+            )
+          }),
           minWidth: 100,
         },
         {
-          title: "Taste",
+          headerName: "Taste",
           field: "avgTaste",
-          vertAlign: "middle",
-          hozAlign: "center",
+          cellClass: "justify-center",
           resizable: false,
-          responsive: 3,
-          formatter: "star",
+          cellRenderer: ((params: ICellRendererParams) => {
+            return (
+              <Rating
+                name="taste"
+                fractions={2}
+                size="xl"
+                readOnly
+                value={params.value}
+              />
+            )
+          }),
           minWidth: 100,
         },
       ]}
