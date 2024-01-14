@@ -31,10 +31,10 @@ export async function getCoffeeList(id: string) {
             taste += rec.taste;
           })
         );
-
+        
         element.avgExperience = experience /= coffeeRatings.length;
         element.avgTaste = taste /= coffeeRatings.length;
-        const avg = ((experience + taste) / coffeeRatings.length)
+        const avg = (element.avgExperience + element.avgTaste) / 2;
         element.avgRating = Math.round(avg * 2) / 2;
       })
     );
