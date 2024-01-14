@@ -18,7 +18,7 @@ export default function List(props: {
   columns: ColDef[];
   filterColumns: string[];
   addRecordComp: React.ReactElement;
-  rowFormatter: RowStyle;
+  rowFormatter: any;
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [filteredRecords, setFilteredRecords] = useState(props.records);

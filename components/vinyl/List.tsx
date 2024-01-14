@@ -20,7 +20,7 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
     userGroupID: "",
   };
 
-  const formatter = (params: { data: IVinyl }): RowStyle => {
+  const formatter = (params: { data: IVinyl }): any => {
     return params.data.purchased ? {backgroundColor: '#5865F2', color: 'white'} : {backgroundColor: '#FDFD96', color: 'black'};
   };
 
