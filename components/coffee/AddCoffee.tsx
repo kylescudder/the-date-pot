@@ -39,9 +39,7 @@ export default function AddCoffee(props: {
   const [coffeeRatings, setCoffeeRatings] = useState<ICoffeeRating[]>(
     props.ratings
   );
-  const [itemVisibility, setItemVisibility] = useState<boolean[]>(
-    props.ratings.map(() => true)
-  );
+
   const [open, setOpen] = useState<boolean>(false);
 
   interface formCoffee {
@@ -79,14 +77,15 @@ export default function AddCoffee(props: {
 
   const handleRemoveRecord = async (id: string, index: number) => {
     const updatedArray = await coffeeRatings.filter(
-      (item, i) => item.userID !== id
+      (item, i) => item._id !== id
     );
     setCoffeeRatings(updatedArray);
     if (id !== "") {
       await deleteCoffeeRating(id);
     }
-    const rating = await coffeeRatings.filter((item) => item.userID === id);
+    const rating = await coffeeRatings.filter((item) => item._id === id);
     deleteToast(`${rating[0].username}'s rating`);
+    setChangesMade(true);
   };
 
   const onSubmit = async (values: formCoffee) => {
@@ -216,7 +215,7 @@ export default function AddCoffee(props: {
                   </div>
                   <div className="w-1/2 contents">
                     <IconCircleMinus
-                      onClick={() => handleRemoveRecord(rating.userID, i)}
+                      onClick={() => handleRemoveRecord(rating._id, i)}
                       className="text-danger float-right"
                     />
                   </div>
