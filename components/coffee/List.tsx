@@ -42,7 +42,7 @@ export default function CoffeeList(props: {
           field: "coffeeName",
           resizable: false,
           cellClass: "justify-center",
-          minWidth: 250,
+          minWidth: 200,
         },
         {
           headerName: "Rating",
@@ -54,13 +54,13 @@ export default function CoffeeList(props: {
               <Rating
                 name="average"
                 fractions={2}
-                size="xl"
+                size="lg"
                 readOnly
                 value={params.value}
               />
             )
           }),
-          minWidth: 100,
+          minWidth: 150,
         },
         {
           headerName: "Experience",
@@ -72,13 +72,13 @@ export default function CoffeeList(props: {
               <Rating
                 name="experience"
                 fractions={2}
-                size="xl"
+                size="lg"
                 readOnly
                 value={params.value}
               />
             )
           }),
-          minWidth: 100,
+          minWidth: 150,
         },
         {
           headerName: "Taste",
@@ -90,13 +90,13 @@ export default function CoffeeList(props: {
               <Rating
                 name="taste"
                 fractions={2}
-                size="xl"
+                size="lg"
                 readOnly
                 value={params.value}
               />
             )
           }),
-          minWidth: 100,
+          minWidth: 150,
         },
       ]}
       filterColumns={["coffeeName"]}

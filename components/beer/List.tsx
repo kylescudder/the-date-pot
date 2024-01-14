@@ -42,7 +42,7 @@ export default function BeerList(props: {
           headerName: "Name",
           field: "beerName",
           resizable: false,
-          minWidth: 250,
+          minWidth: 200,
         },
         {
           headerName: "Rating",
@@ -54,13 +54,13 @@ export default function BeerList(props: {
               <Rating
                 name="average"
                 fractions={2}
-                size="xl"
+                size="lg"
                 readOnly
                 value={params.value}
               />
             )
           }),
-          minWidth: 100,
+          minWidth: 150,
         },
         {
           headerName: "Wankyness",
@@ -72,13 +72,13 @@ export default function BeerList(props: {
               <Rating
                 name="wankyness"
                 fractions={2}
-                size="xl"
+                size="lg"
                 readOnly
                 value={params.value}
               />
             )
           }),
-          minWidth: 100,
+          minWidth: 150,
         },
         {
           headerName: "Taste",
@@ -90,13 +90,13 @@ export default function BeerList(props: {
               <Rating
                 name="taste"
                 fractions={2}
-                size="xl"
+                size="lg"
                 readOnly
                 value={params.value}
               />
             )
           }),
-          minWidth: 100,
+          minWidth: 150,
         },
       ]}
       filterColumns={["beerName"]}
