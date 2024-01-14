@@ -196,12 +196,12 @@ export default function AddRestaurant(props: {
           size="md"
           {...form.getInputProps("address")}
         />
-        {/*{props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
+        {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
           <Map
             longLat={props.longLat}
             title={props.restaurant.restaurantName}
           />
-        )}*/}
+        )}
         {address !== undefined &&
           address !== "" &&
           props.longLat[0] === undefined &&
