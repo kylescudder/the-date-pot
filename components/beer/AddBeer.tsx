@@ -39,9 +39,7 @@ export default function AddBeer(props: {
   const [beerRatings, setBeerRatings] = useState<IBeerRating[]>(
     props.ratings
   );
-  const [itemVisibility, setItemVisibility] = useState<boolean[]>(
-    props.ratings.map(() => true)
-  );
+
   const [open, setOpen] = useState<boolean>(false);
 
   interface formBeer {
@@ -79,13 +77,13 @@ export default function AddBeer(props: {
 
   const handleRemoveRecord = async (id: string, index: number) => {
     const updatedArray = await beerRatings.filter(
-      (item, i) => item.userID !== id
+      (item, i) => item._id !== id
     );
     setBeerRatings(updatedArray);
     if (id !== "") {
       await deleteBeerRating(id);
     }
-    const rating = await beerRatings.filter((item) => item.userID === id);
+    const rating = await beerRatings.filter((item) => item._id === id);
     deleteToast(`${rating[0].username}'s rating`);
   };
 
@@ -216,7 +214,7 @@ export default function AddBeer(props: {
                   </div>
                   <div className="w-1/2 contents">
                     <IconCircleMinus
-                      onClick={() => handleRemoveRecord(rating.userID, i)}
+                      onClick={() => handleRemoveRecord(rating._id, i)}
                       className="text-danger float-right"
                     />
                   </div>
