@@ -74,6 +74,9 @@ dependencies:
   '@types/react-dom':
     specifier: 18.2.18
     version: 18.2.18
+  ag-grid-react:
+    specifier: ^31.0.1
+    version: 31.0.1(react-dom@18.2.0)(react@18.2.0)
   autoprefixer:
     specifier: 10.4.16
     version: 10.4.16(postcss@8.4.33)
@@ -125,9 +128,6 @@ dependencies:
   styled-components:
     specifier: ^6.1.8
     version: 6.1.8(react-dom@18.2.0)(react@18.2.0)
-  tabulator-tables:
-    specifier: ^5.5.2
-    version: 5.5.2
   tailwind-merge:
     specifier: ^2.2.0
     version: 2.2.0
@@ -148,9 +148,6 @@ devDependencies:
   '@types/react-burger-menu':
     specifier: ^2.8.7
     version: 2.8.7
-  '@types/tabulator-tables':
-    specifier: ^5.5.4
-    version: 5.5.4
 
 packages:
 
@@ -2733,10 +2730,6 @@ packages:
     resolution: {integrity: sha512-n4sx2bqL0mW1tvDf/loQ+aMX7GQD3lc3fkCMC55VFNDu/vBOabO+LTIeXKM14xK0ppk5TUGcWRjiSpIlUpghKw==}
     dev: false
 
-  /@types/tabulator-tables@5.5.4:
-    resolution: {integrity: sha512-gAeMwFaWLu3WgtC7YSqXfIuNjZGu7BzDQafsAf3DYeCsyGFe5g6DDvClc3ZrT/Etw9PPmDI0CG+7KwwqBkPDHQ==}
-    dev: true
-
   /@types/trusted-types@2.0.3:
     resolution: {integrity: sha512-NfQ4gyz38SL8sDNrSixxU2Os1a5xcdFxipAFxYEuLUlvU2uDwS4NUpsImcf1//SlWItCVMMLiylsxbmNMToV/g==}
     dev: false
@@ -2953,6 +2946,22 @@ packages:
     resolution: {integrity: sha512-F0SAmZ8iUtS//m8DmCTA0jlh6TDKkHQyK6xc6V4KDTyZKA9dnvX9/3sRTVQrWm79glUAZbnmmNcdYwUIHWVybw==}
     engines: {node: '>=0.4.0'}
     hasBin: true
+    dev: false
+
+  /ag-grid-community@31.0.1:
+    resolution: {integrity: sha512-RZQlW1DTOJHsUR/tnbnTJQKgAnDlHi05YYyTe5AgNor/1TlX1hoYdcqrGsJjvcHQgTjeEgzWOL0yf+KcqXZzxg==}
+    dev: false
+
+  /ag-grid-react@31.0.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-9nmYPsgH1YUDUDOTiyaFsysoNAx/y72ovFJKuOffZC1V7OrQMadyP6DbqGFWCqzzoLJOY7azOr51dDQzAIXLpw==}
+    peerDependencies:
+      react: ^16.3.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.3.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      ag-grid-community: 31.0.1
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /agent-base@6.0.2:
@@ -6476,10 +6485,6 @@ packages:
 
   /tabbable@6.2.0:
     resolution: {integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==}
-    dev: false
-
-  /tabulator-tables@5.5.2:
-    resolution: {integrity: sha512-GlzUPXeH9Rw1iPXcl3uBLJk6Sz51xdwscZ5RrsKxDQDQ+t2g31hGq/0xjaj6ea62wHgl8vzVsHuwap0jKzsUNg==}
     dev: false
 
   /tailwind-merge@2.2.0:
