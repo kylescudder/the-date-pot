@@ -10,6 +10,7 @@ export interface ICoffee {
   avgExperience: number;
   avgTaste: number;
   avgRating: number;
+  address: string;
 }
 interface CoffeeClass {
   _id: mongoose.Types.ObjectId;
@@ -20,6 +21,7 @@ interface CoffeeClass {
   avgExperience: number;
   avgTaste: number;
   avgRating: number;
+  address: string;
 }
 const CoffeeSchema = new mongoose.Schema<CoffeeClass>({
   _id: { type: mongoose.Schema.Types.ObjectId },
@@ -30,6 +32,7 @@ const CoffeeSchema = new mongoose.Schema<CoffeeClass>({
   avgExperience: { type: Number },
   avgTaste: { type: Number },
   avgRating: { type: Number },
+  address: { type: String },
 });
 
 const Coffee = mongoose.models.Coffee || mongoose.model("Coffee", CoffeeSchema);

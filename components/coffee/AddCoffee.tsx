@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
   archiveToast,
@@ -24,14 +24,16 @@ import { useForm } from "@mantine/form";
 import { Button, Rating, TextInput } from "@mantine/core";
 import BackButton from "../shared/BackButton";
 import { IUser } from "@/lib/models/user";
-import FormModal from "../shared/FormModal";
+import Map from "@/components/shared/Map";
 import AddCoffeeRating from "./AddCoffeeRating";
 import FullScreenModal from "../shared/FullScreenModal";
+import ReloadMapPlaceholder from "@/components/shared/ReloadMapPlaceholder";
 
 export default function AddCoffee(props: {
   coffee: ICoffee;
   ratings: ICoffeeRating[];
   users: IUser[];
+  longLat: number[];
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -39,6 +41,7 @@ export default function AddCoffee(props: {
   const [coffeeRatings, setCoffeeRatings] = useState<ICoffeeRating[]>(
     props.ratings
   );
+  const [address, setAddress] = useState<string>(props.coffee.address);
 
   const [open, setOpen] = useState<boolean>(false);
 
@@ -51,6 +54,7 @@ export default function AddCoffee(props: {
     avgExperience: number;
     avgTaste: number;
     avgRating: number;
+    address: string;
   }
 
   const coffeeRating: ICoffeeRating = {
@@ -72,6 +76,7 @@ export default function AddCoffee(props: {
       avgExperience: 0,
       avgTaste: 0,
       avgRating: 0,
+      address: props.coffee.address ? props.coffee.address : "",
     },
   });
 
@@ -92,6 +97,7 @@ export default function AddCoffee(props: {
     const payload: ICoffee = {
       ...props.coffee,
       coffeeName: values.coffeeName,
+      address: values.address,
     };
 
     const coffee = await updateCoffee(payload);
@@ -105,6 +111,10 @@ export default function AddCoffee(props: {
     if (pathname.includes("/coffee/")) {
       successToast(coffee.coffeeName);
       setChangesMade(true);
+
+      if (payload.address !== "") {
+        setAddress(payload.address);
+      }
     } else {
       router.push(`/coffee/${coffee._id}`);
     }
@@ -256,6 +266,24 @@ export default function AddCoffee(props: {
             </div>
           </div>
         )}
+        <TextInput
+          label="Address"
+          radius="md"
+          placeholder="Where it at?"
+          className="text-dark-2 dark:text-light-2"
+          size="md"
+          {...form.getInputProps("address")}
+        />
+        {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
+          <Map
+            longLat={props.longLat}
+            title={props.coffee.coffeeName}
+          />
+        )}
+        {address !== undefined &&
+          address !== "" &&
+          props.longLat[0] === undefined &&
+          props.longLat[1] === undefined && <ReloadMapPlaceholder />}
         <Button
           radius="md"
           className="bg-primary-500 hover:bg-primary-hover text-light-1"

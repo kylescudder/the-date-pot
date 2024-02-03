@@ -108,7 +108,7 @@ export async function updateCoffeeRating(coffeeRatingData: ICoffeeRating) {
         coffeeID: new mongoose.Types.ObjectId(coffeeRatingData.coffeeID),
         userID: new mongoose.Types.ObjectId(coffeeRatingData.userID),
         experience: coffeeRatingData.experience,
-        taste: coffeeRatingData.taste,
+        taste: coffeeRatingData.taste
       },
       { upsert: true, new: true }
     );
@@ -140,6 +140,7 @@ export async function updateCoffee(coffeeData: ICoffee) {
         archive: coffeeData.archive,
         addedByID: new mongoose.Types.ObjectId(userInfo._id),
         userGroupID: new mongoose.Types.ObjectId(userGroup._id),
+        address: coffeeData.address
       },
       { upsert: true, new: true }
     );
