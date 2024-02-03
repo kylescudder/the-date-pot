@@ -29,6 +29,7 @@ export default function CoffeeList(props: {
     userGroupID: "",
     addedByID: "",
     archive: false,
+    address: "",
   };
   return loading ? (
     <Loading />
