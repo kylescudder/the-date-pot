@@ -13,7 +13,8 @@ import { ICellRendererParams } from "ag-grid-community";
 
 export default function CoffeeList(props: {
   coffees: ICoffee[],
-  users: IUser[]
+  users: IUser[],
+  longLat: number[]
 }) {
   const [loading, setLoading] = React.useState(false);
 
@@ -100,7 +101,7 @@ export default function CoffeeList(props: {
         },
       ]}
       filterColumns={["coffeeName"]}
-      addRecordComp={<AddCoffee coffee={newCoffee} ratings={ratings} users={props.users} />}
+      addRecordComp={<AddCoffee coffee={newCoffee} ratings={ratings} users={props.users} longLat={props.longLat} />}
     />
   );
 }
