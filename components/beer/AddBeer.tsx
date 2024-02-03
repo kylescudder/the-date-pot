@@ -202,7 +202,6 @@ export default function AddBeer(props: {
         </div>
         {beerRatings.length !== 0 ? (
           beerRatings.map((rating: IBeerRating, i: number) => {
-            console.log("rating: ", rating);
             return (
               <div
                 key={rating.userID}

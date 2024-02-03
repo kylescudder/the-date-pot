@@ -34,7 +34,7 @@ export async function updateUser(userData: IUser, path: string) {
       },
       { upsert: true, new: true }
     );
-      console.log(user)
+
     await UserGroup.findOneAndUpdate(
       {
         users: user._id,

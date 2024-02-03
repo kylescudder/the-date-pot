@@ -213,7 +213,6 @@ export default function AddCoffee(props: {
         </div>
         {coffeeRatings.length !== 0 ? (
           coffeeRatings.map((rating: ICoffeeRating, i: number) => {
-            console.log("rating: ", rating);
             return (
               <div
                 key={rating.userID}
