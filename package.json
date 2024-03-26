@@ -19,7 +19,7 @@
     "@hookform/resolvers": "^3.3.4",
     "@mantine/core": "^6.0.20",
     "@mantine/dates": "^6.0.20",
-    "@mantine/form": "^7.5.3",
+    "@mantine/form": "^7.7.0",
     "@mantine/hooks": "^6.0.20",
     "@mantine/modals": "^6.0.20",
     "@mantine/next": "^6.0.21",
