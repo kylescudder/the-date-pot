@@ -30,7 +30,7 @@
     "@serwist/next": "^8.4.4",
     "@serwist/precaching": "^8.4.4",
     "@serwist/sw": "^8.4.4",
-    "@tabler/icons-react": "^2.46.0",
+    "@tabler/icons-react": "^3.1.0",
     "@types/node": "20.11.20",
     "@types/react": "18.2.56",
     "@types/react-dom": "18.2.18",
