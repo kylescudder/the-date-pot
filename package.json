@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepare": "husky"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.29.7",
@@ -63,6 +64,7 @@
   "devDependencies": {
     "@types/google.maps": "^3.55.1",
     "@types/react-burger-menu": "^2.8.7",
+    "husky": "^9.0.11",
     "prettier": "^3.2.5"
   }
 }
