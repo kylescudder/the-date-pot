@@ -1,36 +1,36 @@
-"use client";
+'use client'
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import { ICoffee } from "@/lib/models/coffee";
-import AddCoffee from "./AddCoffee";
-import Loading from "../shared/Loading";
-import List from "../shared/List";
-import { ICoffeeRating } from "@/lib/models/coffee-rating";
-import { IUser } from "@/lib/models/user";
-import { Rating } from "@mantine/core";
-import { ICellRendererParams } from "ag-grid-community";
+import React from 'react'
+import { useRouter } from 'next/navigation'
+import { ICoffee } from '@/lib/models/coffee'
+import AddCoffee from './AddCoffee'
+import Loading from '../shared/Loading'
+import List from '../shared/List'
+import { ICoffeeRating } from '@/lib/models/coffee-rating'
+import { IUser } from '@/lib/models/user'
+import { Rating } from '@mantine/core'
+import { ICellRendererParams } from 'ag-grid-community'
 
 export default function CoffeeList(props: {
-  coffees: ICoffee[],
-  users: IUser[],
+  coffees: ICoffee[]
+  users: IUser[]
   longLat: number[]
 }) {
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(false)
 
   const ratings: ICoffeeRating[] = []
 
   const newCoffee = {
-    _id: "",
-    coffeeName: "",
+    _id: '',
+    coffeeName: '',
     avgExperience: 0,
     avgTaste: 0,
     avgRating: 0,
-    userGroupID: "",
-    addedByID: "",
+    userGroupID: '',
+    addedByID: '',
     archive: false,
-    address: "",
-  };
+    address: ''
+  }
   return loading ? (
     <Loading />
   ) : (
@@ -40,18 +40,18 @@ export default function CoffeeList(props: {
       rowFormatter={null}
       columns={[
         {
-          headerName: "Name",
-          field: "coffeeName",
+          headerName: 'Name',
+          field: 'coffeeName',
           resizable: false,
-          cellClass: "justify-center",
-          minWidth: 200,
+          cellClass: 'justify-center',
+          minWidth: 200
         },
         {
-          headerName: "Rating",
-          field: "avgRating",
+          headerName: 'Rating',
+          field: 'avgRating',
           resizable: false,
-          cellClass: "justify-center",
-          cellRenderer: ((params: ICellRendererParams) => {
+          cellClass: 'justify-center',
+          cellRenderer: (params: ICellRendererParams) => {
             return (
               <Rating
                 name="average"
@@ -61,15 +61,15 @@ export default function CoffeeList(props: {
                 value={params.value}
               />
             )
-          }),
-          minWidth: 150,
+          },
+          minWidth: 150
         },
         {
-          headerName: "Experience",
-          field: "avgExperience",
+          headerName: 'Experience',
+          field: 'avgExperience',
           resizable: false,
-          cellClass: "justify-center",
-          cellRenderer: ((params: ICellRendererParams) => {
+          cellClass: 'justify-center',
+          cellRenderer: (params: ICellRendererParams) => {
             return (
               <Rating
                 name="experience"
@@ -79,15 +79,15 @@ export default function CoffeeList(props: {
                 value={params.value}
               />
             )
-          }),
-          minWidth: 150,
+          },
+          minWidth: 150
         },
         {
-          headerName: "Taste",
-          field: "avgTaste",
+          headerName: 'Taste',
+          field: 'avgTaste',
           resizable: false,
-          cellClass: "justify-center",
-          cellRenderer: ((params: ICellRendererParams) => {
+          cellClass: 'justify-center',
+          cellRenderer: (params: ICellRendererParams) => {
             return (
               <Rating
                 name="taste"
@@ -97,12 +97,19 @@ export default function CoffeeList(props: {
                 value={params.value}
               />
             )
-          }),
-          minWidth: 150,
-        },
+          },
+          minWidth: 150
+        }
       ]}
-      filterColumns={["coffeeName"]}
-      addRecordComp={<AddCoffee coffee={newCoffee} ratings={ratings} users={props.users} longLat={props.longLat} />}
+      filterColumns={['coffeeName']}
+      addRecordComp={
+        <AddCoffee
+          coffee={newCoffee}
+          ratings={ratings}
+          users={props.users}
+          longLat={props.longLat}
+        />
+      }
     />
-  );
+  )
 }

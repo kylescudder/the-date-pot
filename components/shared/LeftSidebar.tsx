@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import NavOptions from "./NavOptions";
-import Logout from "./Logout";
-import { IPot } from "@/lib/models/pot";
+import NavOptions from './NavOptions'
+import Logout from './Logout'
+import { IPot } from '@/lib/models/pot'
 
 export default function LeftSidebar(props: { pots: IPot[] }) {
   return (
@@ -23,5 +23,5 @@ export default function LeftSidebar(props: { pots: IPot[] }) {
         <Logout placement="" />
       </div>
     </section>
-  );
+  )
 }

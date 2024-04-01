@@ -1,19 +1,19 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 // 1. Create an interface representing a document in MongoDB.
 export interface IWhen {
-  _id: string;
-  when: string;
+  _id: string
+  when: string
 }
 interface WhenClass {
-  _id: mongoose.Types.ObjectId;
-  when: string;
+  _id: mongoose.Types.ObjectId
+  when: string
 }
 const whenSchema = new mongoose.Schema<WhenClass>({
   _id: { type: mongoose.Schema.Types.ObjectId },
-  when: { type: String },
-});
+  when: { type: String }
+})
 
-const When = mongoose.models.When || mongoose.model("When", whenSchema);
+const When = mongoose.models.When || mongoose.model('When', whenSchema)
 
-export default When;
+export default When

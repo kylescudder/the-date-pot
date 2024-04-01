@@ -1,28 +1,27 @@
-"use client";
+'use client'
 
-import { IActivity } from "@/lib/models/activity";
-import React from "react";
-import AddActivity from "./AddActivity";
-import Loading from "../shared/Loading";
-import List from "../shared/List";
-import { IExpense } from "@/lib/models/expense";
+import { IActivity } from '@/lib/models/activity'
+import React from 'react'
+import AddActivity from './AddActivity'
+import Loading from '../shared/Loading'
+import List from '../shared/List'
+import { IExpense } from '@/lib/models/expense'
 
 export default function ActivityList(props: {
-  activities: IActivity[];
-  expenseList: IExpense[];
-  longLat: number[];
-
+  activities: IActivity[]
+  expenseList: IExpense[]
+  longLat: number[]
 }) {
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(false)
 
   const newActivity: IActivity = {
-    _id: "",
-    activityName: "",
-    address: "",
+    _id: '',
+    activityName: '',
+    address: '',
     archive: false,
-    userGroupID: "",
-    expense: ""
-  };
+    userGroupID: '',
+    expense: ''
+  }
 
   return loading ? (
     <Loading />
@@ -33,19 +32,19 @@ export default function ActivityList(props: {
       rowFormatter={null}
       columns={[
         {
-          headerName: "Name",
-          field: "activityName",
+          headerName: 'Name',
+          field: 'activityName',
           resizable: false,
-          minWidth: 200,
+          minWidth: 200
         },
         {
-          headerName: "Address",
-          field: "address",
+          headerName: 'Address',
+          field: 'address',
           resizable: false,
-          minWidth: 200,
-        },
+          minWidth: 200
+        }
       ]}
-      filterColumns={["activityName", "address"]}
+      filterColumns={['activityName', 'address']}
       addRecordComp={
         <AddActivity
           activity={newActivity}
@@ -54,5 +53,5 @@ export default function ActivityList(props: {
         />
       }
     />
-  );
+  )
 }

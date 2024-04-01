@@ -1,164 +1,160 @@
-"use client";
+'use client'
 
-import React, { useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import React, { useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 import {
   archiveToast,
   deleteToast,
-  successToast,
-} from "@/lib/actions/toast.actions";
-import {
-  IconTrash, 
-  IconCirclePlus,
-  IconCircleMinus,
-} from "@tabler/icons-react";
-import { ICoffee } from "@/lib/models/coffee";
+  successToast
+} from '@/lib/actions/toast.actions'
+import { IconTrash, IconCirclePlus, IconCircleMinus } from '@tabler/icons-react'
+import { ICoffee } from '@/lib/models/coffee'
 import {
   archiveCoffee,
   deleteCoffeeRating,
   updateCoffee,
-  updateCoffeeRating,
-} from "@/lib/actions/coffee.action";
-import { ICoffeeRating } from "@/lib/models/coffee-rating";
-import { useForm } from "@mantine/form";
-import { Button, Rating, TextInput } from "@mantine/core";
-import BackButton from "../shared/BackButton";
-import { IUser } from "@/lib/models/user";
-import Map from "@/components/shared/Map";
-import AddCoffeeRating from "./AddCoffeeRating";
-import FullScreenModal from "../shared/FullScreenModal";
-import ReloadMapPlaceholder from "@/components/shared/ReloadMapPlaceholder";
+  updateCoffeeRating
+} from '@/lib/actions/coffee.action'
+import { ICoffeeRating } from '@/lib/models/coffee-rating'
+import { useForm } from '@mantine/form'
+import { Button, Rating, TextInput } from '@mantine/core'
+import BackButton from '../shared/BackButton'
+import { IUser } from '@/lib/models/user'
+import Map from '@/components/shared/Map'
+import AddCoffeeRating from './AddCoffeeRating'
+import FullScreenModal from '../shared/FullScreenModal'
+import ReloadMapPlaceholder from '@/components/shared/ReloadMapPlaceholder'
 
 export default function AddCoffee(props: {
-  coffee: ICoffee;
-  ratings: ICoffeeRating[];
-  users: IUser[];
-  longLat: number[];
+  coffee: ICoffee
+  ratings: ICoffeeRating[]
+  users: IUser[]
+  longLat: number[]
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const [changesMade, setChangesMade] = useState<boolean>(false);
+  const router = useRouter()
+  const pathname = usePathname()
+  const [changesMade, setChangesMade] = useState<boolean>(false)
   const [coffeeRatings, setCoffeeRatings] = useState<ICoffeeRating[]>(
     props.ratings
-  );
-  const [address, setAddress] = useState<string>(props.coffee.address);
+  )
+  const [address, setAddress] = useState<string>(props.coffee.address)
 
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false)
 
   interface formCoffee {
-    _id: string;
-    archive: boolean;
-    coffeeName: string;
-    addedByID: string;
-    userGroupID: string;
-    avgExperience: number;
-    avgTaste: number;
-    avgRating: number;
-    address: string;
+    _id: string
+    archive: boolean
+    coffeeName: string
+    addedByID: string
+    userGroupID: string
+    avgExperience: number
+    avgTaste: number
+    avgRating: number
+    address: string
   }
 
   const coffeeRating: ICoffeeRating = {
-    _id: "",
-    coffeeID: "",
+    _id: '',
+    coffeeID: '',
     experience: 0,
     taste: 0,
-    userID: "",
-    username: "",
-  };
+    userID: '',
+    username: ''
+  }
 
   const form = useForm({
     initialValues: {
-      _id: props.coffee._id ? props.coffee._id : "",
+      _id: props.coffee._id ? props.coffee._id : '',
       archive: props.coffee.archive ? props.coffee.archive : false,
-      coffeeName: props.coffee.coffeeName ? props.coffee.coffeeName : "",
-      addedByID: props.coffee.addedByID ? props.coffee.addedByID : "",
-      userGroupID: props.coffee.userGroupID ? props.coffee.userGroupID : "",
+      coffeeName: props.coffee.coffeeName ? props.coffee.coffeeName : '',
+      addedByID: props.coffee.addedByID ? props.coffee.addedByID : '',
+      userGroupID: props.coffee.userGroupID ? props.coffee.userGroupID : '',
       avgExperience: 0,
       avgTaste: 0,
       avgRating: 0,
-      address: props.coffee.address ? props.coffee.address : "",
-    },
-  });
+      address: props.coffee.address ? props.coffee.address : ''
+    }
+  })
 
   const handleRemoveRecord = async (id: string, index: number) => {
     const updatedArray = await coffeeRatings.filter(
       (item, i) => item._id !== id
-    );
-    setCoffeeRatings(updatedArray);
-    if (id !== "") {
-      await deleteCoffeeRating(id);
+    )
+    setCoffeeRatings(updatedArray)
+    if (id !== '') {
+      await deleteCoffeeRating(id)
     }
-    const rating = await coffeeRatings.filter((item) => item._id === id);
-    deleteToast(`${rating[0].username}'s rating`);
-    setChangesMade(true);
-  };
+    const rating = await coffeeRatings.filter((item) => item._id === id)
+    deleteToast(`${rating[0].username}'s rating`)
+    setChangesMade(true)
+  }
 
   const onSubmit = async (values: formCoffee) => {
     const payload: ICoffee = {
       ...props.coffee,
       coffeeName: values.coffeeName,
-      address: values.address,
-    };
+      address: values.address
+    }
 
-    const coffee = await updateCoffee(payload);
+    const coffee = await updateCoffee(payload)
     coffeeRatings.map(async (rating: ICoffeeRating) => {
       const updatedRating = {
         ...rating,
-        coffeeID: coffee._id,
-      };
-      await updateCoffeeRating(updatedRating);
-    });
-    if (pathname.includes("/coffee/")) {
-      successToast(coffee.coffeeName);
-      setChangesMade(true);
+        coffeeID: coffee._id
+      }
+      await updateCoffeeRating(updatedRating)
+    })
+    if (pathname.includes('/coffee/')) {
+      successToast(coffee.coffeeName)
+      setChangesMade(true)
 
-      if (payload.address !== "") {
-        setAddress(payload.address);
+      if (payload.address !== '') {
+        setAddress(payload.address)
       }
     } else {
-      router.push(`/coffee/${coffee._id}`);
+      router.push(`/coffee/${coffee._id}`)
     }
-  };
+  }
 
   const pullData = (data: boolean) => {
-    setOpen(data);
-  };
+    setOpen(data)
+  }
 
   const pullRating = async (data: ICoffeeRating) => {
-    const newCatList = [...coffeeRatings, data];
-    setCoffeeRatings(newCatList);
-  };
+    const newCatList = [...coffeeRatings, data]
+    setCoffeeRatings(newCatList)
+  }
 
   const handleArchive = async () => {
-    await archiveCoffee(props.coffee._id);
-    archiveToast(props.coffee.coffeeName);
+    await archiveCoffee(props.coffee._id)
+    archiveToast(props.coffee.coffeeName)
     setTimeout(() => {
-      const url = `${window.location.protocol}//${window.location.host}`;
-      window.location.href = `${url}/coffees`;
-    }, 1000);
-  };
+      const url = `${window.location.protocol}//${window.location.host}`
+      window.location.href = `${url}/coffees`
+    }, 1000)
+  }
 
   const handleExperienceChange = (experience: number, i: number) => {
     // Make a copy of the current coffeeRatings array
-    const updatedCoffeeRatings = [...coffeeRatings];
+    const updatedCoffeeRatings = [...coffeeRatings]
 
     // Update the experience property of the rating at index i
-    updatedCoffeeRatings[i].experience = experience;
+    updatedCoffeeRatings[i].experience = experience
 
     // Set the updated coffeeRatings array back to state
-    setCoffeeRatings(updatedCoffeeRatings);
-  };
+    setCoffeeRatings(updatedCoffeeRatings)
+  }
 
   const handleTasteChange = (taste: number, i: number) => {
     // Make a copy of the current coffeeRatings array
-    const updatedCoffeeRatings = [...coffeeRatings];
+    const updatedCoffeeRatings = [...coffeeRatings]
 
     // Update the taste property of the rating at index i
-    updatedCoffeeRatings[i].taste = taste;
+    updatedCoffeeRatings[i].taste = taste
 
     // Set the updated coffeeRatings array back to state
-    setCoffeeRatings(updatedCoffeeRatings);
-  };
+    setCoffeeRatings(updatedCoffeeRatings)
+  }
 
   return (
     <div>
@@ -171,7 +167,7 @@ export default function AddCoffee(props: {
         <Button
           radius="md"
           className={`bg-danger text-light-1 ${
-            props.coffee._id === "" ? "hidden" : ""
+            props.coffee._id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
           aria-label="archive"
@@ -182,7 +178,7 @@ export default function AddCoffee(props: {
       <form
         onSubmit={form.onSubmit((values) => onSubmit(values))}
         className={`flex flex-col justify-start gap-10 pt-4 ${
-          props.coffee._id === "" ? "px-6" : ""
+          props.coffee._id === '' ? 'px-6' : ''
         }`}
       >
         <TextInput
@@ -191,7 +187,7 @@ export default function AddCoffee(props: {
           placeholder="The best coffee shop in the world"
           className="text-dark-2 dark:text-light-2"
           size="md"
-          {...form.getInputProps("coffeeName")}
+          {...form.getInputProps('coffeeName')}
         />
         <div className="flex justify-between">
           <div className="flex-grow pr-2">
@@ -254,7 +250,7 @@ export default function AddCoffee(props: {
                   </div>
                 </div>
               </div>
-            );
+            )
           })
         ) : (
           <div className="rounded-md overflow-hidden shadow-lg bg-light-4 dark:bg-dark-4 w-full">
@@ -271,16 +267,13 @@ export default function AddCoffee(props: {
           placeholder="Where it at?"
           className="text-dark-2 dark:text-light-2"
           size="md"
-          {...form.getInputProps("address")}
+          {...form.getInputProps('address')}
         />
         {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
-          <Map
-            longLat={props.longLat}
-            title={props.coffee.coffeeName}
-          />
+          <Map longLat={props.longLat} title={props.coffee.coffeeName} />
         )}
         {address !== undefined &&
-          address !== "" &&
+          address !== '' &&
           props.longLat[0] === undefined &&
           props.longLat[1] === undefined && <ReloadMapPlaceholder />}
         <Button
@@ -288,7 +281,7 @@ export default function AddCoffee(props: {
           className="bg-primary-500 hover:bg-primary-hover text-light-1"
           type="submit"
         >
-          {props.coffee._id === "" ? "Add" : "Update"} Coffee
+          {props.coffee._id === '' ? 'Add' : 'Update'} Coffee
         </Button>
       </form>
       <FullScreenModal
@@ -306,5 +299,5 @@ export default function AddCoffee(props: {
         title="Add Rating"
       />
     </div>
-  );
+  )
 }

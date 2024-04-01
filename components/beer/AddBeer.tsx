@@ -1,153 +1,145 @@
-"use client";
+'use client'
 
-import React, { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 import {
   archiveToast,
   deleteToast,
-  successToast,
-} from "@/lib/actions/toast.actions";
-import {
-  IconTrash, 
-  IconCirclePlus,
-  IconCircleMinus,
-} from "@tabler/icons-react";
-import { IBeer } from "@/lib/models/beer";
+  successToast
+} from '@/lib/actions/toast.actions'
+import { IconTrash, IconCirclePlus, IconCircleMinus } from '@tabler/icons-react'
+import { IBeer } from '@/lib/models/beer'
 import {
   archiveBeer,
   deleteBeerRating,
   updateBeer,
-  updateBeerRating,
-} from "@/lib/actions/beer.action";
-import { IBeerRating } from "@/lib/models/beer-rating";
-import { useForm } from "@mantine/form";
-import { Button, Rating, TextInput } from "@mantine/core";
-import BackButton from "../shared/BackButton";
-import { IUser } from "@/lib/models/user";
-import FormModal from "../shared/FormModal";
-import AddBeerRating from "./AddBeerRating";
-import FullScreenModal from "../shared/FullScreenModal";
+  updateBeerRating
+} from '@/lib/actions/beer.action'
+import { IBeerRating } from '@/lib/models/beer-rating'
+import { useForm } from '@mantine/form'
+import { Button, Rating, TextInput } from '@mantine/core'
+import BackButton from '../shared/BackButton'
+import { IUser } from '@/lib/models/user'
+import FormModal from '../shared/FormModal'
+import AddBeerRating from './AddBeerRating'
+import FullScreenModal from '../shared/FullScreenModal'
 
 export default function AddBeer(props: {
-  beer: IBeer;
-  ratings: IBeerRating[];
-  users: IUser[];
+  beer: IBeer
+  ratings: IBeerRating[]
+  users: IUser[]
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const [changesMade, setChangesMade] = useState<boolean>(false);
-  const [beerRatings, setBeerRatings] = useState<IBeerRating[]>(
-    props.ratings
-  );
+  const router = useRouter()
+  const pathname = usePathname()
+  const [changesMade, setChangesMade] = useState<boolean>(false)
+  const [beerRatings, setBeerRatings] = useState<IBeerRating[]>(props.ratings)
 
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false)
 
   interface formBeer {
-    _id: string;
-    archive: boolean;
-    beerName: string;
-    addedByID: string;
-    userGroupID: string;
-    avgWankyness: number;
-    avgTaste: number;
-    avgRating: number;
+    _id: string
+    archive: boolean
+    beerName: string
+    addedByID: string
+    userGroupID: string
+    avgWankyness: number
+    avgTaste: number
+    avgRating: number
   }
 
   const beerRating: IBeerRating = {
-    _id: "",
-    beerID: "",
+    _id: '',
+    beerID: '',
     wankyness: 0,
     taste: 0,
-    userID: "",
-    username: "",
-  };
+    userID: '',
+    username: ''
+  }
 
   const form = useForm({
     initialValues: {
-      _id: props.beer._id ? props.beer._id : "",
+      _id: props.beer._id ? props.beer._id : '',
       archive: props.beer.archive ? props.beer.archive : false,
-      beerName: props.beer.beerName ? props.beer.beerName : "",
-      addedByID: props.beer.addedByID ? props.beer.addedByID : "",
-      userGroupID: props.beer.userGroupID ? props.beer.userGroupID : "",
+      beerName: props.beer.beerName ? props.beer.beerName : '',
+      addedByID: props.beer.addedByID ? props.beer.addedByID : '',
+      userGroupID: props.beer.userGroupID ? props.beer.userGroupID : '',
       avgWankyness: 0,
       avgTaste: 0,
-      avgRating: 0,
-    },
-  });
+      avgRating: 0
+    }
+  })
 
   const handleRemoveRecord = async (id: string, index: number) => {
-    const updatedArray = await beerRatings.filter(
-      (item, i) => item._id !== id
-    );
-    setBeerRatings(updatedArray);
-    if (id !== "") {
-      await deleteBeerRating(id);
+    const updatedArray = await beerRatings.filter((item, i) => item._id !== id)
+    setBeerRatings(updatedArray)
+    if (id !== '') {
+      await deleteBeerRating(id)
     }
-    const rating = await beerRatings.filter((item) => item._id === id);
-    deleteToast(`${rating[0].username}'s rating`);
-  };
+    const rating = await beerRatings.filter((item) => item._id === id)
+    deleteToast(`${rating[0].username}'s rating`)
+  }
 
   const onSubmit = async (values: formBeer) => {
     const payload: IBeer = {
       ...props.beer,
-      beerName: values.beerName,
-    };
+      beerName: values.beerName
+    }
 
-    const beer = await updateBeer(payload);
+    const beer = await updateBeer(payload)
     beerRatings.map(async (rating: IBeerRating) => {
       const updatedRating = {
         ...rating,
-        beerID: beer._id,
-      };
-      await updateBeerRating(updatedRating);
-    });
-    if (pathname.includes("/beer/")) {
-      successToast(beer.beerName);
-      setChangesMade(true);
+        beerID: beer._id
+      }
+      await updateBeerRating(updatedRating)
+    })
+    if (pathname.includes('/beer/')) {
+      successToast(beer.beerName)
+      setChangesMade(true)
     } else {
-      router.push(`/beer/${beer._id}`);
+      router.push(`/beer/${beer._id}`)
     }
-  };
+  }
 
   const pullData = (data: boolean) => {
-    setOpen(data);
-  };
+    setOpen(data)
+  }
 
   const pullRating = async (data: IBeerRating) => {
-    const newCatList = [...beerRatings, data];
-    setBeerRatings(newCatList);
-  };
+    const newCatList = [...beerRatings, data]
+    setBeerRatings(newCatList)
+  }
 
   const handleArchive = async () => {
-    await archiveBeer(props.beer._id);
-    archiveToast(props.beer.beerName);
+    await archiveBeer(props.beer._id)
+    archiveToast(props.beer.beerName)
     setTimeout(() => {
-      const url = `${window.location.protocol}//${window.location.host}`;
-      window.location.href = `${url}/beers`;
-    }, 1000);
-  };
+      const url = `${window.location.protocol}//${window.location.host}`
+      window.location.href = `${url}/beers`
+    }, 1000)
+  }
 
   const handleWankynessChange = (wankyness: number, i: number) => {
     // Make a copy of the current beerRatings array
-    const updatedBeerRatings = [...beerRatings];
+    const updatedBeerRatings = [...beerRatings]
 
     // Update the wankyness property of the rating at index i
-    updatedBeerRatings[i].wankyness = wankyness;
+    updatedBeerRatings[i].wankyness = wankyness
 
     // Set the updated beerRatings array back to state
-    setBeerRatings(updatedBeerRatings);
-  };
+    setBeerRatings(updatedBeerRatings)
+  }
 
   const handleTasteChange = (taste: number, i: number) => {
     // Make a copy of the current beerRatings array
-    const updatedBeerRatings = [...beerRatings];
+    const updatedBeerRatings = [...beerRatings]
 
     // Update the taste property of the rating at index i
-    updatedBeerRatings[i].taste = taste;
+    updatedBeerRatings[i].taste = taste
 
     // Set the updated beerRatings array back to state
-    setBeerRatings(updatedBeerRatings);
-  };
+    setBeerRatings(updatedBeerRatings)
+  }
 
   return (
     <div>
@@ -160,7 +152,7 @@ export default function AddBeer(props: {
         <Button
           radius="md"
           className={`bg-danger text-light-1 ${
-            props.beer._id === "" ? "hidden" : ""
+            props.beer._id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
           aria-label="archive"
@@ -171,7 +163,7 @@ export default function AddBeer(props: {
       <form
         onSubmit={form.onSubmit((values) => onSubmit(values))}
         className={`flex flex-col justify-start gap-10 pt-4 ${
-          props.beer._id === "" ? "px-6" : ""
+          props.beer._id === '' ? 'px-6' : ''
         }`}
       >
         <TextInput
@@ -180,7 +172,7 @@ export default function AddBeer(props: {
           placeholder="The best beer in the world"
           className="text-dark-2 dark:text-light-2"
           size="md"
-          {...form.getInputProps("beerName")}
+          {...form.getInputProps('beerName')}
         />
         <div className="flex justify-between">
           <div className="flex-grow pr-2">
@@ -243,7 +235,7 @@ export default function AddBeer(props: {
                   </div>
                 </div>
               </div>
-            );
+            )
           })
         ) : (
           <div className="rounded-md overflow-hidden shadow-lg bg-light-4 dark:bg-dark-4 w-full">
@@ -259,7 +251,7 @@ export default function AddBeer(props: {
           className="bg-primary-500 hover:bg-primary-hover text-light-1"
           type="submit"
         >
-          {props.beer._id === "" ? "Add" : "Update"} Beer
+          {props.beer._id === '' ? 'Add' : 'Update'} Beer
         </Button>
       </form>
       <FullScreenModal
@@ -277,5 +269,5 @@ export default function AddBeer(props: {
         title="Add Rating"
       />
     </div>
-  );
+  )
 }

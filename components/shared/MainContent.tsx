@@ -1,12 +1,12 @@
-"use client";
+'use client'
 
-import CustomThemeProvider from "@/components/shared/CustomThemeProvider";
-import LeftSidebar from "./LeftSidebar";
-import { IPot } from "@/lib/models/pot";
+import CustomThemeProvider from '@/components/shared/CustomThemeProvider'
+import LeftSidebar from './LeftSidebar'
+import { IPot } from '@/lib/models/pot'
 
 export const MainContent = (props: {
-  pots: IPot[];
-  children: React.ReactNode;
+  pots: IPot[]
+  children: React.ReactNode
 }) => {
   return (
     <CustomThemeProvider>
@@ -17,5 +17,5 @@ export const MainContent = (props: {
         </section>
       </main>
     </CustomThemeProvider>
-  );
-};
+  )
+}

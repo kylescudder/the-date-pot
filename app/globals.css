@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  font-family: "Ubuntu", sans-serif;
+  font-family: 'Ubuntu', sans-serif;
 }
 @layer components {
   .topbar {
@@ -38,10 +38,10 @@ body {
 .mantine-NumberInput-label,
 .mantine-Checkbox-label,
 .mantine-Modal-title {
-  @apply text-dark-1 dark:text-light-1
+  @apply text-dark-1 dark:text-light-1;
 }
 .mantine-Button-label {
-  @apply font-semibold
+  @apply font-semibold;
 }
 .mantine-TextInput-input,
 .mantine-Textarea-input,
@@ -51,18 +51,18 @@ body {
 .mantine-NumberInput-input,
 .mantine-NumberInput-control,
 .mantine-MultiSelect-input {
-  @apply bg-light-2 text-dark-1 dark:bg-dark-2 dark:text-light-1
+  @apply bg-light-2 text-dark-1 dark:bg-dark-2 dark:text-light-1;
 }
 .mantine-MultiSelect-value {
-  @apply bg-light-3 dark:bg-gray-700
+  @apply bg-light-3 dark:bg-gray-700;
 }
 .mantine-MultiSelect-value > button,
 .mantine-MultiSelect-value {
-  @apply text-light-1
+  @apply text-light-1;
 }
 .mantine-Checkbox-input:checked,
 .mantine-NumberInput-control:not(:disabled):hover {
-  @apply bg-primary-500
+  @apply bg-primary-500;
 }
 .mantine-Popover-dropdown {
   @apply dark:bg-dark-4;
@@ -126,8 +126,8 @@ button[data-selected],
 /*Dark mode slider*/
 
 :root {
-  --toastify-color-success: #B2AC88;
-  --toastify-color-error: #BE3455;
+  --toastify-color-success: #b2ac88;
+  --toastify-color-error: #be3455;
   /** sunny side **/
   --blue-background: #c2e9f6;
   --blue-border: #72cce3;
@@ -212,7 +212,7 @@ button[data-selected],
   transition: all 150ms ease-in;
 }
 .toggle--label-background:before {
-  content: "";
+  content: '';
   position: absolute;
   top: -1px;
   width: 10px;
@@ -223,7 +223,7 @@ button[data-selected],
   transition: all 150ms ease-in;
 }
 .toggle--label-background:after {
-  content: "";
+  content: '';
   position: absolute;
   top: 1px;
   width: 10px;
@@ -238,7 +238,7 @@ button[data-selected],
   animation-duration: 350ms;
   animation-fill-mode: forwards;
   transition: all 350ms ease-in;
-  content: "";
+  content: '';
   width: 20px;
   height: 20px;
   border: 1px solid var(--yellow-border);
@@ -252,8 +252,9 @@ button[data-selected],
   transition-delay: 0ms;
   transition: all 250ms ease-in;
   position: absolute;
-  content: "";
-  box-shadow: var(--gray-dots) -6.5px 0 0 0.75px,
+  content: '';
+  box-shadow:
+    var(--gray-dots) -6.5px 0 0 0.75px,
     var(--gray-dots) -8px 4px 0 0.1px;
   left: 38px;
   top: 5px;
@@ -387,11 +388,11 @@ Note: Beware of modifying this element as it can break the animations - you shou
   justify-center
   items-center
   relative
-  box-border
+  box-border;
 }
 
 .loader::after {
-  content: '';  
+  content: '';
   animation: rotationBack 0.5s linear infinite;
   transform-origin: center center;
   @apply box-border
@@ -408,7 +409,7 @@ Note: Beware of modifying this element as it can break the animations - you shou
   border-b-primary-500
   w-6
   h-6
-  rounded-full
+  rounded-full;
 }
 
 @keyframes rotation {
@@ -418,8 +419,8 @@ Note: Beware of modifying this element as it can break the animations - you shou
   100% {
     transform: rotate(360deg);
   }
-} 
-    
+}
+
 @keyframes rotationBack {
   0% {
     transform: rotate(0deg);

@@ -1,18 +1,18 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import { useTheme } from "next-themes";
+import { useState, useEffect } from 'react'
+import { useTheme } from 'next-themes'
 
 export const DarkModeToggle = () => {
-  const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme } = useTheme()
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
   if (!mounted) {
-    return null;
+    return null
   }
 
   return (
@@ -20,13 +20,13 @@ export const DarkModeToggle = () => {
       <input
         type="checkbox"
         id="toggle"
-        checked={theme === "light" ? false : true}
+        checked={theme === 'light' ? false : true}
         className="toggle--checkbox"
-        onChange={() => setTheme(theme === "dark" ? "light" : "dark")}
+        onChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
       />
       <label htmlFor="toggle" className="toggle--label float-right mr-2">
         <span className="toggle--label-background" />
       </label>
     </div>
-  );
-};
+  )
+}

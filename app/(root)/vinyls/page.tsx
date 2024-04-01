@@ -1,4 +1,4 @@
-"use server"
+'use server'
 
 import VinylList from '@/components/vinyl/List'
 import { getUserGroup, getUserInfo } from '@/lib/actions/user.actions'
@@ -10,16 +10,16 @@ import { currentUser } from '@clerk/nextjs'
 import React from 'react'
 
 export default async function Vinyls() {
-	const user = await currentUser()
-  if (!user) return null;
+  const user = await currentUser()
+  if (!user) return null
 
-	const userInfo: IUser = await getUserInfo(user.id);
-	const userGroup: IUserGroup = await getUserGroup(userInfo._id);
-	const vinyls: IVinyl[] = await getVinylList(userGroup._id)
+  const userInfo: IUser = await getUserInfo(user.id)
+  const userGroup: IUserGroup = await getUserGroup(userInfo._id)
+  const vinyls: IVinyl[] = await getVinylList(userGroup._id)
 
-	return (
-		<div className='listPage'>
-			<VinylList vinyls={vinyls} />
-		</div>
-	)
+  return (
+    <div className="listPage">
+      <VinylList vinyls={vinyls} />
+    </div>
+  )
 }

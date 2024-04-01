@@ -1,25 +1,25 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 // 1. Create an interface representing a document in MongoDB.
 export interface IBeer {
-  _id: string;
-  archive: boolean;
-  beerName: string;
-  addedByID: string;
-  userGroupID: string;
-  avgWankyness: number;
-  avgTaste: number;
-  avgRating: number;
+  _id: string
+  archive: boolean
+  beerName: string
+  addedByID: string
+  userGroupID: string
+  avgWankyness: number
+  avgTaste: number
+  avgRating: number
 }
 interface BeerClass {
-  _id: mongoose.Types.ObjectId;
-  archive: boolean;
-  beerName: string;
-  addedByID: mongoose.Types.ObjectId;
-  userGroupID: mongoose.Types.ObjectId;
-  avgWankyness: number;
-  avgTaste: number;
-  avgRating: number;
+  _id: mongoose.Types.ObjectId
+  archive: boolean
+  beerName: string
+  addedByID: mongoose.Types.ObjectId
+  userGroupID: mongoose.Types.ObjectId
+  avgWankyness: number
+  avgTaste: number
+  avgRating: number
 }
 const BeerSchema = new mongoose.Schema<BeerClass>({
   _id: { type: mongoose.Schema.Types.ObjectId },
@@ -29,9 +29,9 @@ const BeerSchema = new mongoose.Schema<BeerClass>({
   userGroupID: { type: mongoose.Schema.Types.ObjectId },
   avgWankyness: { type: Number },
   avgTaste: { type: Number },
-  avgRating: { type: Number },
-});
+  avgRating: { type: Number }
+})
 
-const Beer = mongoose.models.Beer || mongoose.model("Beer", BeerSchema);
+const Beer = mongoose.models.Beer || mongoose.model('Beer', BeerSchema)
 
-export default Beer;
+export default Beer

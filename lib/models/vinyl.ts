@@ -1,23 +1,23 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 // 1. Create an interface representing a document in MongoDB.
 export interface IVinyl {
-  _id: string;
-  addedByID: string;
-  archive: boolean;
-  artistName: string;
-  name: string;
-  purchased: boolean;
-  userGroupID: string;
+  _id: string
+  addedByID: string
+  archive: boolean
+  artistName: string
+  name: string
+  purchased: boolean
+  userGroupID: string
 }
 interface VinylClass {
-  _id: mongoose.Types.ObjectId;
-  addedByID: mongoose.Types.ObjectId;
-  archive: boolean;
-  artistName: string;
-  name: string;
-  purchased: boolean;
-  userGroupID: mongoose.Types.ObjectId;
+  _id: mongoose.Types.ObjectId
+  addedByID: mongoose.Types.ObjectId
+  archive: boolean
+  artistName: string
+  name: string
+  purchased: boolean
+  userGroupID: mongoose.Types.ObjectId
 }
 const VinylSchema = new mongoose.Schema<VinylClass>({
   _id: { type: mongoose.Schema.Types.ObjectId },
@@ -26,9 +26,9 @@ const VinylSchema = new mongoose.Schema<VinylClass>({
   artistName: { type: String },
   name: { type: String },
   purchased: { type: Boolean },
-  userGroupID: { type: mongoose.Schema.Types.ObjectId },
-});
+  userGroupID: { type: mongoose.Schema.Types.ObjectId }
+})
 
-const Vinyl = mongoose.models.Vinyl || mongoose.model("Vinyl", VinylSchema);
+const Vinyl = mongoose.models.Vinyl || mongoose.model('Vinyl', VinylSchema)
 
-export default Vinyl;
+export default Vinyl

@@ -1,15 +1,15 @@
-"use server";
+'use server'
 
-import { connectToDB } from "../mongoose";
-import mongoose from "mongoose";
-import Expense from "../models/expense";
+import { connectToDB } from '../mongoose'
+import mongoose from 'mongoose'
+import Expense from '../models/expense'
 
 export async function getExpenseList() {
   try {
-    connectToDB();
+    connectToDB()
 
-    return await Expense.find({});
+    return await Expense.find({})
   } catch (error: any) {
-    throw new Error(`Failed to find expenses: ${error.message}`);
+    throw new Error(`Failed to find expenses: ${error.message}`)
   }
 }

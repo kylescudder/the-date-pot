@@ -1,27 +1,29 @@
-import AccountProfile from "@/components/forms/AccountProfile";
-import { currentUser } from "@clerk/nextjs";
-import React from "react";
-import { redirect } from "next/navigation";
-import Logout from "@/components/shared/Logout";
-import { IUser } from "@/lib/models/user";
-import { getUserInfo } from "@/lib/actions/user.actions";
+import AccountProfile from '@/components/forms/AccountProfile'
+import { currentUser } from '@clerk/nextjs'
+import React from 'react'
+import { redirect } from 'next/navigation'
+import Logout from '@/components/shared/Logout'
+import { IUser } from '@/lib/models/user'
+import { getUserInfo } from '@/lib/actions/user.actions'
 
 export default async function page() {
-  const user = await currentUser();
-  if (!user) return null;
+  const user = await currentUser()
+  if (!user) return null
 
-  const userInfo: IUser = await getUserInfo(user.id);
-  if (userInfo?.onboarded) redirect("/");
+  const userInfo: IUser = await getUserInfo(user.id)
+  if (userInfo?.onboarded) redirect('/')
 
   const userData: IUser = {
     clerkId: user.id,
     _id: userInfo?._id,
-    username: userInfo ? userInfo?.username : user.emailAddresses[0].emailAddress,
-    name: userInfo?.name ? userInfo?.name : user.firstName ?? "",
-    bio: userInfo?.bio ? userInfo?.bio : "",
+    username: userInfo
+      ? userInfo?.username
+      : user.emailAddresses[0].emailAddress,
+    name: userInfo?.name ? userInfo?.name : user.firstName ?? '',
+    bio: userInfo?.bio ? userInfo?.bio : '',
     image: userInfo?.image ? userInfo.image : user?.imageUrl,
-    onboarded: userInfo ? userInfo?.onboarded : false,
-  };
+    onboarded: userInfo ? userInfo?.onboarded : false
+  }
   return (
     <main className="mx-auto flex max-w-3xl flex-col justify-start px-10 py-20">
       <div className="flex justify-between">
@@ -37,5 +39,5 @@ export default async function page() {
         <AccountProfile user={userData} btnTitle="Continue" />
       </section>
     </main>
-  );
+  )
 }

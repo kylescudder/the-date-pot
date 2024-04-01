@@ -1,13 +1,13 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { IconHomeHeart } from "@tabler/icons-react";
-import Logout from "./Logout";
-import CustomThemeProvider from "@/components/shared/CustomThemeProvider";
-import { DarkModeToggle } from "../ui/dark-mode-toggle";
-import { slide as Menu } from "react-burger-menu";
-import NavOptions from "./NavOptions";
-import { IPot } from "@/lib/models/pot";
+import Link from 'next/link'
+import { IconHomeHeart } from '@tabler/icons-react'
+import Logout from './Logout'
+import CustomThemeProvider from '@/components/shared/CustomThemeProvider'
+import { DarkModeToggle } from '../ui/dark-mode-toggle'
+import { slide as Menu } from 'react-burger-menu'
+import NavOptions from './NavOptions'
+import { IPot } from '@/lib/models/pot'
 
 export default function Topbar(props: { pots: IPot[] }) {
   return (
@@ -33,7 +33,7 @@ export default function Topbar(props: { pots: IPot[] }) {
           </p>
         </Link>
         <Menu
-          burgerButtonClassName={"text-dark-1 dark:text-light-1"}
+          burgerButtonClassName={'text-dark-1 dark:text-light-1'}
           customBurgerIcon={
             <IconHomeHeart
               stroke={2}
@@ -53,5 +53,5 @@ export default function Topbar(props: { pots: IPot[] }) {
         <Logout placement="top" />
       </nav>
     </CustomThemeProvider>
-  );
+  )
 }

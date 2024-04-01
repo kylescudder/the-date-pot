@@ -1,20 +1,20 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 // 1. Create an interface representing a document in MongoDB.
 export interface IExpense {
-  _id: string;
-  expense: string;
+  _id: string
+  expense: string
 }
 interface ExpenseClass {
-  _id: mongoose.Types.ObjectId;
-  expense: string;
+  _id: mongoose.Types.ObjectId
+  expense: string
 }
 const expenseSchema = new mongoose.Schema<ExpenseClass>({
   _id: { type: mongoose.Schema.Types.ObjectId },
-  expense: { type: String },
-});
+  expense: { type: String }
+})
 
 const Expense =
-  mongoose.models.Expense || mongoose.model("Expense", expenseSchema);
+  mongoose.models.Expense || mongoose.model('Expense', expenseSchema)
 
-export default Expense;
+export default Expense

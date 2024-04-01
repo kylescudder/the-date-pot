@@ -1,87 +1,87 @@
-"use client";
+'use client'
 
-import React, { useState } from "react";
-import { useForm } from "@mantine/form";
-import { usePathname, useRouter } from "next/navigation";
-import { IFilm } from "@/lib/models/film";
+import React, { useState } from 'react'
+import { useForm } from '@mantine/form'
+import { usePathname, useRouter } from 'next/navigation'
+import { IFilm } from '@/lib/models/film'
+import { archiveFilm, updateFilm } from '@/lib/actions/film.action'
+import { archiveToast, successToast } from '@/lib/actions/toast.actions'
+import { IconTrash } from '@tabler/icons-react'
+import BackButton from '../shared/BackButton'
 import {
-  archiveFilm,
-  updateFilm,
-} from "@/lib/actions/film.action";
-import {
-  archiveToast,
-  successToast,
-} from "@/lib/actions/toast.actions";
-import { IconTrash } from "@tabler/icons-react";
-import BackButton from "../shared/BackButton";
-import { Button, Checkbox, MultiSelect, NumberInput, TextInput } from "@mantine/core";
+  Button,
+  Checkbox,
+  MultiSelect,
+  NumberInput,
+  TextInput
+} from '@mantine/core'
 import { DatePickerInput } from '@mantine/dates'
-import { option } from "@/lib/models/select-options";
-import { IDirector } from "@/lib/models/director";
-import { IGenre } from "@/lib/models/genre";
-import { IPlatform } from "@/lib/models/platform";
+import { option } from '@/lib/models/select-options'
+import { IDirector } from '@/lib/models/director'
+import { IGenre } from '@/lib/models/genre'
+import { IPlatform } from '@/lib/models/platform'
 
 export default function AddFilm(props: {
-  film: IFilm;
-  directorList: IDirector[];
-  genreList: IGenre[];
-  platformList: IPlatform[];
+  film: IFilm
+  directorList: IDirector[]
+  genreList: IGenre[]
+  platformList: IPlatform[]
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const [changesMade, setChangesMade] = useState<boolean>(false);
-  const [open, setOpen] = useState<boolean>(false);
+  const router = useRouter()
+  const pathname = usePathname()
+  const [changesMade, setChangesMade] = useState<boolean>(false)
+  const [open, setOpen] = useState<boolean>(false)
 
-  const directorOptions: option[] = props.directorList.map((director: IDirector) => ({
-    value: director.directorName,
-    label: director.directorName,
-  }));
+  const directorOptions: option[] = props.directorList.map(
+    (director: IDirector) => ({
+      value: director.directorName,
+      label: director.directorName
+    })
+  )
   const genreOptions: option[] = props.genreList.map((genre: IGenre) => ({
     value: genre.genreText,
-    label: genre.genreText,
-  }));
-  const platformOptions: option[] = props.platformList.map((platform: IPlatform) => ({
-    value: platform.platformName,
-    label: platform.platformName,
-  }));
+    label: genre.genreText
+  }))
+  const platformOptions: option[] = props.platformList.map(
+    (platform: IPlatform) => ({
+      value: platform.platformName,
+      label: platform.platformName
+    })
+  )
 
-  const filmNote: string = "";
+  const filmNote: string = ''
 
   interface formFilm {
-    _id: string;
-    addedByID: string;
-    addedDate: Date;
-    archive: boolean;
-    filmName: string;
-    releaseDate: Date;
-    runTime: number;
-    userGroupID: string;
-    watched: boolean;
-    directors: string[];
-    genres: string[];
-    platforms: string[];
+    _id: string
+    addedByID: string
+    addedDate: Date
+    archive: boolean
+    filmName: string
+    releaseDate: Date
+    runTime: number
+    userGroupID: string
+    watched: boolean
+    directors: string[]
+    genres: string[]
+    platforms: string[]
   }
 
   const form = useForm({
     initialValues: {
-      _id: props.film._id ? props.film._id : "",
-      addedByID: props.film.addedByID ? props.film.addedByID : "",
-      addedDate: props.film.addedDate ? props.film.addedDate : new Date,
+      _id: props.film._id ? props.film._id : '',
+      addedByID: props.film.addedByID ? props.film.addedByID : '',
+      addedDate: props.film.addedDate ? props.film.addedDate : new Date(),
       archive: props.film.archive ? props.film.archive : false,
-      filmName: props.film.filmName
-        ? props.film.filmName
-        : "",
-      releaseDate: props.film.releaseDate ? props.film.releaseDate : new Date,
+      filmName: props.film.filmName ? props.film.filmName : '',
+      releaseDate: props.film.releaseDate ? props.film.releaseDate : new Date(),
       runTime: props.film.runTime ? props.film.runTime : 0,
-      userGroupID: props.film.userGroupID
-        ? props.film.userGroupID
-        : "",
+      userGroupID: props.film.userGroupID ? props.film.userGroupID : '',
       watched: props.film.watched ? props.film.watched : false,
-      directors: props.film.directors ? props.film.directors : [""],
-      genres: props.film.genres ? props.film.genres : [""],
-      platforms: props.film.platforms ? props.film.platforms : [""],
-    },
-  });
+      directors: props.film.directors ? props.film.directors : [''],
+      genres: props.film.genres ? props.film.genres : [''],
+      platforms: props.film.platforms ? props.film.platforms : ['']
+    }
+  })
 
   const onSubmit = async (values: formFilm) => {
     const payload: IFilm = {
@@ -92,30 +92,30 @@ export default function AddFilm(props: {
       watched: values.watched,
       directors: values.directors,
       genres: values.genres,
-      platforms: values.platforms,
-    };
-
-    const film = await updateFilm(payload);
-    if (pathname.includes("/film/")) {
-      successToast(film.filmName);
-      setChangesMade(true);
-    } else {
-      router.push(`/film/${film._id}`);
+      platforms: values.platforms
     }
-  };
+
+    const film = await updateFilm(payload)
+    if (pathname.includes('/film/')) {
+      successToast(film.filmName)
+      setChangesMade(true)
+    } else {
+      router.push(`/film/${film._id}`)
+    }
+  }
 
   const handleArchive = async () => {
-    await archiveFilm(props.film._id);
-    archiveToast(props.film.filmName);
+    await archiveFilm(props.film._id)
+    archiveToast(props.film.filmName)
     setTimeout(() => {
-      const url = `${window.location.protocol}//${window.location.host}`;
-      window.location.href = `${url}/films`;
-    }, 1000);
-  };
+      const url = `${window.location.protocol}//${window.location.host}`
+      window.location.href = `${url}/films`
+    }, 1000)
+  }
 
   const pullData = (data: boolean) => {
-    setOpen(data);
-  };
+    setOpen(data)
+  }
 
   return (
     <div>
@@ -127,7 +127,7 @@ export default function AddFilm(props: {
         />
         <Button
           className={`bg-danger text-light-1 ${
-            props.film._id === "" ? "hidden" : ""
+            props.film._id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
           aria-label="archive"
@@ -138,7 +138,7 @@ export default function AddFilm(props: {
       <form
         onSubmit={form.onSubmit((values) => onSubmit(values))}
         className={`flex flex-col justify-start gap-10 pt-4 ${
-          props.film._id === "" ? "px-6" : ""
+          props.film._id === '' ? 'px-6' : ''
         }`}
       >
         <TextInput
@@ -147,7 +147,7 @@ export default function AddFilm(props: {
           placeholder="Which cinematic masterpiece is it today?"
           className="text-dark-2 dark:text-light-2"
           size="md"
-          {...form.getInputProps("filmName")}
+          {...form.getInputProps('filmName')}
         />
         <DatePickerInput
           label="Release Date"
@@ -155,7 +155,7 @@ export default function AddFilm(props: {
           valueFormat="DD/MM/YYYY"
           className="text-dark-2 dark:text-light-2"
           size="md"
-          {...form.getInputProps("releaseDate")}
+          {...form.getInputProps('releaseDate')}
         />
         <NumberInput
           label="Run time"
@@ -163,14 +163,14 @@ export default function AddFilm(props: {
           placeholder="It is over 90 minutes?"
           className="text-dark-2 dark:text-light-2"
           size="md"
-          {...form.getInputProps("runTime")}
+          {...form.getInputProps('runTime')}
         />
         <Checkbox
           label="Watched"
           radius="md"
           className="text-dark-2 dark:text-light-2"
           size="md"
-          {...form.getInputProps("watched")}
+          {...form.getInputProps('watched')}
         />
         <MultiSelect
           multiple={true}
@@ -178,11 +178,11 @@ export default function AddFilm(props: {
           size="md"
           clearable
           searchable
-          transitionProps={{ transition: "pop-bottom-left", duration: 200 }}
+          transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
           label="Directors"
           placeholder="Pick some"
           data={directorOptions}
-          {...form.getInputProps("directors")}
+          {...form.getInputProps('directors')}
         />
         <MultiSelect
           multiple={true}
@@ -190,11 +190,11 @@ export default function AddFilm(props: {
           size="md"
           clearable
           searchable
-          transitionProps={{ transition: "pop-bottom-left", duration: 200 }}
+          transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
           label="Genres"
           placeholder="Pick some"
           data={genreOptions}
-          {...form.getInputProps("genres")}
+          {...form.getInputProps('genres')}
         />
         <MultiSelect
           multiple={true}
@@ -202,20 +202,20 @@ export default function AddFilm(props: {
           size="md"
           clearable
           searchable
-          transitionProps={{ transition: "pop-bottom-left", duration: 200 }}
+          transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
           label="Genres"
           placeholder="Pick some"
           data={platformOptions}
-          {...form.getInputProps("platforms")}
+          {...form.getInputProps('platforms')}
         />
         <Button
           radius="md"
           className="bg-primary-500 hover:bg-primary-hover text-light-1"
           type="submit"
         >
-          {props.film._id === "" ? "Add" : "Update"} Film
+          {props.film._id === '' ? 'Add' : 'Update'} Film
         </Button>
       </form>
     </div>
-  );
+  )
 }

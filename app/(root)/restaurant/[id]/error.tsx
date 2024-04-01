@@ -1,11 +1,11 @@
-"use client";
+'use client'
 
 export default function Error({
   error,
-  reset,
+  reset
 }: {
-  error: Error;
-  reset: () => void;
+  error: Error
+  reset: () => void
 }) {
   return (
     <div className="min-h-full flex items-center justify-center ">
@@ -24,5 +24,5 @@ export default function Error({
         </button>
       </div>
     </div>
-  );
+  )
 }

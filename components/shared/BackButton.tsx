@@ -1,39 +1,39 @@
 import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation';
-import { IconArrowNarrowLeft } from '@tabler/icons-react';
-import { Button } from '@mantine/core';
+import { useRouter } from 'next/navigation'
+import { IconArrowNarrowLeft } from '@tabler/icons-react'
+import { Button } from '@mantine/core'
 
 export default function BackButton(props: {
-  record: any,
-  changesMade: boolean;
-  page: string;
+  record: any
+  changesMade: boolean
+  page: string
 }) {
-  const [changesMade, setChangesMade] = useState<boolean>(props.changesMade);
+  const [changesMade, setChangesMade] = useState<boolean>(props.changesMade)
 
   useEffect(() => {
     setChangesMade(props.changesMade)
   }, [props.changesMade])
 
-	const router = useRouter();
-	  const handleBack = () => {
-      if (changesMade) {
-        const url = `${window.location.protocol}//${window.location.host}`;
-        window.location.href = `${url}/${props.page}`;
-      } else {
-        router.back();
-      }
-    };
+  const router = useRouter()
+  const handleBack = () => {
+    if (changesMade) {
+      const url = `${window.location.protocol}//${window.location.host}`
+      window.location.href = `${url}/${props.page}`
+    } else {
+      router.back()
+    }
+  }
 
-	return (
+  return (
     <Button
       radius="md"
       className={`bg-primary-500 hover:bg-primary-hover ${
-        props.record._id === "" ? "hidden" : ""
+        props.record._id === '' ? 'hidden' : ''
       }`}
       onClick={handleBack}
       aria-label="back"
     >
       <IconArrowNarrowLeft className="text-light-1" />
     </Button>
-  );
+  )
 }

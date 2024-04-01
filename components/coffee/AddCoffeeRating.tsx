@@ -1,49 +1,50 @@
-"use client";
+'use client'
 
-import { ICoffee } from "@/lib/models/coffee";
-import { ICoffeeRating } from "@/lib/models/coffee-rating";
-import { getNewCoffeeID, updateCoffeeRating } from "@/lib/actions/coffee.action";
-import { IUser } from "@/lib/models/user";
-import { Button, Rating, Select } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { option } from "@/lib/models/select-options";
+import { ICoffee } from '@/lib/models/coffee'
+import { ICoffeeRating } from '@/lib/models/coffee-rating'
+import { getNewCoffeeID, updateCoffeeRating } from '@/lib/actions/coffee.action'
+import { IUser } from '@/lib/models/user'
+import { Button, Rating, Select } from '@mantine/core'
+import { useForm } from '@mantine/form'
+import { option } from '@/lib/models/select-options'
 
 export default function AddCoffeeRating(props: {
-  coffee: ICoffee;
-  coffeeRating: ICoffeeRating;
-  users: IUser[];
-  addRating: (data: ICoffeeRating) => void;
-  func: (data: boolean) => void;
+  coffee: ICoffee
+  coffeeRating: ICoffeeRating
+  users: IUser[]
+  addRating: (data: ICoffeeRating) => void
+  func: (data: boolean) => void
 }) {
   const options: option[] = props.users.map((user: IUser) => ({
     value: user._id,
-    label: user.name,
-  }));
+    label: user.name
+  }))
 
   interface formRating {
-    _id: string;
-    coffeeID: string;
-    experience: number;
-    taste: number;
-    userID: string;
-    username: string;
+    _id: string
+    coffeeID: string
+    experience: number
+    taste: number
+    userID: string
+    username: string
   }
 
   const form = useForm({
     initialValues: {
-      _id: props.coffeeRating._id ? props.coffeeRating._id : "",
-      coffeeID: props.coffee._id ? props.coffee._id : "",
+      _id: props.coffeeRating._id ? props.coffeeRating._id : '',
+      coffeeID: props.coffee._id ? props.coffee._id : '',
       experience: props.coffeeRating.experience
         ? props.coffeeRating.experience
         : 0,
       taste: props.coffeeRating.taste ? props.coffeeRating.taste : 0,
-      userID: props.coffeeRating.userID ? props.coffeeRating.userID : "",
-      username: props.coffeeRating.username ? props.coffeeRating.username : "",
-    },
-  });
+      userID: props.coffeeRating.userID ? props.coffeeRating.userID : '',
+      username: props.coffeeRating.username ? props.coffeeRating.username : ''
+    }
+  })
 
   const onSubmit = async (values: formRating) => {
-    const username = props.users.filter((user) => user._id === values.userID)[0].name;
+    const username = props.users.filter((user) => user._id === values.userID)[0]
+      .name
     const payload: ICoffeeRating = {
       _id: values._id,
       coffeeID: props.coffee._id,
@@ -51,36 +52,36 @@ export default function AddCoffeeRating(props: {
       taste: values.taste,
       userID: values.userID,
       username: username
-    };
+    }
     if (payload.coffeeID !== '') {
-      const rating = await updateCoffeeRating(payload);
+      const rating = await updateCoffeeRating(payload)
       const ratingWithUsername: ICoffeeRating = {
         ...rating,
         username: username
-      };
-      props.addRating(ratingWithUsername);
+      }
+      props.addRating(ratingWithUsername)
     } else {
-      props.addRating(payload);
+      props.addRating(payload)
     }
-    props.func(false);
-  };
+    props.func(false)
+  }
 
   return (
     <form
       onSubmit={form.onSubmit((values) => onSubmit(values))}
       className={`flex flex-col justify-start gap-10 pt-4 ${
-        props.coffee._id === "" ? "px-6" : ""
+        props.coffee._id === '' ? 'px-6' : ''
       }`}
     >
       <Select
         radius="md"
         size="md"
         clearable
-        transitionProps={{ transition: "pop-bottom-left", duration: 200 }}
+        transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
         label="Who?"
         placeholder="Pick one"
         data={options}
-        {...form.getInputProps("userID")}
+        {...form.getInputProps('userID')}
       />
       <div className="text-base flex items-center pt-2">
         <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-black text-gray-700 mr-2">
@@ -90,7 +91,7 @@ export default function AddCoffeeRating(props: {
           name="taste"
           fractions={2}
           size="xl"
-          {...form.getInputProps("taste")}
+          {...form.getInputProps('taste')}
         />
       </div>
       <div className="text-base flex items-center pt-5">
@@ -101,7 +102,7 @@ export default function AddCoffeeRating(props: {
           name="experience"
           fractions={2}
           size="xl"
-          {...form.getInputProps("experience")}
+          {...form.getInputProps('experience')}
         />
       </div>
       <Button
@@ -109,8 +110,8 @@ export default function AddCoffeeRating(props: {
         className="bg-primary-500 hover:bg-primary-hover text-light-1"
         type="submit"
       >
-        {props.coffeeRating._id === "" ? "Add" : "Update"} Rating
+        {props.coffeeRating._id === '' ? 'Add' : 'Update'} Rating
       </Button>
     </form>
-  );
+  )
 }

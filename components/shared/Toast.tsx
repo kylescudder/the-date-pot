@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 export const Toast = () => (
   <ToastContainer
@@ -13,4 +13,4 @@ export const Toast = () => (
     closeOnClick
     pauseOnHover
   />
-);
+)
