@@ -8,9 +8,11 @@ const Map = (props: { longLat: number[]; title: string }) => {
   })
 
   const [map, setMap] = React.useState<any>(null)
+  const lat = props.longLat[1] || 0
+  const lng = props.longLat[0] || 0
   const center = {
-    lat: props.longLat[1],
-    lng: props.longLat[0]
+    lat: lat,
+    lng: lng
   }
   const onLoad = React.useCallback(function callback(map: any) {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
@@ -32,7 +34,7 @@ const Map = (props: { longLat: number[]; title: string }) => {
       onLoad={onLoad}
       onUnmount={onUnmount}
     >
-      <Marker position={{ lat: props.longLat[1], lng: props.longLat[0] }} />
+      <Marker position={{ lat: lat, lng: lng }} />
     </GoogleMap>
   ) : (
     <></>
