@@ -18,7 +18,7 @@ export default async function page() {
     _id: userInfo?._id,
     username: userInfo
       ? userInfo?.username
-      : user.emailAddresses[0].emailAddress,
+      : user.emailAddresses[0]!.emailAddress,
     name: userInfo?.name ? userInfo?.name : user.firstName ?? '',
     bio: userInfo?.bio ? userInfo?.bio : '',
     image: userInfo?.image ? userInfo.image : user?.imageUrl,
