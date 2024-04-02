@@ -20,6 +20,9 @@ import { option } from '@/lib/models/select-options'
 import { IDirector } from '@/lib/models/director'
 import { IGenre } from '@/lib/models/genre'
 import { IPlatform } from '@/lib/models/platform'
+import { addDirector } from '@/lib/actions/director.action'
+import { addGenre } from '@/lib/actions/genre.action'
+import { addPlatform } from '@/lib/actions/platform.action'
 
 export default function AddFilm(props: {
   film: IFilm
@@ -38,16 +41,19 @@ export default function AddFilm(props: {
       label: director.directorName
     })
   )
+  const [directors, setDirectors] = useState<option[]>(directorOptions)
   const genreOptions: option[] = props.genreList.map((genre: IGenre) => ({
     value: genre.genreText,
     label: genre.genreText
   }))
+  const [genres, setGenres] = useState<option[]>(genreOptions)
   const platformOptions: option[] = props.platformList.map(
     (platform: IPlatform) => ({
       value: platform.platformName,
       label: platform.platformName
     })
   )
+  const [platforms, setPlatforms] = useState<option[]>(platformOptions)
 
   const filmNote: string = ''
 
@@ -178,10 +184,19 @@ export default function AddFilm(props: {
           size="md"
           clearable
           searchable
+          creatable
+          getCreateLabel={(query) => `+ Create ${query}`}
+          onCreate={(query) => {
+            const item = { value: query, label: query }
+            const director: IDirector = { _id: '', directorName: query }
+            setDirectors((current) => [...current, item])
+            addDirector(director)
+            return item
+          }}
           transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
           label="Directors"
           placeholder="Pick some"
-          data={directorOptions}
+          data={directors}
           {...form.getInputProps('directors')}
         />
         <MultiSelect
@@ -190,10 +205,19 @@ export default function AddFilm(props: {
           size="md"
           clearable
           searchable
+          creatable
+          getCreateLabel={(query) => `+ Create ${query}`}
+          onCreate={(query) => {
+            const item = { value: query, label: query }
+            const genre: IGenre = { _id: '', genreText: query }
+            setGenres((current) => [...current, item])
+            addGenre(genre)
+            return item
+          }}
           transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
           label="Genres"
           placeholder="Pick some"
-          data={genreOptions}
+          data={genres}
           {...form.getInputProps('genres')}
         />
         <MultiSelect
@@ -202,10 +226,19 @@ export default function AddFilm(props: {
           size="md"
           clearable
           searchable
+          creatable
+          getCreateLabel={(query) => `+ Create ${query}`}
+          onCreate={(query) => {
+            const item = { value: query, label: query }
+            const platform: IPlatform = { _id: '', platformName: query }
+            setPlatforms((current) => [...current, item])
+            addPlatform(platform)
+            return item
+          }}
           transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
           label="Genres"
           placeholder="Pick some"
-          data={platformOptions}
+          data={platforms}
           {...form.getInputProps('platforms')}
         />
         <Button

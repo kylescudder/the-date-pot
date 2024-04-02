@@ -22,7 +22,7 @@ export async function addBrewery(brewery: IBrewery) {
     if (brewery._id === '') {
       brewery._id = newId.toString()
     }
-    console.log('brewery: ', brewery)
+
     return await Brewery.findOneAndUpdate(
       { _id: new mongoose.Types.ObjectId(brewery._id) },
       {
