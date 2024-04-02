@@ -5,7 +5,8 @@ export interface IBeer {
   _id: string
   archive: boolean
   beerName: string
-  abv: string
+  abv: number
+  breweries: string[]
   addedByID: string
   userGroupID: string
   avgWankyness: number
@@ -16,7 +17,7 @@ interface BeerClass {
   _id: mongoose.Types.ObjectId
   archive: boolean
   beerName: string
-  abv: string
+  abv: number
   breweries: string[]
   addedByID: mongoose.Types.ObjectId
   userGroupID: mongoose.Types.ObjectId
@@ -28,7 +29,7 @@ const BeerSchema = new mongoose.Schema<BeerClass>({
   _id: { type: mongoose.Schema.Types.ObjectId },
   archive: { type: Boolean },
   beerName: { type: String },
-  abv: { type: String },
+  abv: { type: Number },
   breweries: { type: [String] },
   addedByID: { type: mongoose.Schema.Types.ObjectId },
   userGroupID: { type: mongoose.Schema.Types.ObjectId },
