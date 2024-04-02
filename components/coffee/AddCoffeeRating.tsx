@@ -43,8 +43,10 @@ export default function AddCoffeeRating(props: {
   })
 
   const onSubmit = async (values: formRating) => {
-    const username = props.users.filter((user) => user._id === values.userID)[0]
-      .name
+    const filteredUsers = props.users.filter(
+      (user) => user._id === values.userID
+    )
+    const username = filteredUsers.length > 0 ? filteredUsers[0]!.name : ''
     const payload: ICoffeeRating = {
       _id: values._id,
       coffeeID: props.coffee._id,
