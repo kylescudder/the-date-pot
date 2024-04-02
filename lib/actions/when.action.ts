@@ -1,9 +1,7 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs'
-import When, { IWhen } from '../models/when'
+import When from '../models/when'
 import { connectToDB } from '../mongoose'
-import mongoose from 'mongoose'
 
 export async function getWhenList() {
   try {

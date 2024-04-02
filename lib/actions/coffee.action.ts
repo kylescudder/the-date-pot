@@ -6,7 +6,7 @@ import { getUserGroup, getUserInfo } from './user.actions'
 import mongoose from 'mongoose'
 import Coffee, { ICoffee } from '../models/coffee'
 import CoffeeRating, { ICoffeeRating } from '../models/coffee-rating'
-import User, { IUser } from '../models/user'
+import User from '../models/user'
 
 export async function getCoffeeList(id: string) {
   try {

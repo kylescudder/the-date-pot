@@ -1,9 +1,7 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs'
-import Platform, { IPlatform } from '../models/platform'
+import Platform from '../models/platform'
 import { connectToDB } from '../mongoose'
-import mongoose from 'mongoose'
 
 export async function getPlatformList() {
   try {

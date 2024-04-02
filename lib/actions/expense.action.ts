@@ -1,7 +1,6 @@
 'use server'
 
 import { connectToDB } from '../mongoose'
-import mongoose from 'mongoose'
 import Expense from '../models/expense'
 
 export async function getExpenseList() {

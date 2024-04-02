@@ -1,9 +1,7 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs'
-import Director, { IDirector } from '../models/director'
+import Director from '../models/director'
 import { connectToDB } from '../mongoose'
-import mongoose from 'mongoose'
 
 export async function getDirectorList() {
   try {

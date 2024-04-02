@@ -6,7 +6,7 @@ import { getUserGroup, getUserInfo } from './user.actions'
 import mongoose from 'mongoose'
 import Beer, { IBeer } from '../models/beer'
 import BeerRating, { IBeerRating } from '../models/beer-rating'
-import User, { IUser } from '../models/user'
+import User from '../models/user'
 
 export async function getBeerList(id: string) {
   try {

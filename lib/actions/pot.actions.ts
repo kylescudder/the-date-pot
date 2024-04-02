@@ -1,11 +1,7 @@
 'use server'
 
-import mongoose from 'mongoose'
-import Pot, { IPot } from '../models/pot'
-import { IUser } from '../models/user'
-import UserGroup, { IUserGroup } from '../models/user-group'
+import Pot from '../models/pot'
 import { connectToDB } from '../mongoose'
-import UserGroupPot from '../models/user-group-pot'
 
 export async function getPots() {
   try {

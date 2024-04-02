@@ -1,9 +1,7 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs'
-import Cuisine, { ICuisine } from '../models/cuisine'
+import Cuisine from '../models/cuisine'
 import { connectToDB } from '../mongoose'
-import mongoose from 'mongoose'
 
 export async function getCuisineList() {
   try {
