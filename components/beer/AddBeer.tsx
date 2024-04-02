@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   archiveToast,
@@ -16,31 +16,48 @@ import {
   updateBeerRating
 } from '@/lib/actions/beer.action'
 import { IBeerRating } from '@/lib/models/beer-rating'
+import { IBrewery } from '@/lib/models/brewery'
+import { option } from '@/lib/models/select-options'
 import { useForm } from '@mantine/form'
-import { Button, NumberInput, Rating, TextInput } from '@mantine/core'
+import {
+  Button,
+  MultiSelect,
+  NumberInput,
+  Rating,
+  TextInput
+} from '@mantine/core'
 import BackButton from '../shared/BackButton'
 import { IUser } from '@/lib/models/user'
-import FormModal from '../shared/FormModal'
 import AddBeerRating from './AddBeerRating'
 import FullScreenModal from '../shared/FullScreenModal'
+import { addBrewery } from '@/lib/actions/brewer.action'
 
 export default function AddBeer(props: {
   beer: IBeer
   ratings: IBeerRating[]
   users: IUser[]
+  breweryList: IBrewery[]
 }) {
   const router = useRouter()
   const pathname = usePathname()
   const [changesMade, setChangesMade] = useState<boolean>(false)
   const [beerRatings, setBeerRatings] = useState<IBeerRating[]>(props.ratings)
-
   const [open, setOpen] = useState<boolean>(false)
+
+  const breweryOptions: option[] = props.breweryList.map(
+    (brewery: IBrewery) => ({
+      value: brewery.breweryName,
+      label: brewery.breweryName
+    })
+  )
+  const [breweries, setBreweries] = useState<option[]>(breweryOptions)
 
   interface formBeer {
     _id: string
     archive: boolean
     beerName: string
     abv: string
+    breweries: string[]
     addedByID: string
     userGroupID: string
     avgWankyness: number
@@ -63,6 +80,7 @@ export default function AddBeer(props: {
       archive: props.beer.archive ? props.beer.archive : false,
       beerName: props.beer.beerName ? props.beer.beerName : '',
       abv: props.beer.abv ? props.beer.abv : '',
+      breweries: props.beer.breweries ? props.beer.breweries : [],
       addedByID: props.beer.addedByID ? props.beer.addedByID : '',
       userGroupID: props.beer.userGroupID ? props.beer.userGroupID : '',
       avgWankyness: 0,
@@ -85,9 +103,9 @@ export default function AddBeer(props: {
     const payload: IBeer = {
       ...props.beer,
       beerName: values.beerName,
-      abv: values.abv
+      breweries: values.breweries
     }
-    console.log('payload', payload)
+
     const beer = await updateBeer(payload)
     beerRatings.map(async (rating: IBeerRating) => {
       const updatedRating = {
@@ -176,6 +194,27 @@ export default function AddBeer(props: {
           className="text-dark-2 dark:text-light-2"
           size="md"
           {...form.getInputProps('beerName')}
+        />
+        <MultiSelect
+          multiple={true}
+          radius="md"
+          size="md"
+          clearable
+          searchable
+          creatable
+          getCreateLabel={(query) => `+ Create ${query}`}
+          onCreate={(query) => {
+            const item = { value: query, label: query }
+            const brewery: IBrewery = { _id: '', breweryName: query }
+            setBreweries((current) => [...current, item])
+            addBrewery(brewery)
+            return item
+          }}
+          transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
+          label="Breweries"
+          placeholder="Pick some"
+          data={breweries}
+          {...form.getInputProps('breweries')}
         />
         <NumberInput
           label="ABV"
