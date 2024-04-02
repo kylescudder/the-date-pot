@@ -20,6 +20,7 @@ export default function BeerList(props: { beers: IBeer[]; users: IUser[] }) {
   const newBeer = {
     _id: '',
     beerName: '',
+    abv: '',
     avgWankyness: 0,
     avgTaste: 0,
     avgRating: 0,
