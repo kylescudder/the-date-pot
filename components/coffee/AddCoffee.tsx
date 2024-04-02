@@ -85,7 +85,7 @@ export default function AddCoffee(props: {
       await deleteCoffeeRating(id)
     }
     const rating = await coffeeRatings.filter((item) => item._id === id)
-    deleteToast(`${rating[0].username}'s rating`)
+    deleteToast(`${rating[0]!.username}'s rating`)
     setChangesMade(true)
   }
 
@@ -139,7 +139,7 @@ export default function AddCoffee(props: {
     const updatedCoffeeRatings = [...coffeeRatings]
 
     // Update the experience property of the rating at index i
-    updatedCoffeeRatings[i].experience = experience
+    updatedCoffeeRatings[i]!.experience = experience
 
     // Set the updated coffeeRatings array back to state
     setCoffeeRatings(updatedCoffeeRatings)
@@ -150,7 +150,7 @@ export default function AddCoffee(props: {
     const updatedCoffeeRatings = [...coffeeRatings]
 
     // Update the taste property of the rating at index i
-    updatedCoffeeRatings[i].taste = taste
+    updatedCoffeeRatings[i]!.taste = taste
 
     // Set the updated coffeeRatings array back to state
     setCoffeeRatings(updatedCoffeeRatings)
