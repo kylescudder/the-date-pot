@@ -25,6 +25,8 @@ import NoteCard from './NoteCard'
 import FullScreenModal from '../shared/FullScreenModal'
 import AddRestaurantNote from './AddRestaurantNote'
 import ReloadMapPlaceholder from '../shared/ReloadMapPlaceholder'
+import { addCuisine } from '@/lib/actions/cuisine.action'
+import { addWhen } from '@/lib/actions/when.action'
 
 export default function AddRestaurant(props: {
   restaurant: IRestaurant
@@ -51,10 +53,12 @@ export default function AddRestaurant(props: {
     value: user.cuisine,
     label: user.cuisine
   }))
+  const [cuisines, setCuisines] = useState<option[]>(cuisineOptions)
   const whenOptions: option[] = props.whenList.map((user: IWhen) => ({
     value: user.when,
     label: user.when
   }))
+  const [whens, setWhens] = useState<option[]>(whenOptions)
 
   const restaurantNote: string = ''
 
@@ -171,10 +175,20 @@ export default function AddRestaurant(props: {
           radius="md"
           size="md"
           clearable
+          searchable
+          creatable
+          getCreateLabel={(query) => `+ Create ${query}`}
+          onCreate={(query) => {
+            const item = { value: query, label: query }
+            const cuisine: ICuisine = { _id: '', cuisine: query }
+            setCuisines((current) => [...current, item])
+            addCuisine(cuisine)
+            return item
+          }}
           transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
           label="Cuisine"
           placeholder="Pick some"
-          data={cuisineOptions}
+          data={cuisines}
           {...form.getInputProps('cuisines')}
         />
         <MultiSelect
@@ -182,10 +196,20 @@ export default function AddRestaurant(props: {
           radius="md"
           size="md"
           clearable
+          searchable
+          creatable
+          getCreateLabel={(query) => `+ Create ${query}`}
+          onCreate={(query) => {
+            const item = { value: query, label: query }
+            const when: IWhen = { _id: '', when: query }
+            setWhens((current) => [...current, item])
+            addWhen(when)
+            return item
+          }}
           transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
           label="When"
           placeholder="Pick some"
-          data={whenOptions}
+          data={whens}
           {...form.getInputProps('whens')}
         />
         <TextInput
