@@ -50,11 +50,11 @@ const Grid = (props: {
     if (allColumns && allColumns.length > 0) {
       for (var i = 0; i < allColumns.length; i++) {
         var column = allColumns[i]
-        totalColsWidth += column.getMinWidth() || 0
+        totalColsWidth += column!.getMinWidth() || 0
         if (totalColsWidth > gridWidth) {
-          columnsToHide.push(column.getColId())
+          columnsToHide.push(column!.getColId())
         } else {
-          columnsToShow.push(column.getColId())
+          columnsToShow.push(column!.getColId())
         }
       }
     }
