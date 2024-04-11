@@ -1,12 +1,11 @@
 const withSerwist = require('@serwist/next').default({
-  swSrc: 'app/sw.ts',
+  swSrc: 'src/app/sw.ts',
   swDest: 'public/sw.js'
 })
 const { withSentryConfig } = require('@sentry/nextjs')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverActions: true,
     serverComponentsExternalPackages: ['mongoose']
   },
   eslint: {
