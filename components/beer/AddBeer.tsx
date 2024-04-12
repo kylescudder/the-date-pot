@@ -31,12 +31,15 @@ import { IUser } from '@/lib/models/user'
 import AddBeerRating from './AddBeerRating'
 import FullScreenModal from '../shared/FullScreenModal'
 import { addBrewery } from '@/lib/actions/brewer.action'
+import { IBeerType } from '@/lib/models/beer-type'
+import { addBeerType } from '@/lib/actions/beer-type'
 
 export default function AddBeer(props: {
   beer: IBeer
   ratings: IBeerRating[]
   users: IUser[]
   breweryList: IBrewery[]
+  beerTypeList: IBeerType[]
 }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -50,7 +53,14 @@ export default function AddBeer(props: {
       label: brewery.breweryName
     })
   )
+  const beerTypeOptions: option[] = props.beerTypeList.map(
+    (beerType: IBeerType) => ({
+      value: beerType.beerType,
+      label: beerType.beerType
+    })
+  )
   const [breweries, setBreweries] = useState<option[]>(breweryOptions)
+  const [beerTypes, setBeerTypes] = useState<option[]>(beerTypeOptions)
 
   interface formBeer {
     _id: string
@@ -58,6 +68,7 @@ export default function AddBeer(props: {
     beerName: string
     abv: number
     breweries: string[]
+    beerTypes: string[]
     addedByID: string
     userGroupID: string
     avgWankyness: number
@@ -81,6 +92,7 @@ export default function AddBeer(props: {
       beerName: props.beer.beerName ? props.beer.beerName : '',
       abv: props.beer.abv ? props.beer.abv : 0,
       breweries: props.beer.breweries ? props.beer.breweries : [],
+      beerTypes: props.beer.beerTypes ? props.beer.beerTypes : [],
       addedByID: props.beer.addedByID ? props.beer.addedByID : '',
       userGroupID: props.beer.userGroupID ? props.beer.userGroupID : '',
       avgWankyness: 0,
@@ -104,7 +116,8 @@ export default function AddBeer(props: {
       ...props.beer,
       beerName: values.beerName,
       abv: values.abv,
-      breweries: values.breweries
+      breweries: values.breweries,
+      beerTypes: values.beerTypes
     }
 
     const beer = await updateBeer(payload)
@@ -216,6 +229,27 @@ export default function AddBeer(props: {
           placeholder="Pick some"
           data={breweries}
           {...form.getInputProps('breweries')}
+        />
+        <MultiSelect
+          multiple={true}
+          radius="md"
+          size="md"
+          clearable
+          searchable
+          creatable
+          getCreateLabel={(query) => `+ Create ${query}`}
+          onCreate={(query) => {
+            const item = { value: query, label: query }
+            const beerType: IBeerType = { _id: '', beerType: query }
+            setBeerTypes((current) => [...current, item])
+            addBeerType(beerType)
+            return item
+          }}
+          transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
+          label="Type"
+          placeholder="Pick some"
+          data={beerTypes}
+          {...form.getInputProps('beerTypes')}
         />
         <NumberInput
           label="ABV"

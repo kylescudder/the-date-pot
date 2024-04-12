@@ -139,6 +139,7 @@ export async function updateBeer(beerData: IBeer) {
         beerName: beerData.beerName,
         abv: beerData.abv,
         breweries: beerData.breweries,
+        beerTypes: beerData.beerTypes,
         archive: beerData.archive,
         addedByID: new mongoose.Types.ObjectId(userInfo._id),
         userGroupID: new mongoose.Types.ObjectId(userGroup._id)
