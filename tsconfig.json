@@ -22,10 +22,9 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@/components/*": ["./components/*"],
-      "@/lib/*": ["./lib/*"]
+      "@/*": ["./src/*"]
     },
     "types": ["@serwist/next/typings"]
   },

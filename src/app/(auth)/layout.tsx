@@ -1,5 +1,5 @@
 // app/layout.tsx
-import '../globals.css'
+import '@/styles/globals.css'
 import { Inter } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 import type { Metadata, Viewport } from 'next'

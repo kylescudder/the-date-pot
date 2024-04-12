@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ColDef, RowClickedEvent, RowStyle } from 'ag-grid-community'
 import { IconFilePlus, IconSearch } from '@tabler/icons-react'
-import FullScreenModal from '../shared/FullScreenModal'
+import FullScreenModal from './FullScreenModal'
 import { Button, Input } from '@mantine/core'
 import Grid from './Grid'
 
