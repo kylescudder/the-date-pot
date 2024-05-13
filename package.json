@@ -12,8 +12,8 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@clerk/nextjs": "^4.29.7",
-    "@clerk/themes": "^1.7.10",
+    "@clerk/nextjs": "5.0.8",
+    "@clerk/themes": "2.1.3",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.4",
     "@emotion/server": "^11.11.0",

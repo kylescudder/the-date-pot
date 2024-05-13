@@ -1,5 +1,5 @@
 import AccountProfile from '@/components/forms/AccountProfile'
-import { currentUser } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
 import React from 'react'
 import { redirect } from 'next/navigation'
 import Logout from '@/components/shared/Logout'

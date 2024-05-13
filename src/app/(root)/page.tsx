@@ -1,7 +1,8 @@
 'use server'
 //app/page.tsx
 import { getUserInfo } from '@/lib/actions/user.actions'
-import { UserButton, currentUser } from '@clerk/nextjs'
+import { UserButton } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
 async function Page() {

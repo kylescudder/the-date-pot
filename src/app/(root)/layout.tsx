@@ -1,6 +1,7 @@
 import React from 'react'
 import type { Metadata, Viewport } from 'next'
-import { ClerkProvider, currentUser } from '@clerk/nextjs'
+import { ClerkProvider } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
 import { dark } from '@clerk/themes'
 import '@/styles/globals.css'
 import Topbar from '@/components/shared/Topbar'

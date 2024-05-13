@@ -8,7 +8,7 @@ export default function Logout(props: { placement: string }) {
   const router = useRouter()
   return (
     <SignedIn>
-      <SignOutButton signOutCallback={() => router.push('/sign-in')}>
+      <SignOutButton signOutOptions={{ redirectUrl: 'sign-in' }}>
         <div
           className={`flex cursor-pointer gap-4 ${
             props.placement === 'top' && 'lg:hidden'

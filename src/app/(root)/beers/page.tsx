@@ -14,7 +14,7 @@ import { IBeerType } from '@/lib/models/beer-type'
 import { IBrewery } from '@/lib/models/brewery'
 import { IUser } from '@/lib/models/user'
 import { IUserGroup } from '@/lib/models/user-group'
-import { currentUser } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
 import React from 'react'
 
 export default async function Beers() {

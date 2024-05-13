@@ -1,6 +1,6 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
 import Vinyl, { IVinyl } from '../models/vinyl'
 import { connectToDB } from '../mongoose'
 import { getUserGroup, getUserInfo } from './user.actions'

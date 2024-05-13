@@ -11,7 +11,7 @@ import {
 import { ICoffee } from '@/lib/models/coffee'
 import { IUser } from '@/lib/models/user'
 import { IUserGroup } from '@/lib/models/user-group'
-import { currentUser } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
 
 export default async function Coffees() {
   const user = await currentUser()

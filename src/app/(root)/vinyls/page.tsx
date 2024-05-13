@@ -6,7 +6,7 @@ import { getVinylList } from '@/lib/actions/vinyl.action'
 import { IUser } from '@/lib/models/user'
 import { IUserGroup } from '@/lib/models/user-group'
 import { IVinyl } from '@/lib/models/vinyl'
-import { currentUser } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
 import React from 'react'
 
 export default async function Vinyls() {
