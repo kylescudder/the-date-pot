@@ -53,7 +53,7 @@
     "react-burger-menu": "3.0.9",
     "react-dom": "18.3.1",
     "react-hook-form": "7.50.1",
-    "react-toastify": "10.0.4",
+    "react-toastify": "10.0.5",
     "serwist": "9.0.2",
     "styled-components": "6.1.8",
     "tailwind-merge": "2.2.1",
