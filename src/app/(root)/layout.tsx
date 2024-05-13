@@ -110,7 +110,7 @@ export default async function RootLayout({
         baseTheme: dark
       }}
     >
-      <html lang="en">
+      <html lang='en'>
         <body>
           <Topbar pots={pots} />
           <MainContent pots={pots} children={children} />

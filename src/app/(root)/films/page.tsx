@@ -27,7 +27,7 @@ export default async function Films() {
   const platformList: IPlatform[] = await getPlatformList()
 
   return (
-    <div className="listPage">
+    <div className='listPage'>
       <FilmList
         films={films}
         directorList={directorList}

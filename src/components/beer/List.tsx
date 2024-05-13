@@ -42,7 +42,7 @@ export default function BeerList(props: {
   ) : (
     <List
       records={props.beers}
-      potName="Beer"
+      potName='Beer'
       rowFormatter={null}
       columns={[
         {
@@ -59,9 +59,9 @@ export default function BeerList(props: {
           cellRenderer: (params: ICellRendererParams) => {
             return (
               <Rating
-                name="average"
+                name='average'
                 fractions={2}
-                size="lg"
+                size='lg'
                 readOnly
                 value={params.value}
               />
@@ -77,9 +77,9 @@ export default function BeerList(props: {
           cellRenderer: (params: ICellRendererParams) => {
             return (
               <Rating
-                name="wankyness"
+                name='wankyness'
                 fractions={2}
-                size="lg"
+                size='lg'
                 readOnly
                 value={params.value}
               />
@@ -95,9 +95,9 @@ export default function BeerList(props: {
           cellRenderer: (params: ICellRendererParams) => {
             return (
               <Rating
-                name="taste"
+                name='taste'
                 fractions={2}
-                size="lg"
+                size='lg'
                 readOnly
                 value={params.value}
               />

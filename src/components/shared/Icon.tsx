@@ -28,9 +28,9 @@ export default function Icon(props: IconProps) {
   if (!IconComponent) {
     return (
       <>
-        <div className="animated">
-          <div className="avatar">
-            <div className="avatar-image"></div>
+        <div className='animated'>
+          <div className='avatar'>
+            <div className='avatar-image'></div>
           </div>
         </div>
       </>

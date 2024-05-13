@@ -81,9 +81,9 @@ const Grid = (props: {
     }
   }
   return (
-    <div className="h-full w-full">
-      <div id="grid-wrapper" className="h-screen w-full">
-        <div className={'ag-theme-quartz-dark w-full h-full'}>
+    <div className='h-full w-full'>
+      <div id='grid-wrapper' className='h-screen w-full'>
+        <div className={'ag-theme-quartz-dark h-full w-full'}>
           <AgGridReact
             gridOptions={gridOptions}
             rowData={rowData}

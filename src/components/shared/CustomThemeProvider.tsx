@@ -8,7 +8,7 @@ interface CustomThemeProviderProps {
 const CustomThemeProvider: React.FC<CustomThemeProviderProps> = ({
   children
 }) => {
-  return <ThemeProvider attribute="class">{children}</ThemeProvider>
+  return <ThemeProvider attribute='class'>{children}</ThemeProvider>
 }
 
 export default CustomThemeProvider

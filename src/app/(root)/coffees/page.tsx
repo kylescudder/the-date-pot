@@ -24,7 +24,7 @@ export default async function Coffees() {
   const longLat: number[] = [0, 0]
 
   return (
-    <div className="listPage">
+    <div className='listPage'>
       <CoffeeList coffees={coffees} users={users} longLat={longLat} />
     </div>
   )

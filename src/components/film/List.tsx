@@ -37,7 +37,7 @@ export default function FilmList(props: {
   ) : (
     <List
       records={props.films}
-      potName="Film"
+      potName='Film'
       rowFormatter={null}
       columns={[
         {

@@ -29,7 +29,7 @@ export default async function Beers() {
   const users: IUser[] = (await getGroupUsers()) || []
 
   return (
-    <div className="listPage">
+    <div className='listPage'>
       <BeerList
         beers={beers}
         users={users}

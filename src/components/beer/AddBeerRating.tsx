@@ -74,41 +74,41 @@ export default function AddBeerRating(props: {
       }`}
     >
       <Select
-        radius="md"
-        size="md"
+        radius='md'
+        size='md'
         clearable
         transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-        label="Who?"
-        placeholder="Pick one"
+        label='Who?'
+        placeholder='Pick one'
         data={options}
         {...form.getInputProps('userID')}
       />
-      <div className="text-base flex items-center pt-2">
-        <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-black text-gray-700 mr-2">
+      <div className='flex items-center pt-2 text-base'>
+        <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
           Taste
         </span>
         <Rating
-          name="taste"
+          name='taste'
           fractions={2}
-          size="xl"
+          size='xl'
           {...form.getInputProps('taste')}
         />
       </div>
-      <div className="text-base flex items-center pt-5">
-        <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-black text-gray-700 mr-2">
+      <div className='flex items-center pt-5 text-base'>
+        <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
           Wankyness
         </span>
         <Rating
-          name="wankyness"
+          name='wankyness'
           fractions={2}
-          size="xl"
+          size='xl'
           {...form.getInputProps('wankyness')}
         />
       </div>
       <Button
-        radius="md"
-        className="bg-primary-500 hover:bg-primary-hover text-light-1"
-        type="submit"
+        radius='md'
+        className='bg-primary-500 text-light-1 hover:bg-primary-hover'
+        type='submit'
       >
         {props.beerRating._id === '' ? 'Add' : 'Update'} Rating
       </Button>

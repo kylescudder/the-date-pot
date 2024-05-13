@@ -65,64 +65,64 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
   return (
     <form
       onSubmit={form.onSubmit((values) => onSubmit(values))}
-      className="flex flex-col justify-start gap-10"
+      className='flex flex-col justify-start gap-10'
     >
       {form.values.image ? (
         <Image
           src={imageString}
-          alt="profile_icon"
+          alt='profile_icon'
           width={96}
           height={96}
           priority
-          className="rounded-full object-contain"
+          className='rounded-full object-contain'
         />
       ) : (
         <Image
-          src="/assets/profile.svg"
-          alt="profile_icon"
+          src='/assets/profile.svg'
+          alt='profile_icon'
           width={24}
           height={24}
-          className="object-contain"
+          className='object-contain'
         />
       )}
       <FileInput
-        label="Profile Picture"
-        radius="md"
-        className="text-dark-2 dark:text-light-2"
-        size="md"
+        label='Profile Picture'
+        radius='md'
+        className='text-dark-2 dark:text-light-2'
+        size='md'
         {...form.getInputProps('image')}
         onChange={(e) => handleImage(e!)}
       />
       <TextInput
-        label="Name"
-        radius="md"
+        label='Name'
+        radius='md'
         placeholder="What's your name girl, what's you sign?"
-        className="text-dark-2 dark:text-light-2"
-        size="md"
+        className='text-dark-2 dark:text-light-2'
+        size='md'
         {...form.getInputProps('name')}
       />
       <TextInput
-        label="Username"
-        radius="md"
-        placeholder="your email address plz"
-        className="text-dark-2 dark:text-light-2"
-        size="md"
+        label='Username'
+        radius='md'
+        placeholder='your email address plz'
+        className='text-dark-2 dark:text-light-2'
+        size='md'
         {...form.getInputProps('username')}
       />
       <Textarea
-        label="Bio"
-        radius="md"
-        placeholder="Tell me a little bit about yourself..."
-        className="text-lg leading-6 font-semibold text-dark-2 dark:text-light-2"
-        size="md"
+        label='Bio'
+        radius='md'
+        placeholder='Tell me a little bit about yourself...'
+        className='text-lg font-semibold leading-6 text-dark-2 dark:text-light-2'
+        size='md'
         minRows={8}
         {...form.getInputProps('bio')}
       />
       <Button
-        radius="md"
-        size="md"
-        className="bg-primary-500 hover:bg-primary-hover"
-        type="submit"
+        radius='md'
+        size='md'
+        className='bg-primary-500 hover:bg-primary-hover'
+        type='submit'
       >
         {btnTitle}
       </Button>
