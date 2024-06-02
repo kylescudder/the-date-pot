@@ -1,13 +1,15 @@
 'use server'
 
-import Pot from '../models/pot'
-import { connectToDB } from '../mongoose'
+import { db } from '@/server/db'
+import { auth } from '@clerk/nextjs/server'
 
 export async function getPots() {
   try {
-    connectToDB()
+    const user = auth()
 
-    return await Pot.find()
+    if (!user.userId) throw new Error('Unauthorized')
+
+    return await db.query.pot.findMany({})
   } catch (error: any) {
     throw new Error(`Failed to get pots: ${error.message}`)
   }

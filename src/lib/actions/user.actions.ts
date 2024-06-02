@@ -1,58 +1,43 @@
 'use server'
 
+import { db } from '@/server/db'
+import { auth } from '@clerk/nextjs/server'
+import { eq } from 'drizzle-orm/sql/expressions/conditions'
+import { User, group, user, userGroups } from '@/server/db/schema'
 import { revalidatePath } from 'next/cache'
-import User, { IUser } from '../models/user'
-import { connectToDB } from '../mongoose'
-import { clerkClient, currentUser } from '@clerk/nextjs/server'
-import { convertBase64ToFile } from '../utils'
-import mongoose from 'mongoose'
-import UserGroup from '../models/user-group'
+import { sql } from 'drizzle-orm/sql/sql'
 
 export async function getUserInfo(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    return await User.findOne({
-      clerkId: id
+    if (!user.userId) throw new Error('Unauthorized')
+
+    return await db.query.user.findFirst({
+      where(fields, operators) {
+        return operators.and(eq(fields.clerkId, id))
+      }
     })
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`)
+    throw new Error(`Failed to get user info: ${error.message}`)
   }
 }
-export async function updateUser(userData: IUser, path: string) {
+export async function updateUser(userData: User, path: string) {
   try {
-    connectToDB()
+    const users = auth()
 
-    const user = await User.findOneAndUpdate(
-      { clerkId: userData.clerkId },
-      {
+    if (!users.userId) throw new Error('Unauthorized')
+
+    await db
+      .update(user)
+      .set({
         username: userData.username,
         clerkId: userData.clerkId,
         name: userData.name,
         bio: userData.bio,
         onboarded: true
-      },
-      { upsert: true, new: true }
-    )
-
-    await UserGroup.findOneAndUpdate(
-      {
-        users: user._id
-      },
-      {
-        _id: new mongoose.Types.ObjectId(),
-        users: [new mongoose.Types.ObjectId(user._id)]
-      },
-      { upsert: true, new: true }
-    )
-    if (userData.image) {
-      if (!userData.image.includes('https://img.clerk.com')) {
-        const file: File = convertBase64ToFile(userData.image)
-        clerkClient.users
-          .updateUserProfileImage(userData.clerkId, { file: file })
-          .catch((err) => console.table(err.errors))
-      }
-    }
+      })
+      .where(eq(user.clerkId, userData.clerkId))
 
     if (path === '/profile/edit') {
       revalidatePath(path)
@@ -63,31 +48,37 @@ export async function updateUser(userData: IUser, path: string) {
 }
 export async function getUserGroup(id: string) {
   try {
-    connectToDB()
+    const userAuth = auth()
 
-    return await UserGroup.findOne({
-      users: id
-    })
+    if (!userAuth.userId) throw new Error('Unauthorized')
+
+    const userGroupRecords = await db
+      .select()
+      .from(group)
+      .innerJoin(userGroups, eq(group.id, userGroups.groupId))
+      .where(sql`${userGroups.userId} = ${id}`)
+
+    return userGroupRecords[0].group
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`)
+    throw new Error(`Failed to get user groups: ${error.message}`)
   }
 }
 export async function getGroupUsers() {
   try {
-    connectToDB()
+    const userAuth = auth()
 
-    const user = await currentUser()
-    if (!user) return null
+    if (!userAuth.userId) throw new Error('Unauthorized')
 
-    const userInfo: IUser = await getUserInfo(user.id)
-    const groupUsers = await getUserGroup(userInfo._id)
+    const userInfo = await getUserInfo(userAuth?.userId ?? '')
+    if (!userInfo) throw new Error('User info not found')
+    const groupUsers = await getUserGroup(userInfo.id)
+    if (!groupUsers) throw new Error('User group info not found')
 
-    const idArray: string[] = []
-    groupUsers.users.map(async (element: string) => {
-      idArray.push(element)
-    })
-
-    return await User.find({ _id: idArray })
+    return await db
+      .select()
+      .from(user)
+      .innerJoin(userGroups, eq(user.id, userGroups.userId))
+      .where(sql`${userGroups.groupId} = ${groupUsers.id}`)
   } catch (error: any) {
     throw new Error(`Failed to create/update user: ${error.message}`)
   }

@@ -5,9 +5,7 @@ import { getCuisineList } from '@/lib/actions/cuisine.action'
 import { getLongLat } from '@/lib/actions/map.action'
 import { getRestaurant } from '@/lib/actions/restaurant.action'
 import { getWhenList } from '@/lib/actions/when.action'
-import { ICuisine } from '@/lib/models/cuisine'
-import { IRestaurant } from '@/lib/models/restaurant'
-import { IWhen } from '@/lib/models/when'
+import { Cuisine, When } from '@/server/db/schema'
 import React from 'react'
 
 export default async function Restaurant({
@@ -15,12 +13,12 @@ export default async function Restaurant({
 }: {
   params: { id: string }
 }) {
-  const restaurant: IRestaurant = await getRestaurant(params.id)
-  const cuisineList: ICuisine[] = await getCuisineList()
-  const whenList: IWhen[] = await getWhenList()
+  const restaurant = await getRestaurant(params.id)
+  const cuisineList: Cuisine[] = await getCuisineList()
+  const whenList: When[] = await getWhenList()
   let longLat: number[] = []
-  if (restaurant.address !== undefined && restaurant.address !== '') {
-    longLat = await getLongLat(restaurant.address)
+  if (restaurant!.address !== undefined && restaurant!.address !== '') {
+    longLat = await getLongLat(restaurant!.address)
   }
   return (
     <AddRestaurant

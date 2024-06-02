@@ -5,19 +5,15 @@ import { getBeerTypeList } from '@/lib/actions/beer-type'
 import { getBeer, getBeerRatings } from '@/lib/actions/beer.action'
 import { getBreweryList } from '@/lib/actions/brewer.action'
 import { getGroupUsers } from '@/lib/actions/user.actions'
-import { IBeer } from '@/lib/models/beer'
-import { IBeerRating } from '@/lib/models/beer-rating'
-import { IBeerType } from '@/lib/models/beer-type'
-import { IBrewery } from '@/lib/models/brewery'
-import { IUser } from '@/lib/models/user'
+import { BeerRating, BeerType, Brewery } from '@/server/db/schema'
 import React from 'react'
 
 export default async function Beer({ params }: { params: { id: string } }) {
-  const beer: IBeer = await getBeer(params.id)
-  const ratings: IBeerRating[] = await getBeerRatings(params.id)
-  const breweryList: IBrewery[] = await getBreweryList()
-  const beerTypeList: IBeerType[] = await getBeerTypeList()
-  const users: IUser[] = (await getGroupUsers()) || []
+  const beer = await getBeer(params.id)
+  const ratings: BeerRating[] = await getBeerRatings(params.id)
+  const breweryList: Brewery[] = await getBreweryList()
+  const beerTypeList: BeerType[] = await getBeerTypeList()
+  const users = (await getGroupUsers()) || []
   return (
     <AddBeer
       beer={beer}

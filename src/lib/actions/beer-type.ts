@@ -1,36 +1,40 @@
 'use server'
 
-import BeerType, { IBeerType } from '../models/beer-type'
-import { connectToDB } from '../mongoose'
-import mongoose from 'mongoose'
+import { db } from '@/server/db'
+import { auth } from '@clerk/nextjs/server'
+import { BeerType, beerType } from '@/server/db/schema'
+import { eq } from 'drizzle-orm'
+import { uuidv4 } from '../utils'
 
 export async function getBeerTypeList() {
   try {
-    connectToDB()
+    const user = auth()
 
-    return await BeerType.find({})
+    if (!user.userId) throw new Error('Unauthorized')
+
+    return await db.query.beerType.findMany({})
   } catch (error: any) {
     throw new Error(`Failed to find beer types: ${error.message}`)
   }
 }
 
-export async function addBeerType(beerType: IBeerType) {
+export async function addBeerType(BeerType: BeerType) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const newId = new mongoose.Types.ObjectId()
-    if (beerType._id === '') {
-      beerType._id = newId.toString()
+    if (!user.userId) throw new Error('Unauthorized')
+
+    if (BeerType.id === '') {
+      BeerType.id = uuidv4().toString()
     }
 
-    return await BeerType.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(beerType._id) },
-      {
-        _id: new mongoose.Types.ObjectId(beerType._id),
-        beerType: beerType.beerType
-      },
-      { upsert: true, new: true }
-    )
+    await db
+      .update(beerType)
+      .set({
+        id: BeerType.id,
+        beerType: BeerType.beerType
+      })
+      .where(eq(beerType.id, BeerType.id))
   } catch (error: any) {
     throw new Error(`Failed to add beer type: ${error.message}`)
   }

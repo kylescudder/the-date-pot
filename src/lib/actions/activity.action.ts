@@ -1,80 +1,96 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs/server'
-import Activity, { IActivity } from '../models/activity'
-import { connectToDB } from '../mongoose'
+import { auth } from '@clerk/nextjs/server'
 import { getUserGroup, getUserInfo } from './user.actions'
-import mongoose from 'mongoose'
+import { db } from '@/server/db'
+import { eq } from 'drizzle-orm/sql/expressions/conditions'
+import { Activity, activity } from '@/server/db/schema'
+import { uuidv4 } from '../utils'
 
 export async function getActivityList(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    return await Activity.find({
-      userGroupID: id,
-      archive: false
+    if (!user.userId) throw new Error('Unauthorized')
+
+    return await db.query.activity.findMany({
+      where(fields, operators) {
+        return operators.and(
+          eq(fields.userGroupId, id),
+          eq(fields.archive, false)
+        )
+      }
     })
   } catch (error: any) {
     throw new Error(`Failed to find activities: ${error.message}`)
   }
 }
+
 export async function getActivity(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const user = await currentUser()
-    if (!user) return null
-    const userInfo = await getUserInfo(user?.id)
-    const userGroup = await getUserGroup(userInfo._id)
+    if (!user.userId) throw new Error('Unauthorized')
 
-    return await Activity.findOne({
-      _id: new mongoose.Types.ObjectId(id),
-      userGroupID: new mongoose.Types.ObjectId(userGroup._id)
+    const userInfo = await getUserInfo(user?.userId ?? '')
+    if (!userInfo) throw new Error('User info not found')
+    const userGroup = await getUserGroup(userInfo.id)
+    if (!userGroup) throw new Error('User group info not found')
+
+    return await db.query.activity.findFirst({
+      where(fields, operators) {
+        return operators.and(
+          eq(fields.userGroupId, userGroup.id),
+          eq(fields.id, id)
+        )
+      }
     })
   } catch (error: any) {
     throw new Error(`Failed to find activity: ${error.message}`)
   }
 }
-export async function updateActivity(ActivityData: IActivity) {
+export async function updateActivity(ActivityData: Activity) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const user = await currentUser()
-    if (!user) return null
-    const userInfo = await getUserInfo(user?.id)
-    const userGroup = await getUserGroup(userInfo._id)
+    if (!user.userId) throw new Error('Unauthorized')
 
-    const newId = new mongoose.Types.ObjectId()
-    if (ActivityData._id === '') {
-      ActivityData._id = newId.toString()
+    const userInfo = await getUserInfo(user?.userId ?? '')
+    if (!userInfo) throw new Error('User info not found')
+    const userGroup = await getUserGroup(userInfo.id)
+    if (!userGroup) throw new Error('User group info not found')
+
+    if (ActivityData.id === '') {
+      ActivityData.id = uuidv4().toString()
     }
 
-    return await Activity.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(ActivityData._id) },
-      {
-        _id: new mongoose.Types.ObjectId(ActivityData._id),
+    await db
+      .update(activity)
+      .set({
+        id: ActivityData.id,
         activityName: ActivityData.activityName,
         address: ActivityData.address,
         archive: ActivityData.archive,
-        userGroupID: new mongoose.Types.ObjectId(userGroup._id),
-        expense: ActivityData.expense
-      },
-      { upsert: true, new: true }
-    )
+        userGroupId: userGroup.id,
+        expenseId: ActivityData.expenseId
+      })
+      .where(eq(activity.id, ActivityData.id))
   } catch (error: any) {
     throw new Error(`Failed to create/update activity: ${error.message}`)
   }
 }
 export async function archiveActivity(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    return await Activity.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(id) },
-      {
+    if (!user.userId) throw new Error('Unauthorized')
+
+    await db
+      .update(activity)
+      .set({
         archive: true
-      }
-    )
+      })
+      .where(eq(activity.id, id))
   } catch (error: any) {
     throw new Error(`Failed to archive activity: ${error.message}`)
   }

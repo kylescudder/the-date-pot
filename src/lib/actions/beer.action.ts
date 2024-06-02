@@ -1,26 +1,43 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs/server'
-import { connectToDB } from '../mongoose'
+import { db } from '@/server/db'
+import {
+  Beer,
+  BeerRating,
+  BeerBreweries,
+  User,
+  beer,
+  beerBreweries,
+  beerRating,
+  beerTypes,
+  BeerTypes
+} from '@/server/db/schema'
+import { auth } from '@clerk/nextjs/server'
+import { eq } from 'drizzle-orm/sql/expressions/conditions'
 import { getUserGroup, getUserInfo } from './user.actions'
-import mongoose from 'mongoose'
-import Beer, { IBeer } from '../models/beer'
-import BeerRating, { IBeerRating } from '../models/beer-rating'
-import User from '../models/user'
+import { uuidv4 } from '../utils'
 
 export async function getBeerList(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const beers: IBeer[] = await Beer.find({
-      userGroupID: id,
-      archive: false
+    if (!user.userId) throw new Error('Unauthorized')
+
+    const beers: Beer[] = await db.query.beer.findMany({
+      where(fields, operators) {
+        return operators.and(
+          eq(fields.userGroupId, id),
+          eq(fields.archive, false)
+        )
+      }
     })
 
     await Promise.all(
       beers.map(async (element) => {
-        const beerRatings: IBeerRating[] = await BeerRating.find({
-          beerID: new mongoose.Types.ObjectId(element._id)
+        const beerRatings: BeerRating[] = await db.query.beerRating.findMany({
+          where(fields, operators) {
+            return operators.and(eq(fields.beerId, element.id))
+          }
         })
 
         let wankyness = 0
@@ -45,16 +62,22 @@ export async function getBeerList(id: string) {
 }
 export async function getBeer(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const user = await currentUser()
-    if (!user) return null
-    const userInfo = await getUserInfo(user?.id)
-    const userGroup = await getUserGroup(userInfo._id)
+    if (!user.userId) throw new Error('Unauthorized')
 
-    return await Beer.findOne({
-      _id: new mongoose.Types.ObjectId(id),
-      userGroupID: new mongoose.Types.ObjectId(userGroup._id)
+    const userInfo = await getUserInfo(user?.userId ?? '')
+    if (!userInfo) throw new Error('User info not found')
+    const userGroup = await getUserGroup(userInfo.id)
+    if (!userGroup) throw new Error('User group info not found')
+
+    return await db.query.beer.findFirst({
+      where(fields, operators) {
+        return operators.and(
+          eq(fields.userGroupId, userGroup.id),
+          eq(fields.id, id)
+        )
+      }
     })
   } catch (error: any) {
     throw new Error(`Failed to find beer: ${error.message}`)
@@ -62,17 +85,30 @@ export async function getBeer(id: string) {
 }
 export async function getBeerRatings(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const ratings = await BeerRating.find({
-      beerID: id
+    if (!user.userId) throw new Error('Unauthorized')
+
+    const ratings: BeerRating[] = await db.query.beerRating.findMany({
+      where(fields, operators) {
+        return operators.and(eq(fields.beerId, id))
+      }
     })
 
     await Promise.all(
       ratings.map(async (rating) => {
-        const u = await User.findById({
-          _id: rating.userID
+        const u: User | undefined = await db.query.user.findFirst({
+          where(fields, operators) {
+            if (rating.userId !== null) {
+              return operators.and(eq(fields.id, rating.userId))
+            }
+          }
         })
+
+        if (!u) {
+          throw new Error('User not found')
+        }
+
         rating.username = u.name
       })
     )
@@ -83,91 +119,108 @@ export async function getBeerRatings(id: string) {
 }
 export async function deleteBeerRating(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    await BeerRating.deleteOne({
-      _id: id
+    if (!user.userId) throw new Error('Unauthorized')
+
+    return await db.query.beerRating.findFirst({
+      where(fields, operators) {
+        return operators.and(eq(fields.id, id))
+      }
     })
   } catch (error: any) {
     throw new Error(`Failed to find beer ratings: ${error.message}`)
   }
 }
-export async function updateBeerRating(beerRatingData: IBeerRating) {
+export async function updateBeerRating(beerRatingData: BeerRating) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const newId = new mongoose.Types.ObjectId()
-    if (beerRatingData._id === '') {
-      beerRatingData._id = newId.toString()
+    if (!user.userId) throw new Error('Unauthorized')
+
+    if (beerRatingData.id === '') {
+      beerRatingData.id = uuidv4().toString()
     }
 
-    const rating = await BeerRating.findByIdAndUpdate(
-      { _id: new mongoose.Types.ObjectId(beerRatingData._id) },
-      {
-        _id: new mongoose.Types.ObjectId(beerRatingData._id),
-        beerID: new mongoose.Types.ObjectId(beerRatingData.beerID),
-        userID: new mongoose.Types.ObjectId(beerRatingData.userID),
+    return await db
+      .update(beerRating)
+      .set({
+        id: beerRatingData.id,
+        beerId: beerRatingData.beerId,
+        userId: beerRatingData.userId,
         wankyness: beerRatingData.wankyness,
         taste: beerRatingData.taste
-      },
-      { upsert: true, new: true }
-    )
-
-    return rating
+      })
+      .where(eq(beerRating.id, beerRatingData.id))
   } catch (error: any) {
     throw new Error(`Failed to create/update beer ratings: ${error.message}`)
   }
 }
-export async function updateBeer(beerData: IBeer) {
+export async function updateBeer(
+  beerData: Beer,
+  beerBreweryData: BeerBreweries,
+  beerTypeData: BeerTypes
+) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const user = await currentUser()
-    if (!user) return null
-    const userInfo = await getUserInfo(user?.id)
-    const userGroup = await getUserGroup(userInfo._id)
+    if (!user.userId) throw new Error('Unauthorized')
 
-    const newId = new mongoose.Types.ObjectId()
-    if (beerData._id === '') {
-      beerData._id = newId.toString()
+    const userInfo = await getUserInfo(user?.userId ?? '')
+    if (!userInfo) throw new Error('User info not found')
+    const userGroup = await getUserGroup(userInfo.id)
+    if (!userGroup) throw new Error('User group info not found')
+
+    if (beerData.id === '') {
+      beerData.id = uuidv4().toString()
     }
 
-    return await Beer.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(beerData._id) },
-      {
-        _id: new mongoose.Types.ObjectId(beerData._id),
+    await db
+      .update(beerBreweries)
+      .set({
+        id: beerBreweryData.id,
+        beerId: beerBreweryData.beerId,
+        breweryId: beerBreweryData.breweryId
+      })
+      .where(eq(beerBreweries.id, beerBreweryData.id))
+
+    await db
+      .update(beerTypes)
+      .set({
+        id: beerTypeData.id,
+        beerId: beerTypeData.beerId,
+        beerTypeId: beerTypeData.beerTypeId
+      })
+      .where(eq(beerTypes.id, beerTypeData.id))
+
+    return await db
+      .update(beer)
+      .set({
+        id: beerData.id,
         beerName: beerData.beerName,
         abv: beerData.abv,
-        breweries: beerData.breweries,
-        beerTypes: beerData.beerTypes,
         archive: beerData.archive,
-        addedByID: new mongoose.Types.ObjectId(userInfo._id),
-        userGroupID: new mongoose.Types.ObjectId(userGroup._id)
-      },
-      { upsert: true, new: true }
-    )
+        addedById: userInfo.id,
+        userGroupId: userGroup.id
+      })
+      .where(eq(beerRating.id, beerData.id))
   } catch (error: any) {
     throw new Error(`Failed to create/update beer: ${error.message}`)
   }
 }
 export async function archiveBeer(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    return await Beer.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(id) },
-      {
+    if (!user.userId) throw new Error('Unauthorized')
+
+    return await db
+      .update(beer)
+      .set({
         archive: true
-      }
-    )
+      })
+      .where(eq(beer.id, id))
   } catch (error: any) {
     throw new Error(`Failed to archive beer: ${error.message}`)
-  }
-}
-export async function getNewBeerID() {
-  try {
-    return new mongoose.Types.ObjectId().toString()
-  } catch (error: any) {
-    throw new Error(`Failed to get new beer ID: ${error.message}`)
   }
 }

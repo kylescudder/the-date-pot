@@ -1,36 +1,40 @@
 'use server'
 
-import mongoose from 'mongoose'
-import When, { IWhen } from '../models/when'
-import { connectToDB } from '../mongoose'
+import { db } from '@/server/db'
+import { When, when } from '@/server/db/schema'
+import { auth } from '@clerk/nextjs/server'
+import { uuidv4 } from '../utils'
+import { eq } from 'drizzle-orm/sql/expressions/conditions'
 
 export async function getWhenList() {
   try {
-    connectToDB()
+    const user = auth()
 
-    return await When.find({})
+    if (!user.userId) throw new Error('Unauthorized')
+
+    return await db.query.when.findMany({})
   } catch (error: any) {
     throw new Error(`Failed to find whens: ${error.message}`)
   }
 }
 
-export async function addWhen(when: IWhen) {
+export async function addWhen(whenData: When) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const newId = new mongoose.Types.ObjectId()
-    if (when._id === '') {
-      when._id = newId.toString()
+    if (!user.userId) throw new Error('Unauthorized')
+
+    if (whenData.id === '') {
+      whenData.id = uuidv4().toString()
     }
 
-    return await When.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(when._id) },
-      {
-        _id: new mongoose.Types.ObjectId(when._id),
-        when: when.when
-      },
-      { upsert: true, new: true }
-    )
+    await db
+      .update(when)
+      .set({
+        id: whenData.id,
+        when: whenData.when
+      })
+      .where(eq(when.id, whenData.id))
   } catch (error: any) {
     throw new Error(`Failed to add when: ${error.message}`)
   }

@@ -8,10 +8,7 @@ import {
   getUserGroup,
   getUserInfo
 } from '@/lib/actions/user.actions'
-import { IActivity } from '@/lib/models/activity'
-import { IExpense } from '@/lib/models/expense'
-import { IUser } from '@/lib/models/user'
-import { IUserGroup } from '@/lib/models/user-group'
+import { Activity, Expense, User, UserGroups } from '@/server/db/schema'
 import { currentUser } from '@clerk/nextjs/server'
 import React from 'react'
 
@@ -19,10 +16,10 @@ export default async function Activities() {
   const user = await currentUser()
   if (!user) return null
 
-  const userInfo: IUser = await getUserInfo(user.id)
-  const userGroup: IUserGroup = await getUserGroup(userInfo._id)
-  const activities: IActivity[] = await getActivityList(userGroup._id)
-  const expenseList: IExpense[] = await getExpenseList()
+  const userInfo = await getUserInfo(user.id)
+  const userGroup = await getUserGroup(userInfo!.id)
+  const activities: Activity[] = await getActivityList(userGroup.id)
+  const expenseList: Expense[] = await getExpenseList()
   const longLat: number[] = [0, 0]
 
   return (

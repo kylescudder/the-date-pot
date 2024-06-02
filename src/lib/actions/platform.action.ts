@@ -1,36 +1,40 @@
 'use server'
 
-import mongoose from 'mongoose'
-import Platform, { IPlatform } from '../models/platform'
-import { connectToDB } from '../mongoose'
+import { db } from '@/server/db'
+import { Platform, platform } from '@/server/db/schema'
+import { auth } from '@clerk/nextjs/server'
+import { uuidv4 } from '../utils'
+import { eq } from 'drizzle-orm/sql/expressions/conditions'
 
 export async function getPlatformList() {
   try {
-    connectToDB()
+    const user = auth()
 
-    return await Platform.find({})
+    if (!user.userId) throw new Error('Unauthorized')
+
+    return await db.query.platform.findMany({})
   } catch (error: any) {
     throw new Error(`Failed to find platforms: ${error.message}`)
   }
 }
 
-export async function addPlatform(platform: IPlatform) {
+export async function addPlatform(platformData: Platform) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const newId = new mongoose.Types.ObjectId()
-    if (platform._id === '') {
-      platform._id = newId.toString()
+    if (!user.userId) throw new Error('Unauthorized')
+
+    if (platformData.id === '') {
+      platformData.id = uuidv4().toString()
     }
 
-    return await Platform.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(platform._id) },
-      {
-        _id: new mongoose.Types.ObjectId(platform._id),
-        platformName: platform.platformName
-      },
-      { upsert: true, new: true }
-    )
+    await db
+      .update(platform)
+      .set({
+        id: platformData.id,
+        platformName: platformData.platformName
+      })
+      .where(eq(platform.id, platformData.id))
   } catch (error: any) {
     throw new Error(`Failed to add platform: ${error.message}`)
   }

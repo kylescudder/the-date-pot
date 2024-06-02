@@ -1,18 +1,33 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs/server'
-import Restaurant, { IRestaurant } from '../models/restaurant'
-import { connectToDB } from '../mongoose'
+import { db } from '@/server/db'
+import { auth } from '@clerk/nextjs/server'
+import { eq } from 'drizzle-orm/sql/expressions/conditions'
 import { getUserGroup, getUserInfo } from './user.actions'
-import mongoose from 'mongoose'
+import { uuidv4 } from '../utils'
+import {
+  Restaurant,
+  RestaurantCuisines,
+  RestaurantWhens,
+  restaurant,
+  restaurantCuisines,
+  restaurantNote,
+  restaurantWhens
+} from '@/server/db/schema'
 
 export async function getRestaurantList(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    return await Restaurant.find({
-      userGroupID: id,
-      archive: false
+    if (!user.userId) throw new Error('Unauthorized')
+
+    return await db.query.restaurant.findMany({
+      where(fields, operators) {
+        return operators.and(
+          eq(fields.userGroupId, id),
+          eq(fields.archive, false)
+        )
+      }
     })
   } catch (error: any) {
     throw new Error(`Failed to find restaurants: ${error.message}`)
@@ -20,94 +35,117 @@ export async function getRestaurantList(id: string) {
 }
 export async function getRestaurant(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const user = await currentUser()
-    if (!user) return null
-    const userInfo = await getUserInfo(user?.id)
-    const userGroup = await getUserGroup(userInfo._id)
+    if (!user.userId) throw new Error('Unauthorized')
 
-    return await Restaurant.findOne({
-      _id: new mongoose.Types.ObjectId(id),
-      userGroupID: new mongoose.Types.ObjectId(userGroup._id)
+    const userInfo = await getUserInfo(user?.userId ?? '')
+    if (!userInfo) throw new Error('User info not found')
+    const userGroup = await getUserGroup(userInfo.id)
+    if (!userGroup) throw new Error('User group info not found')
+
+    return await db.query.restaurant.findFirst({
+      where(fields, operators) {
+        return operators.and(
+          eq(fields.userGroupId, userGroup.id),
+          eq(fields.id, id)
+        )
+      }
     })
   } catch (error: any) {
     throw new Error(`Failed to find restaurant: ${error.message}`)
   }
 }
-export async function updateRestaurant(restaurantData: IRestaurant) {
+export async function updateRestaurant(
+  restaurantData: Restaurant,
+  restaurantCuisineData: RestaurantCuisines,
+  restaurantWhenData: RestaurantWhens
+) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const user = await currentUser()
-    if (!user) return null
-    const userInfo = await getUserInfo(user?.id)
-    const userGroup = await getUserGroup(userInfo._id)
+    if (!user.userId) throw new Error('Unauthorized')
 
-    const newId = new mongoose.Types.ObjectId()
-    if (restaurantData._id === '') {
-      restaurantData._id = newId.toString()
+    const userInfo = await getUserInfo(user?.userId ?? '')
+    if (!userInfo) throw new Error('User info not found')
+    const userGroup = await getUserGroup(userInfo.id)
+    if (!userGroup) throw new Error('User group info not found')
+
+    if (restaurantData.id === '') {
+      restaurantData.id = uuidv4().toString()
     }
 
-    return await Restaurant.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(restaurantData._id) },
-      {
-        _id: new mongoose.Types.ObjectId(restaurantData._id),
+    await db
+      .update(restaurantCuisines)
+      .set({
+        id: restaurantCuisineData.id,
+        restaurantId: restaurantCuisineData.restaurantId,
+        cuisineId: restaurantCuisineData.cuisineId
+      })
+      .where(eq(restaurantCuisines.id, restaurantCuisineData.id))
+
+    await db
+      .update(restaurantWhens)
+      .set({
+        id: restaurantWhenData.id,
+        restaurantId: restaurantWhenData.restaurantId,
+        whenId: restaurantWhenData.whenId
+      })
+      .where(eq(restaurantWhens.id, restaurantWhenData.id))
+
+    return await db
+      .update(restaurant)
+      .set({
+        id: restaurantData.id,
         restaurantName: restaurantData.restaurantName,
         address: restaurantData.address,
         archive: restaurantData.archive,
-        userGroupID: new mongoose.Types.ObjectId(userGroup._id),
-        cuisines: restaurantData.cuisines,
-        whens: restaurantData.whens
-      },
-      { upsert: true, new: true }
-    )
+        userGroupId: userGroup.id
+      })
+      .where(eq(restaurant.id, restaurantData.id))
   } catch (error: any) {
     throw new Error(`Failed to create/update restaurant: ${error.message}`)
   }
 }
 export async function deleteRestaurantNote(note: string, id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    return await Restaurant.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(id) },
-      {
-        $pullAll: {
-          notes: [note]
-        }
-      }
-    )
+    if (!user.userId) throw new Error('Unauthorized')
+
+    return await db.delete(restaurantNote).where(eq(restaurantNote.id, id))
   } catch (error: any) {
     throw new Error(`Failed to delete note: ${error.message}`)
   }
 }
 export async function addRestaurantNote(note: string, id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    return await Restaurant.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(id) },
-      {
-        $push: {
-          notes: [note]
-        }
-      }
-    )
+    if (!user.userId) throw new Error('Unauthorized')
+
+    return await db
+      .update(restaurantNote)
+      .set({
+        note: note
+      })
+      .where(eq(restaurantNote.id, id))
   } catch (error: any) {
     throw new Error(`Failed to delete note: ${error.message}`)
   }
 }
 export async function archiveRestaurant(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    return await Restaurant.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(id) },
-      {
+    if (!user.userId) throw new Error('Unauthorized')
+
+    return await db
+      .update(restaurant)
+      .set({
         archive: true
-      }
-    )
+      })
+      .where(eq(restaurant.id, id))
   } catch (error: any) {
     throw new Error(`Failed to archive restaurant: ${error.message}`)
   }

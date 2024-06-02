@@ -1,27 +1,41 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs/server'
-import { connectToDB } from '../mongoose'
+import { db } from '@/server/db'
+import {
+  Coffee,
+  CoffeeRating,
+  User,
+  coffee,
+  coffeeRating
+} from '@/server/db/schema'
+import { auth } from '@clerk/nextjs/server'
+import { eq } from 'drizzle-orm/sql/expressions/conditions'
 import { getUserGroup, getUserInfo } from './user.actions'
-import mongoose from 'mongoose'
-import Coffee, { ICoffee } from '../models/coffee'
-import CoffeeRating, { ICoffeeRating } from '../models/coffee-rating'
-import User from '../models/user'
+import { uuidv4 } from '../utils'
 
 export async function getCoffeeList(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const coffees: ICoffee[] = await Coffee.find({
-      userGroupID: id,
-      archive: false
+    if (!user.userId) throw new Error('Unauthorized')
+
+    const coffees: Coffee[] = await db.query.coffee.findMany({
+      where(fields, operators) {
+        return operators.and(
+          eq(fields.userGroupId, id),
+          eq(fields.archive, false)
+        )
+      }
     })
 
     await Promise.all(
       coffees.map(async (element) => {
-        const coffeeRatings: ICoffeeRating[] = await CoffeeRating.find({
-          coffeeID: new mongoose.Types.ObjectId(element._id)
-        })
+        const coffeeRatings: CoffeeRating[] =
+          await db.query.coffeeRating.findMany({
+            where(fields, operators) {
+              return operators.and(eq(fields.coffeeId, element.id))
+            }
+          })
 
         let experience = 0
         let taste = 0
@@ -45,16 +59,22 @@ export async function getCoffeeList(id: string) {
 }
 export async function getCoffee(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const user = await currentUser()
-    if (!user) return null
-    const userInfo = await getUserInfo(user?.id)
-    const userGroup = await getUserGroup(userInfo._id)
+    if (!user.userId) throw new Error('Unauthorized')
 
-    return await Coffee.findOne({
-      _id: new mongoose.Types.ObjectId(id),
-      userGroupID: new mongoose.Types.ObjectId(userGroup._id)
+    const userInfo = await getUserInfo(user?.userId ?? '')
+    if (!userInfo) throw new Error('User info not found')
+    const userGroup = await getUserGroup(userInfo.id)
+    if (!userGroup) throw new Error('User group info not found')
+
+    return await db.query.coffee.findFirst({
+      where(fields, operators) {
+        return operators.and(
+          eq(fields.userGroupId, userGroup.id),
+          eq(fields.id, id)
+        )
+      }
     })
   } catch (error: any) {
     throw new Error(`Failed to find coffee: ${error.message}`)
@@ -62,17 +82,30 @@ export async function getCoffee(id: string) {
 }
 export async function getCoffeeRatings(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const ratings = await CoffeeRating.find({
-      coffeeID: id
+    if (!user.userId) throw new Error('Unauthorized')
+
+    const ratings: CoffeeRating[] = await db.query.coffeeRating.findMany({
+      where(fields, operators) {
+        return operators.and(eq(fields.coffeeId, id))
+      }
     })
 
     await Promise.all(
       ratings.map(async (rating) => {
-        const u = await User.findById({
-          _id: rating.userID
+        const u: User | undefined = await db.query.user.findFirst({
+          where(fields, operators) {
+            if (rating.userId !== null) {
+              return operators.and(eq(fields.id, rating.userId))
+            }
+          }
         })
+
+        if (!u) {
+          throw new Error('User not found')
+        }
+
         rating.username = u.name
       })
     )
@@ -83,89 +116,86 @@ export async function getCoffeeRatings(id: string) {
 }
 export async function deleteCoffeeRating(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    await CoffeeRating.deleteOne({
-      _id: id
+    if (!user.userId) throw new Error('Unauthorized')
+
+    return await db.query.coffeeRating.findFirst({
+      where(fields, operators) {
+        return operators.and(eq(fields.id, id))
+      }
     })
   } catch (error: any) {
     throw new Error(`Failed to find coffee ratings: ${error.message}`)
   }
 }
-export async function updateCoffeeRating(coffeeRatingData: ICoffeeRating) {
+export async function updateCoffeeRating(coffeeRatingData: CoffeeRating) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const newId = new mongoose.Types.ObjectId()
-    if (coffeeRatingData._id === '') {
-      coffeeRatingData._id = newId.toString()
+    if (!user.userId) throw new Error('Unauthorized')
+
+    if (coffeeRatingData.id === '') {
+      coffeeRatingData.id = uuidv4().toString()
     }
 
-    const rating = await CoffeeRating.findByIdAndUpdate(
-      { _id: new mongoose.Types.ObjectId(coffeeRatingData._id) },
-      {
-        _id: new mongoose.Types.ObjectId(coffeeRatingData._id),
-        coffeeID: new mongoose.Types.ObjectId(coffeeRatingData.coffeeID),
-        userID: new mongoose.Types.ObjectId(coffeeRatingData.userID),
+    return await db
+      .update(coffeeRating)
+      .set({
+        id: coffeeRatingData.id,
+        coffeeId: coffeeRatingData.coffeeId,
+        userId: coffeeRatingData.userId,
         experience: coffeeRatingData.experience,
         taste: coffeeRatingData.taste
-      },
-      { upsert: true, new: true }
-    )
-
-    return rating
+      })
+      .where(eq(coffeeRating.id, coffeeRatingData.id))
   } catch (error: any) {
     throw new Error(`Failed to create/update coffee ratings: ${error.message}`)
   }
 }
-export async function updateCoffee(coffeeData: ICoffee) {
+export async function updateCoffee(coffeeData: Coffee) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const user = await currentUser()
-    if (!user) return null
-    const userInfo = await getUserInfo(user?.id)
-    const userGroup = await getUserGroup(userInfo._id)
+    if (!user.userId) throw new Error('Unauthorized')
 
-    const newId = new mongoose.Types.ObjectId()
-    if (coffeeData._id === '') {
-      coffeeData._id = newId.toString()
+    const userInfo = await getUserInfo(user?.userId ?? '')
+    if (!userInfo) throw new Error('User info not found')
+    const userGroup = await getUserGroup(userInfo.id)
+    if (!userGroup) throw new Error('User group info not found')
+
+    if (coffeeData.id === '') {
+      coffeeData.id = uuidv4().toString()
     }
 
-    return await Coffee.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(coffeeData._id) },
-      {
-        _id: new mongoose.Types.ObjectId(coffeeData._id),
+    return await db
+      .update(coffee)
+      .set({
+        id: coffeeData.id,
         coffeeName: coffeeData.coffeeName,
         archive: coffeeData.archive,
-        addedByID: new mongoose.Types.ObjectId(userInfo._id),
-        userGroupID: new mongoose.Types.ObjectId(userGroup._id),
+        addedById: userInfo.id,
+        userGroupId: userGroup.id,
         address: coffeeData.address
-      },
-      { upsert: true, new: true }
-    )
+      })
+      .where(eq(coffeeRating.id, coffeeData.id))
   } catch (error: any) {
     throw new Error(`Failed to create/update coffee: ${error.message}`)
   }
 }
 export async function archiveCoffee(id: string) {
   try {
-    connectToDB()
+    const user = auth()
 
-    return await Coffee.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(id) },
-      {
+    if (!user.userId) throw new Error('Unauthorized')
+
+    return await db
+      .update(coffee)
+      .set({
         archive: true
-      }
-    )
+      })
+      .where(eq(coffee.id, id))
   } catch (error: any) {
     throw new Error(`Failed to archive coffee: ${error.message}`)
-  }
-}
-export async function getNewCoffeeID() {
-  try {
-    return new mongoose.Types.ObjectId().toString()
-  } catch (error: any) {
-    throw new Error(`Failed to get new coffee ID: ${error.message}`)
   }
 }

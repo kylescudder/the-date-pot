@@ -1,36 +1,40 @@
 'use server'
 
-import mongoose from 'mongoose'
-import Cuisine, { ICuisine } from '../models/cuisine'
-import { connectToDB } from '../mongoose'
+import { db } from '@/server/db'
+import { Cuisine, cuisine } from '@/server/db/schema'
+import { auth } from '@clerk/nextjs/server'
+import { uuidv4 } from '../utils'
+import { eq } from 'drizzle-orm/sql/expressions/conditions'
 
 export async function getCuisineList() {
   try {
-    connectToDB()
+    const user = auth()
 
-    return await Cuisine.find({})
+    if (!user.userId) throw new Error('Unauthorized')
+
+    return await db.query.cuisine.findMany({})
   } catch (error: any) {
     throw new Error(`Failed to find cuisines: ${error.message}`)
   }
 }
 
-export async function addCuisine(cuisine: ICuisine) {
+export async function addCuisine(Cuisine: Cuisine) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const newId = new mongoose.Types.ObjectId()
-    if (cuisine._id === '') {
-      cuisine._id = newId.toString()
+    if (!user.userId) throw new Error('Unauthorized')
+
+    if (Cuisine.id === '') {
+      Cuisine.id = uuidv4().toString()
     }
 
-    return await Cuisine.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(cuisine._id) },
-      {
-        _id: new mongoose.Types.ObjectId(cuisine._id),
-        cuisine: cuisine.cuisine
-      },
-      { upsert: true, new: true }
-    )
+    await db
+      .update(cuisine)
+      .set({
+        id: Cuisine.id,
+        cuisine: Cuisine.cuisine
+      })
+      .where(eq(cuisine.id, Cuisine.id))
   } catch (error: any) {
     throw new Error(`Failed to add cuisine: ${error.message}`)
   }

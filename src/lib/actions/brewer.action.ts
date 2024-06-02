@@ -1,36 +1,40 @@
 'use server'
 
-import { connectToDB } from '../mongoose'
-import mongoose from 'mongoose'
-import Brewery, { IBrewery } from '../models/brewery'
+import { db } from '@/server/db'
+import { Brewery, brewery } from '@/server/db/schema'
+import { auth } from '@clerk/nextjs/server'
+import { uuidv4 } from '../utils'
+import { eq } from 'drizzle-orm/sql/expressions/conditions'
 
 export async function getBreweryList() {
   try {
-    connectToDB()
+    const user = auth()
 
-    return await Brewery.find({})
+    if (!user.userId) throw new Error('Unauthorized')
+
+    return await db.query.brewery.findMany({})
   } catch (error: any) {
     throw new Error(`Failed to find breweries: ${error.message}`)
   }
 }
 
-export async function addBrewery(brewery: IBrewery) {
+export async function addBrewery(Brewery: Brewery) {
   try {
-    connectToDB()
+    const user = auth()
 
-    const newId = new mongoose.Types.ObjectId()
-    if (brewery._id === '') {
-      brewery._id = newId.toString()
+    if (!user.userId) throw new Error('Unauthorized')
+
+    if (Brewery.id === '') {
+      Brewery.id = uuidv4().toString()
     }
 
-    return await Brewery.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(brewery._id) },
-      {
-        _id: new mongoose.Types.ObjectId(brewery._id),
-        breweryName: brewery.breweryName
-      },
-      { upsert: true, new: true }
-    )
+    await db
+      .update(brewery)
+      .set({
+        id: Brewery.id,
+        breweryName: Brewery.breweryName
+      })
+      .where(eq(brewery.id, Brewery.id))
   } catch (error: any) {
     throw new Error(`Failed to add brewery: ${error.message}`)
   }

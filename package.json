@@ -31,6 +31,7 @@
     "@react-google-maps/api": "2.19.3",
     "@sentry/nextjs": "7.108.0",
     "@serwist/next": "9.0.2",
+    "@t3-oss/env-nextjs": "^0.10.1",
     "@tabler/icons-react": "3.3.0",
     "@types/node": "20.12.11",
     "@types/react": "18.3.2",
@@ -42,12 +43,14 @@
     "clsx": "2.1.1",
     "dayjs": "1.11.11",
     "dotenv": "16.4.5",
+    "drizzle-orm": "^0.31.0",
     "eslint": "9.2.0",
     "eslint-config-next": "14.2.3",
     "mongoose": "8.2.3",
     "next": "14.2.3",
     "next-themes": "0.3.0",
     "postcss": "8.4.38",
+    "postgres": "^3.4.4",
     "prettier-plugin-tailwindcss": "0.5.14",
     "react": "18.3.1",
     "react-burger-menu": "3.0.9",
@@ -59,11 +62,13 @@
     "tailwind-merge": "2.2.1",
     "tailwindcss": "3.4.3",
     "tailwindcss-animate": "1.0.7",
-    "typescript": "5.4.5"
+    "typescript": "5.4.5",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/google.maps": "3.55.9",
     "@types/react-burger-menu": "2.8.7",
+    "drizzle-kit": "^0.22.1",
     "husky": "9.0.11",
     "prettier": "3.2.5"
   }

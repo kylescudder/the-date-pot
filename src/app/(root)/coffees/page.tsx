@@ -8,19 +8,17 @@ import {
   getUserGroup,
   getUserInfo
 } from '@/lib/actions/user.actions'
-import { ICoffee } from '@/lib/models/coffee'
-import { IUser } from '@/lib/models/user'
-import { IUserGroup } from '@/lib/models/user-group'
 import { currentUser } from '@clerk/nextjs/server'
+import { Coffee, User } from '@/server/db/schema'
 
 export default async function Coffees() {
   const user = await currentUser()
   if (!user) return null
 
-  const userInfo: IUser = await getUserInfo(user.id)
-  const userGroup: IUserGroup = await getUserGroup(userInfo._id)
-  const coffees: ICoffee[] = await getCoffeeList(userGroup._id)
-  const users: IUser[] = (await getGroupUsers()) || []
+  const userInfo = await getUserInfo(user.id)
+  const userGroup = await getUserGroup(userInfo!.id)
+  const coffees: Coffee[] = await getCoffeeList(userGroup.id)
+  const users = (await getGroupUsers()) || []
   const longLat: number[] = [0, 0]
 
   return (
