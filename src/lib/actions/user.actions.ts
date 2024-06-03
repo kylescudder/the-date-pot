@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import User, { IUser } from '../models/user'
 import { connectToDB } from '../mongoose'
-import { clerkClient, currentUser } from '@clerk/nextjs'
+import { clerkClient, currentUser } from '@clerk/nextjs/server'
 import { convertBase64ToFile } from '../utils'
 import mongoose from 'mongoose'
 import UserGroup from '../models/user-group'

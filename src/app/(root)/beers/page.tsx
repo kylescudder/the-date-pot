@@ -1,6 +1,7 @@
 'use server'
 
 import BeerList from '@/components/beer/List'
+import { getBeerTypeList } from '@/lib/actions/beer-type'
 import { getBeerList } from '@/lib/actions/beer.action'
 import { getBreweryList } from '@/lib/actions/brewer.action'
 import {
@@ -9,10 +10,11 @@ import {
   getUserInfo
 } from '@/lib/actions/user.actions'
 import { IBeer } from '@/lib/models/beer'
+import { IBeerType } from '@/lib/models/beer-type'
 import { IBrewery } from '@/lib/models/brewery'
 import { IUser } from '@/lib/models/user'
 import { IUserGroup } from '@/lib/models/user-group'
-import { currentUser } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
 import React from 'react'
 
 export default async function Beers() {
@@ -23,11 +25,17 @@ export default async function Beers() {
   const userGroup: IUserGroup = await getUserGroup(userInfo._id)
   const beers: IBeer[] = await getBeerList(userGroup._id)
   const breweryList: IBrewery[] = await getBreweryList()
+  const beerTypeList: IBeerType[] = await getBeerTypeList()
   const users: IUser[] = (await getGroupUsers()) || []
 
   return (
-    <div className="listPage">
-      <BeerList beers={beers} users={users} breweryList={breweryList} />
+    <div className='listPage'>
+      <BeerList
+        beers={beers}
+        users={users}
+        breweryList={breweryList}
+        beerTypeList={beerTypeList}
+      />
     </div>
   )
 }

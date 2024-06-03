@@ -28,7 +28,7 @@ export default function ActivityList(props: {
   ) : (
     <List
       records={props.activities}
-      potName="Activity"
+      potName='Activity'
       rowFormatter={null}
       columns={[
         {

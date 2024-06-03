@@ -125,20 +125,20 @@ export default function AddFilm(props: {
 
   return (
     <div>
-      <div className="flex justify-between items-center">
+      <div className='flex items-center justify-between'>
         <BackButton
           record={props.film}
           changesMade={changesMade}
-          page="films"
+          page='films'
         />
         <Button
           className={`bg-danger text-light-1 ${
             props.film._id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
-          aria-label="archive"
+          aria-label='archive'
         >
-          <IconTrash className="text-light-1" />
+          <IconTrash className='text-light-1' />
         </Button>
       </div>
       <form
@@ -148,40 +148,40 @@ export default function AddFilm(props: {
         }`}
       >
         <TextInput
-          label="Name"
-          radius="md"
-          placeholder="Which cinematic masterpiece is it today?"
-          className="text-dark-2 dark:text-light-2"
-          size="md"
+          label='Name'
+          radius='md'
+          placeholder='Which cinematic masterpiece is it today?'
+          className='text-dark-2 dark:text-light-2'
+          size='md'
           {...form.getInputProps('filmName')}
         />
         <DatePickerInput
-          label="Release Date"
-          radius="md"
-          valueFormat="DD/MM/YYYY"
-          className="text-dark-2 dark:text-light-2"
-          size="md"
+          label='Release Date'
+          radius='md'
+          valueFormat='DD/MM/YYYY'
+          className='text-dark-2 dark:text-light-2'
+          size='md'
           {...form.getInputProps('releaseDate')}
         />
         <NumberInput
-          label="Run time"
-          radius="md"
-          placeholder="It is over 90 minutes?"
-          className="text-dark-2 dark:text-light-2"
-          size="md"
+          label='Run time'
+          radius='md'
+          placeholder='It is over 90 minutes?'
+          className='text-dark-2 dark:text-light-2'
+          size='md'
           {...form.getInputProps('runTime')}
         />
         <Checkbox
-          label="Watched"
-          radius="md"
-          className="text-dark-2 dark:text-light-2"
-          size="md"
+          label='Watched'
+          radius='md'
+          className='text-dark-2 dark:text-light-2'
+          size='md'
           {...form.getInputProps('watched')}
         />
         <MultiSelect
           multiple={true}
-          radius="md"
-          size="md"
+          radius='md'
+          size='md'
           clearable
           searchable
           creatable
@@ -194,15 +194,15 @@ export default function AddFilm(props: {
             return item
           }}
           transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-          label="Directors"
-          placeholder="Pick some"
+          label='Directors'
+          placeholder='Pick some'
           data={directors}
           {...form.getInputProps('directors')}
         />
         <MultiSelect
           multiple={true}
-          radius="md"
-          size="md"
+          radius='md'
+          size='md'
           clearable
           searchable
           creatable
@@ -215,15 +215,15 @@ export default function AddFilm(props: {
             return item
           }}
           transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-          label="Genres"
-          placeholder="Pick some"
+          label='Genres'
+          placeholder='Pick some'
           data={genres}
           {...form.getInputProps('genres')}
         />
         <MultiSelect
           multiple={true}
-          radius="md"
-          size="md"
+          radius='md'
+          size='md'
           clearable
           searchable
           creatable
@@ -236,15 +236,15 @@ export default function AddFilm(props: {
             return item
           }}
           transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-          label="Genres"
-          placeholder="Pick some"
+          label='Genres'
+          placeholder='Pick some'
           data={platforms}
           {...form.getInputProps('platforms')}
         />
         <Button
-          radius="md"
-          className="bg-primary-500 hover:bg-primary-hover text-light-1"
-          type="submit"
+          radius='md'
+          className='bg-primary-500 text-light-1 hover:bg-primary-hover'
+          type='submit'
         >
           {props.film._id === '' ? 'Add' : 'Update'} Film
         </Button>

@@ -6,7 +6,7 @@ import { getVinylList } from '@/lib/actions/vinyl.action'
 import { IUser } from '@/lib/models/user'
 import { IUserGroup } from '@/lib/models/user-group'
 import { IVinyl } from '@/lib/models/vinyl'
-import { currentUser } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
 import React from 'react'
 
 export default async function Vinyls() {
@@ -18,7 +18,7 @@ export default async function Vinyls() {
   const vinyls: IVinyl[] = await getVinylList(userGroup._id)
 
   return (
-    <div className="listPage">
+    <div className='listPage'>
       <VinylList vinyls={vinyls} />
     </div>
   )

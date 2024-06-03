@@ -12,7 +12,7 @@ import { IActivity } from '@/lib/models/activity'
 import { IExpense } from '@/lib/models/expense'
 import { IUser } from '@/lib/models/user'
 import { IUserGroup } from '@/lib/models/user-group'
-import { currentUser } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
 import React from 'react'
 
 export default async function Activities() {
@@ -26,7 +26,7 @@ export default async function Activities() {
   const longLat: number[] = [0, 0]
 
   return (
-    <div className="listPage">
+    <div className='listPage'>
       <ActivityList
         activities={activities}
         expenseList={expenseList}

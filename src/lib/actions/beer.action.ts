@@ -1,6 +1,6 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
 import { connectToDB } from '../mongoose'
 import { getUserGroup, getUserInfo } from './user.actions'
 import mongoose from 'mongoose'
@@ -139,6 +139,7 @@ export async function updateBeer(beerData: IBeer) {
         beerName: beerData.beerName,
         abv: beerData.abv,
         breweries: beerData.breweries,
+        beerTypes: beerData.beerTypes,
         archive: beerData.archive,
         addedByID: new mongoose.Types.ObjectId(userInfo._id),
         userGroupID: new mongoose.Types.ObjectId(userGroup._id)

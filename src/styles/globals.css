@@ -7,7 +7,7 @@ body {
 }
 @layer components {
   .topbar {
-    @apply fixed top-0 z-30 flex w-full items-center justify-between bg-light-1 dark:bg-dark-1 px-6 py-3;
+    @apply fixed top-0 z-30 flex w-full items-center justify-between bg-light-1 px-6 py-3 dark:bg-dark-1;
   }
 }
 .bottombar_link {
@@ -371,45 +371,45 @@ Note: Beware of modifying this element as it can break the animations - you shou
 
 .loader {
   animation: rotation 1s linear infinite;
-  @apply mx-auto mt-36 
-  border-l-dark-2 
-  border-t-dark-2 
-  border-r-dark-2 
-  border-b-transparent
-  dark:border-l-light-2 
-  dark:border-t-light-2 
-  dark:border-r-light-2 
-  dark:border-b-transparent
-  border-4
-  w-12
+  @apply relative mx-auto 
+  mt-36 
+  box-border 
+  flex 
   h-12
+  w-12 
+  items-center 
+  justify-center 
   rounded-full
-  flex
-  justify-center
-  items-center
-  relative
-  box-border;
+  border-4
+  border-b-transparent
+  border-l-dark-2
+  border-r-dark-2
+  border-t-dark-2
+  dark:border-b-transparent
+  dark:border-l-light-2
+  dark:border-r-light-2
+  dark:border-t-light-2;
 }
 
 .loader::after {
   content: '';
   animation: rotationBack 0.5s linear infinite;
   transform-origin: center center;
-  @apply box-border
-  absolute
+  @apply absolute
+  bottom-0
   left-0
   right-0
   top-0
-  bottom-0
   m-auto
-  border-4
-  border-l-transparent
-  border-t-primary-500
-  border-r-primary-500
-  border-b-primary-500
-  w-6
+  box-border
   h-6
-  rounded-full;
+  w-6
+  rounded-full
+  border-4
+  border-b-primary-500
+  border-l-transparent
+  border-r-primary-500
+  border-t-primary-500;
 }
 
 @keyframes rotation {

@@ -12,22 +12,22 @@ import { IPot } from '@/lib/models/pot'
 export default function Topbar(props: { pots: IPot[] }) {
   return (
     <CustomThemeProvider>
-      <nav className="topbar">
+      <nav className='topbar'>
         <Link
-          href="/"
-          className="flex 
-			items-center gap-4"
+          href='/'
+          className='flex 
+			items-center gap-4'
         >
           <IconHomeHeart
             stroke={2}
-            strokeLinejoin="miter"
+            strokeLinejoin='miter'
             height={28}
             width={28}
-            className="text-dark-1 dark:text-light-1 max-sm:hidden"
+            className='text-dark-1 dark:text-light-1 max-sm:hidden'
           />
           <p
-            className="text-2xl leading-6 font-bold
-				  text-dark-1 dark:text-light-1 max-sm:hidden"
+            className='text-2xl font-bold leading-6
+				  text-dark-1 dark:text-light-1 max-sm:hidden'
           >
             The Date Pot
           </p>
@@ -37,20 +37,20 @@ export default function Topbar(props: { pots: IPot[] }) {
           customBurgerIcon={
             <IconHomeHeart
               stroke={2}
-              strokeLinejoin="miter"
+              strokeLinejoin='miter'
               height={28}
               width={28}
-              className="text-dark-1 dark:text-light-1"
+              className='text-dark-1 dark:text-light-1'
             />
           }
         >
-          <NavOptions position="leftsidebar" pots={props.pots} />
+          <NavOptions position='leftsidebar' pots={props.pots} />
         </Menu>
-        <div className="flex items-center gap-1">
+        <div className='flex items-center gap-1'>
           <DarkModeToggle />
-          <div className="block md:hidden"></div>
+          <div className='block md:hidden'></div>
         </div>
-        <Logout placement="top" />
+        <Logout placement='top' />
       </nav>
     </CustomThemeProvider>
   )

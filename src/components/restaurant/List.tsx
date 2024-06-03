@@ -32,7 +32,7 @@ export default function RestaurantList(props: {
   ) : (
     <List
       records={props.restaurants}
-      potName="Restaurant"
+      potName='Restaurant'
       rowFormatter={null}
       columns={[
         {

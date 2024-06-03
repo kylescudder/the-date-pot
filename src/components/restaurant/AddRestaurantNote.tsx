@@ -25,16 +25,16 @@ export default function AddRestaurantNote(props: {
     <div>
       <Textarea
         minRows={8}
-        radius="md"
-        size="md"
-        label="Note"
-        placeholder="Penny for your thoughts?"
+        radius='md'
+        size='md'
+        label='Note'
+        placeholder='Penny for your thoughts?'
         onChange={handleChange}
       />
       <Button
-        radius="md"
-        className="bg-primary-500 hover:bg-primary-hover text-light-1 mt-3"
-        type="button"
+        radius='md'
+        className='mt-3 bg-primary-500 text-light-1 hover:bg-primary-hover'
+        type='button'
         onClick={handleSubmit}
       >
         {props.restaurant._id === '' ? 'Add' : 'Update'} Note

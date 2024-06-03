@@ -140,20 +140,20 @@ export default function AddRestaurant(props: {
 
   return (
     <div>
-      <div className="flex justify-between items-center">
+      <div className='flex items-center justify-between'>
         <BackButton
           record={props.restaurant}
           changesMade={changesMade}
-          page="restaurants"
+          page='restaurants'
         />
         <Button
           className={`bg-danger text-light-1 ${
             props.restaurant._id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
-          aria-label="archive"
+          aria-label='archive'
         >
-          <IconTrash className="text-light-1" />
+          <IconTrash className='text-light-1' />
         </Button>
       </div>
       <form
@@ -163,17 +163,17 @@ export default function AddRestaurant(props: {
         }`}
       >
         <TextInput
-          label="Name"
-          radius="md"
-          placeholder="The good yum yum place"
-          className="text-dark-2 dark:text-light-2"
-          size="md"
+          label='Name'
+          radius='md'
+          placeholder='The good yum yum place'
+          className='text-dark-2 dark:text-light-2'
+          size='md'
           {...form.getInputProps('restaurantName')}
         />
         <MultiSelect
           multiple={true}
-          radius="md"
-          size="md"
+          radius='md'
+          size='md'
           clearable
           searchable
           creatable
@@ -186,15 +186,15 @@ export default function AddRestaurant(props: {
             return item
           }}
           transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-          label="Cuisine"
-          placeholder="Pick some"
+          label='Cuisine'
+          placeholder='Pick some'
           data={cuisines}
           {...form.getInputProps('cuisines')}
         />
         <MultiSelect
           multiple={true}
-          radius="md"
-          size="md"
+          radius='md'
+          size='md'
           clearable
           searchable
           creatable
@@ -207,17 +207,17 @@ export default function AddRestaurant(props: {
             return item
           }}
           transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-          label="When"
-          placeholder="Pick some"
+          label='When'
+          placeholder='Pick some'
           data={whens}
           {...form.getInputProps('whens')}
         />
         <TextInput
-          label="Address"
-          radius="md"
-          placeholder="Where it at?"
-          className="text-dark-2 dark:text-light-2"
-          size="md"
+          label='Address'
+          radius='md'
+          placeholder='Where it at?'
+          className='text-dark-2 dark:text-light-2'
+          size='md'
           {...form.getInputProps('address')}
         />
         {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
@@ -230,21 +230,21 @@ export default function AddRestaurant(props: {
           address !== '' &&
           props.longLat[0] === undefined &&
           props.longLat[1] === undefined && <ReloadMapPlaceholder />}
-        <div className="flex justify-between">
-          <div className="flex-grow pr-2">
-            <p className="text-dark-1 dark:text-light-1 pt-3 inline-block text-base font-black">
+        <div className='flex justify-between'>
+          <div className='flex-grow pr-2'>
+            <p className='inline-block pt-3 text-base font-black text-dark-1 dark:text-light-1'>
               Notes
             </p>
           </div>
-          <div className="mt-auto">
+          <div className='mt-auto'>
             <Button
-              radius="md"
-              className="bg-success text-light-1 r-0"
+              radius='md'
+              className='r-0 bg-success text-light-1'
               onClick={() => setOpen(true)}
-              aria-label="add"
-              size="md"
+              aria-label='add'
+              size='md'
             >
-              <IconCirclePlus className="text-light-1" />
+              <IconCirclePlus className='text-light-1' />
             </Button>
           </div>
         </div>
@@ -252,9 +252,9 @@ export default function AddRestaurant(props: {
           return <NoteCard key={note} note={note} func={pullNote} />
         })}
         <Button
-          radius="md"
-          className="bg-primary-500 hover:bg-primary-hover text-light-1"
-          type="submit"
+          radius='md'
+          className='bg-primary-500 text-light-1 hover:bg-primary-hover'
+          type='submit'
         >
           {props.restaurant._id === '' ? 'Add' : 'Update'} Restaurant
         </Button>
@@ -270,7 +270,7 @@ export default function AddRestaurant(props: {
             addNote={pullAddNote}
           />
         }
-        title="Add Note"
+        title='Add Note'
       />
     </div>
   )

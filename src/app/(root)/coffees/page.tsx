@@ -11,7 +11,7 @@ import {
 import { ICoffee } from '@/lib/models/coffee'
 import { IUser } from '@/lib/models/user'
 import { IUserGroup } from '@/lib/models/user-group'
-import { currentUser } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
 
 export default async function Coffees() {
   const user = await currentUser()
@@ -24,7 +24,7 @@ export default async function Coffees() {
   const longLat: number[] = [0, 0]
 
   return (
-    <div className="listPage">
+    <div className='listPage'>
       <CoffeeList coffees={coffees} users={users} longLat={longLat} />
     </div>
   )

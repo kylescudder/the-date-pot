@@ -92,20 +92,20 @@ export default function AddActivity(props: {
 
   return (
     <div>
-      <div className="flex justify-between items-center">
+      <div className='flex items-center justify-between'>
         <BackButton
           record={props.activity}
           changesMade={changesMade}
-          page="activities"
+          page='activities'
         />
         <Button
           className={`bg-danger text-light-1 ${
             props.activity._id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
-          aria-label="archive"
+          aria-label='archive'
         >
-          <IconTrash className="dark:text-light-1 text-dark-1" />
+          <IconTrash className='text-dark-1 dark:text-light-1' />
         </Button>
       </div>
       <form
@@ -115,29 +115,29 @@ export default function AddActivity(props: {
         }`}
       >
         <TextInput
-          label="Name"
-          radius="md"
-          placeholder="The good yum yum place"
-          className="text-dark-2 dark:text-light-2"
-          size="md"
+          label='Name'
+          radius='md'
+          placeholder='The good yum yum place'
+          className='text-dark-2 dark:text-light-2'
+          size='md'
           {...form.getInputProps('activityName')}
         />
         <Select
-          radius="md"
-          size="md"
+          radius='md'
+          size='md'
           clearable
           transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-          label="How much?!"
-          placeholder="Pick one"
+          label='How much?!'
+          placeholder='Pick one'
           data={expenseOptions}
           {...form.getInputProps('expense')}
         />
         <TextInput
-          label="Address"
-          radius="md"
-          placeholder="Where it at?"
-          className="text-dark-2 dark:text-light-2"
-          size="md"
+          label='Address'
+          radius='md'
+          placeholder='Where it at?'
+          className='text-dark-2 dark:text-light-2'
+          size='md'
           {...form.getInputProps('address')}
         />
         {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
@@ -148,9 +148,9 @@ export default function AddActivity(props: {
           props.longLat[0] === undefined &&
           props.longLat[1] === undefined && <ReloadMapPlaceholder />}
         <Button
-          radius="md"
-          className="bg-primary-500 hover:bg-primary-hover text-light-1"
-          type="submit"
+          radius='md'
+          className='bg-primary-500 text-light-1 hover:bg-primary-hover'
+          type='submit'
         >
           {props.activity._id === '' ? 'Add' : 'Update'} Activity
         </Button>

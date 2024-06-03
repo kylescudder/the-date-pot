@@ -1,6 +1,7 @@
 import React from 'react'
 import type { Metadata, Viewport } from 'next'
-import { ClerkProvider, currentUser } from '@clerk/nextjs'
+import { ClerkProvider } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
 import { dark } from '@clerk/themes'
 import '@/styles/globals.css'
 import Topbar from '@/components/shared/Topbar'
@@ -110,7 +111,7 @@ export default async function RootLayout({
         baseTheme: dark
       }}
     >
-      <html lang="en">
+      <html lang='en'>
         <body>
           <Topbar pots={pots} />
           <MainContent pots={pots} children={children} />

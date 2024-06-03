@@ -31,12 +31,15 @@ import { IUser } from '@/lib/models/user'
 import AddBeerRating from './AddBeerRating'
 import FullScreenModal from '../shared/FullScreenModal'
 import { addBrewery } from '@/lib/actions/brewer.action'
+import { IBeerType } from '@/lib/models/beer-type'
+import { addBeerType } from '@/lib/actions/beer-type'
 
 export default function AddBeer(props: {
   beer: IBeer
   ratings: IBeerRating[]
   users: IUser[]
   breweryList: IBrewery[]
+  beerTypeList: IBeerType[]
 }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -50,7 +53,14 @@ export default function AddBeer(props: {
       label: brewery.breweryName
     })
   )
+  const beerTypeOptions: option[] = props.beerTypeList.map(
+    (beerType: IBeerType) => ({
+      value: beerType.beerType,
+      label: beerType.beerType
+    })
+  )
   const [breweries, setBreweries] = useState<option[]>(breweryOptions)
+  const [beerTypes, setBeerTypes] = useState<option[]>(beerTypeOptions)
 
   interface formBeer {
     _id: string
@@ -58,6 +68,7 @@ export default function AddBeer(props: {
     beerName: string
     abv: number
     breweries: string[]
+    beerTypes: string[]
     addedByID: string
     userGroupID: string
     avgWankyness: number
@@ -81,6 +92,7 @@ export default function AddBeer(props: {
       beerName: props.beer.beerName ? props.beer.beerName : '',
       abv: props.beer.abv ? props.beer.abv : 0,
       breweries: props.beer.breweries ? props.beer.breweries : [],
+      beerTypes: props.beer.beerTypes ? props.beer.beerTypes : [],
       addedByID: props.beer.addedByID ? props.beer.addedByID : '',
       userGroupID: props.beer.userGroupID ? props.beer.userGroupID : '',
       avgWankyness: 0,
@@ -104,7 +116,8 @@ export default function AddBeer(props: {
       ...props.beer,
       beerName: values.beerName,
       abv: values.abv,
-      breweries: values.breweries
+      breweries: values.breweries,
+      beerTypes: values.beerTypes
     }
 
     const beer = await updateBeer(payload)
@@ -165,21 +178,21 @@ export default function AddBeer(props: {
 
   return (
     <div>
-      <div className="flex justify-between items-center">
+      <div className='flex items-center justify-between'>
         <BackButton
           record={props.beer}
           changesMade={changesMade}
-          page="beers"
+          page='beers'
         />
         <Button
-          radius="md"
+          radius='md'
           className={`bg-danger text-light-1 ${
             props.beer._id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
-          aria-label="archive"
+          aria-label='archive'
         >
-          <IconTrash className="text-light-1" />
+          <IconTrash className='text-light-1' />
         </Button>
       </div>
       <form
@@ -189,17 +202,17 @@ export default function AddBeer(props: {
         }`}
       >
         <TextInput
-          label="Name"
-          radius="md"
-          placeholder="The best beer in the world"
-          className="text-dark-2 dark:text-light-2"
-          size="md"
+          label='Name'
+          radius='md'
+          placeholder='The best beer in the world'
+          className='text-dark-2 dark:text-light-2'
+          size='md'
           {...form.getInputProps('beerName')}
         />
         <MultiSelect
           multiple={true}
-          radius="md"
-          size="md"
+          radius='md'
+          size='md'
           clearable
           searchable
           creatable
@@ -212,36 +225,57 @@ export default function AddBeer(props: {
             return item
           }}
           transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-          label="Breweries"
-          placeholder="Pick some"
+          label='Breweries'
+          placeholder='Pick some'
           data={breweries}
           {...form.getInputProps('breweries')}
         />
+        <MultiSelect
+          multiple={true}
+          radius='md'
+          size='md'
+          clearable
+          searchable
+          creatable
+          getCreateLabel={(query) => `+ Create ${query}`}
+          onCreate={(query) => {
+            const item = { value: query, label: query }
+            const beerType: IBeerType = { _id: '', beerType: query }
+            setBeerTypes((current) => [...current, item])
+            addBeerType(beerType)
+            return item
+          }}
+          transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
+          label='Type'
+          placeholder='Pick some'
+          data={beerTypes}
+          {...form.getInputProps('beerTypes')}
+        />
         <NumberInput
-          label="ABV"
-          radius="md"
+          label='ABV'
+          radius='md'
           precision={1}
           step={0.1}
-          placeholder="Session or strong?"
-          className="text-dark-2 dark:text-light-2"
-          size="md"
+          placeholder='Session or strong?'
+          className='text-dark-2 dark:text-light-2'
+          size='md'
           {...form.getInputProps('abv')}
         />
-        <div className="flex justify-between">
-          <div className="flex-grow pr-2">
-            <p className="text-dark-1 dark:text-light-1 pt-3 inline-block text-base font-black">
+        <div className='flex justify-between'>
+          <div className='flex-grow pr-2'>
+            <p className='inline-block pt-3 text-base font-black text-dark-1 dark:text-light-1'>
               Ratings
             </p>
           </div>
-          <div className="mt-auto">
+          <div className='mt-auto'>
             <Button
-              radius="md"
-              className="bg-success text-light-1 r-0"
+              radius='md'
+              className='r-0 bg-success text-light-1'
               onClick={() => setOpen(true)}
-              aria-label="add"
-              size="md"
+              aria-label='add'
+              size='md'
             >
-              <IconCirclePlus className="text-light-1" />
+              <IconCirclePlus className='text-light-1' />
             </Button>
           </div>
         </div>
@@ -250,40 +284,40 @@ export default function AddBeer(props: {
             return (
               <div
                 key={rating.userID}
-                className="rounded-md overflow-hidden shadow-lg bg-light-3 dark:bg-dark-3 w-full"
+                className='w-full overflow-hidden rounded-md bg-light-3 shadow-lg dark:bg-dark-3'
               >
-                <div className="px-6 py-4">
-                  <div className="font-black w-1/2 contents text-xl mb-2 text-dark-1 dark:text-light-1">
+                <div className='px-6 py-4'>
+                  <div className='mb-2 contents w-1/2 text-xl font-black text-dark-1 dark:text-light-1'>
                     {rating.username}
                   </div>
-                  <div className="w-1/2 contents">
+                  <div className='contents w-1/2'>
                     <IconCircleMinus
                       onClick={() => handleRemoveRecord(rating._id, i)}
-                      className="text-danger float-right"
+                      className='float-right text-danger'
                     />
                   </div>
-                  <div className="text-base flex items-center pt-2">
-                    <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-black text-gray-700 mr-2">
+                  <div className='flex items-center pt-2 text-base'>
+                    <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
                       Taste
                     </span>
                     <Rating
-                      name="taste"
+                      name='taste'
                       value={rating.taste}
                       onChange={(value) => handleTasteChange(value, i)}
                       fractions={2}
-                      size="xl"
+                      size='xl'
                     />
                   </div>
-                  <div className="text-base flex items-center pt-5">
-                    <span className="w-32 text-center inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-black text-gray-700 mr-2">
+                  <div className='flex items-center pt-5 text-base'>
+                    <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
                       Wankyness
                     </span>
                     <Rating
-                      name="wankyness"
+                      name='wankyness'
                       value={rating.wankyness}
                       onChange={(value) => handleWankynessChange(value, i)}
                       fractions={2}
-                      size="xl"
+                      size='xl'
                     />
                   </div>
                 </div>
@@ -291,18 +325,18 @@ export default function AddBeer(props: {
             )
           })
         ) : (
-          <div className="rounded-md overflow-hidden shadow-lg bg-light-4 dark:bg-dark-4 w-full">
-            <div className="px-6 py-4">
-              <div className="font-bold w-1/2 contents text-xl mb-2 text-dark-1 dark:text-light-1">
+          <div className='w-full overflow-hidden rounded-md bg-light-4 shadow-lg dark:bg-dark-4'>
+            <div className='px-6 py-4'>
+              <div className='mb-2 contents w-1/2 text-xl font-bold text-dark-1 dark:text-light-1'>
                 Please add a rating!
               </div>
             </div>
           </div>
         )}
         <Button
-          radius="md"
-          className="bg-primary-500 hover:bg-primary-hover text-light-1"
-          type="submit"
+          radius='md'
+          className='bg-primary-500 text-light-1 hover:bg-primary-hover'
+          type='submit'
         >
           {props.beer._id === '' ? 'Add' : 'Update'} Beer
         </Button>
@@ -319,7 +353,7 @@ export default function AddBeer(props: {
             users={props.users}
           />
         }
-        title="Add Rating"
+        title='Add Rating'
       />
     </div>
   )

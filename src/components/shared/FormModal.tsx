@@ -25,16 +25,16 @@ export default function FormModal(props: {
       onClose={handleClose}
       transitionProps={{ transition: 'slide-up', duration: 200 }}
     >
-      <Modal.Content className="bg-light-1 dark:bg-dark-1">
-        <Modal.Header className="bg-light-1 dark:bg-dark-1">
+      <Modal.Content className='bg-light-1 dark:bg-dark-1'>
+        <Modal.Header className='bg-light-1 dark:bg-dark-1'>
           <IconCross
             onClick={handleClose}
-            aria-label="close"
+            aria-label='close'
             width={24}
             height={24}
-            strokeLinejoin="miter"
+            strokeLinejoin='miter'
           />
-          <Modal.Title className="text-dark-1 dark:text-light-1">
+          <Modal.Title className='text-dark-1 dark:text-light-1'>
             {props.title}
           </Modal.Title>
         </Modal.Header>

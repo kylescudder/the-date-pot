@@ -65,20 +65,20 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
 
   return (
     <div>
-      <div className="flex justify-between items-center">
+      <div className='flex items-center justify-between'>
         <BackButton
           record={props.vinyl}
           changesMade={changesMade}
-          page="vinyls"
+          page='vinyls'
         />
         <Button
           className={`bg-danger text-light-1 ${
             props.vinyl._id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
-          aria-label="archive"
+          aria-label='archive'
         >
-          <IconTrash className="dark:text-light-1 text-dark-1" />
+          <IconTrash className='text-dark-1 dark:text-light-1' />
         </Button>
       </div>
       <form
@@ -88,33 +88,33 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
         }`}
       >
         <TextInput
-          label="Name"
-          radius="md"
-          placeholder="The next AOTY"
-          className="text-dark-2 dark:text-light-2"
-          size="md"
+          label='Name'
+          radius='md'
+          placeholder='The next AOTY'
+          className='text-dark-2 dark:text-light-2'
+          size='md'
           {...form.getInputProps('name')}
         />
         <TextInput
-          label="Artist Name"
-          radius="md"
-          placeholder="GOATs only plz"
-          className="text-dark-2 dark:text-light-2"
-          size="md"
+          label='Artist Name'
+          radius='md'
+          placeholder='GOATs only plz'
+          className='text-dark-2 dark:text-light-2'
+          size='md'
           {...form.getInputProps('artistName')}
         />
         <Checkbox
-          mt="md"
-          radius="md"
-          label={<p className="text-dark-1 dark:text-light-1">Purchased</p>}
-          className="text-dark-2 dark:text-light-2"
-          size="md"
+          mt='md'
+          radius='md'
+          label={<p className='text-dark-1 dark:text-light-1'>Purchased</p>}
+          className='text-dark-2 dark:text-light-2'
+          size='md'
           {...form.getInputProps('purchased', { type: 'checkbox' })}
         />
         <Button
-          radius="md"
-          className="bg-primary-500 hover:bg-primary-hover text-light-1"
-          type="submit"
+          radius='md'
+          className='bg-primary-500 text-light-1 hover:bg-primary-hover'
+          type='submit'
         >
           {props.vinyl._id === '' ? 'Add' : 'Update'} Vinyl
         </Button>

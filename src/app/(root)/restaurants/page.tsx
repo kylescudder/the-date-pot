@@ -11,7 +11,7 @@ import { IRestaurant } from '@/lib/models/restaurant'
 import { IUser } from '@/lib/models/user'
 import { IUserGroup } from '@/lib/models/user-group'
 import { IWhen } from '@/lib/models/when'
-import { currentUser } from '@clerk/nextjs'
+import { currentUser } from '@clerk/nextjs/server'
 import React from 'react'
 
 export default async function Restaurants() {
@@ -26,7 +26,7 @@ export default async function Restaurants() {
   const longLat: number[] = [0, 0]
 
   return (
-    <div className="listPage">
+    <div className='listPage'>
       <RestaurantList
         restaurants={restaurants}
         longLat={longLat}

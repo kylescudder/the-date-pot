@@ -11,11 +11,13 @@ import { IUser } from '@/lib/models/user'
 import { ICellRendererParams } from 'ag-grid-community'
 import { Rating } from '@mantine/core'
 import { IBrewery } from '@/lib/models/brewery'
+import { IBeerType } from '@/lib/models/beer-type'
 
 export default function BeerList(props: {
   beers: IBeer[]
   users: IUser[]
   breweryList: IBrewery[]
+  beerTypeList: IBeerType[]
 }) {
   const [loading, setLoading] = React.useState(false)
 
@@ -27,6 +29,7 @@ export default function BeerList(props: {
     beerName: '',
     abv: 0,
     breweries: [],
+    beerTypes: [],
     avgWankyness: 0,
     avgTaste: 0,
     avgRating: 0,
@@ -39,7 +42,7 @@ export default function BeerList(props: {
   ) : (
     <List
       records={props.beers}
-      potName="Beer"
+      potName='Beer'
       rowFormatter={null}
       columns={[
         {
@@ -56,9 +59,9 @@ export default function BeerList(props: {
           cellRenderer: (params: ICellRendererParams) => {
             return (
               <Rating
-                name="average"
+                name='average'
                 fractions={2}
-                size="lg"
+                size='lg'
                 readOnly
                 value={params.value}
               />
@@ -74,9 +77,9 @@ export default function BeerList(props: {
           cellRenderer: (params: ICellRendererParams) => {
             return (
               <Rating
-                name="wankyness"
+                name='wankyness'
                 fractions={2}
-                size="lg"
+                size='lg'
                 readOnly
                 value={params.value}
               />
@@ -92,9 +95,9 @@ export default function BeerList(props: {
           cellRenderer: (params: ICellRendererParams) => {
             return (
               <Rating
-                name="taste"
+                name='taste'
                 fractions={2}
-                size="lg"
+                size='lg'
                 readOnly
                 value={params.value}
               />
@@ -110,6 +113,7 @@ export default function BeerList(props: {
           ratings={ratings}
           users={props.users}
           breweryList={props.breweryList}
+          beerTypeList={props.beerTypeList}
         />
       }
     />

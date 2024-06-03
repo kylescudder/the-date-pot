@@ -36,7 +36,7 @@ export default function CoffeeList(props: {
   ) : (
     <List
       records={props.coffees}
-      potName="Coffee"
+      potName='Coffee'
       rowFormatter={null}
       columns={[
         {
@@ -54,9 +54,9 @@ export default function CoffeeList(props: {
           cellRenderer: (params: ICellRendererParams) => {
             return (
               <Rating
-                name="average"
+                name='average'
                 fractions={2}
-                size="lg"
+                size='lg'
                 readOnly
                 value={params.value}
               />
@@ -72,9 +72,9 @@ export default function CoffeeList(props: {
           cellRenderer: (params: ICellRendererParams) => {
             return (
               <Rating
-                name="experience"
+                name='experience'
                 fractions={2}
-                size="lg"
+                size='lg'
                 readOnly
                 value={params.value}
               />
@@ -90,9 +90,9 @@ export default function CoffeeList(props: {
           cellRenderer: (params: ICellRendererParams) => {
             return (
               <Rating
-                name="taste"
+                name='taste'
                 fractions={2}
-                size="lg"
+                size='lg'
                 readOnly
                 value={params.value}
               />

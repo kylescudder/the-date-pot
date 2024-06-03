@@ -8,19 +8,19 @@ import { IPot } from '@/lib/models/pot'
 export default function NavOptions(props: { position: string; pots: IPot[] }) {
   const pathname = usePathname()
   return (
-    <div className="contents w-full">
+    <div className='contents w-full'>
       <a
-        href="/"
+        href='/'
         className={`${props.position}_link 
         ${pathname === '/' && 'bg-primary-500 hover:bg-primary-hover'}`}
       >
         <Icon
           name={'IconHome'}
-          stroke="2"
-          strokeLinejoin="miter"
+          stroke='2'
+          strokeLinejoin='miter'
           isActive={false}
         />
-        <p className="text-dark-1 dark:text-light-1 flex relative font-black">
+        <p className='relative flex font-black text-dark-1 dark:text-light-1'>
           Home
         </p>
       </a>
@@ -57,12 +57,12 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
           >
             <Icon
               name={pot.icon}
-              stroke="2"
-              strokeLinejoin="miter"
+              stroke='2'
+              strokeLinejoin='miter'
               isActive={isActive}
             />
             <p
-              className={`${isActive && 'text-light-1'} text-dark-1 dark:text-light-1 flex relative font-black`}
+              className={`${isActive && 'text-light-1'} relative flex font-black text-dark-1 dark:text-light-1`}
             >
               {pot.potName}
             </p>
