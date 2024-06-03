@@ -191,7 +191,7 @@ export default function AddCoffee(props: {
         />
         <div className='flex justify-between'>
           <div className='flex-grow pr-2'>
-            <p className='inline-block pt-3 text-base font-black text-dark-1 dark:text-light-1'>
+            <p className='text-dark-1 dark:text-light-1 inline-block pt-3 text-base font-black'>
               Ratings
             </p>
           </div>
@@ -212,16 +212,16 @@ export default function AddCoffee(props: {
             return (
               <div
                 key={rating.userID}
-                className='w-full overflow-hidden rounded-md bg-light-3 shadow-lg dark:bg-dark-3'
+                className='bg-light-3 dark:bg-dark-3 w-full overflow-hidden rounded-md shadow-lg'
               >
                 <div className='px-6 py-4'>
-                  <div className='mb-2 contents w-1/2 text-xl font-black text-dark-1 dark:text-light-1'>
+                  <div className='text-dark-1 dark:text-light-1 mb-2 contents w-1/2 text-xl font-black'>
                     {rating.username}
                   </div>
                   <div className='contents w-1/2'>
                     <IconCircleMinus
                       onClick={() => handleRemoveRecord(rating._id, i)}
-                      className='float-right text-danger'
+                      className='text-danger float-right'
                     />
                   </div>
                   <div className='flex items-center pt-2 text-base'>
@@ -253,9 +253,9 @@ export default function AddCoffee(props: {
             )
           })
         ) : (
-          <div className='w-full overflow-hidden rounded-md bg-light-4 shadow-lg dark:bg-dark-4'>
+          <div className='bg-light-4 dark:bg-dark-4 w-full overflow-hidden rounded-md shadow-lg'>
             <div className='px-6 py-4'>
-              <div className='mb-2 contents w-1/2 text-xl font-bold text-dark-1 dark:text-light-1'>
+              <div className='text-dark-1 dark:text-light-1 mb-2 contents w-1/2 text-xl font-bold'>
                 Please add a rating!
               </div>
             </div>

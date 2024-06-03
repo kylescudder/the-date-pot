@@ -20,7 +20,7 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
           strokeLinejoin='miter'
           isActive={false}
         />
-        <p className='relative flex font-black text-dark-1 dark:text-light-1'>
+        <p className='text-dark-1 dark:text-light-1 relative flex font-black'>
           Home
         </p>
       </a>
@@ -62,7 +62,7 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
               isActive={isActive}
             />
             <p
-              className={`${isActive && 'text-light-1'} relative flex font-black text-dark-1 dark:text-light-1`}
+              className={`${isActive && 'text-light-1'} text-dark-1 dark:text-light-1 relative flex font-black`}
             >
               {pot.potName}
             </p>

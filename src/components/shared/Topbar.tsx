@@ -26,8 +26,8 @@ export default function Topbar(props: { pots: IPot[] }) {
             className='text-dark-1 dark:text-light-1 max-sm:hidden'
           />
           <p
-            className='text-2xl font-bold leading-6
-				  text-dark-1 dark:text-light-1 max-sm:hidden'
+            className='text-dark-1 dark:text-light-1 text-2xl
+				  font-bold leading-6 max-sm:hidden'
           >
             The Date Pot
           </p>

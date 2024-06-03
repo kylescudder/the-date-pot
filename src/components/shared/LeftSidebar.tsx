@@ -7,10 +7,10 @@ import { IPot } from '@/lib/models/pot'
 export default function LeftSidebar(props: { pots: IPot[] }) {
   return (
     <section
-      className='custom-scrollbar sticky left-0 top-0 z-20 
-      flex h-screen w-fit flex-col justify-between 
-      overflow-auto border-r border-r-light-4 bg-light-2 
-      pb-5 pt-28 dark:border-r-dark-4 dark:bg-dark-1 max-md:hidden'
+      className='custom-scrollbar border-r-light-4 bg-light-2 dark:border-r-dark-4 dark:bg-dark-1 
+      sticky left-0 top-0 z-20 flex 
+      h-screen w-fit flex-col justify-between 
+      overflow-auto border-r pb-5 pt-28 max-md:hidden'
     >
       <div
         className='flex

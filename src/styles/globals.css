@@ -7,7 +7,7 @@ body {
 }
 @layer components {
   .topbar {
-    @apply fixed top-0 z-30 flex w-full items-center justify-between bg-light-1 px-6 py-3 dark:bg-dark-1;
+    @apply bg-light-1 dark:bg-dark-1 fixed top-0 z-30 flex w-full items-center justify-between px-6 py-3;
   }
 }
 .bottombar_link {
@@ -17,10 +17,10 @@ body {
   @apply relative flex justify-start gap-4 rounded-lg p-4;
 }
 .bottombar_container {
-  @apply flex items-center justify-between gap-3 xs:gap-5;
+  @apply xs:gap-5 flex items-center justify-between gap-3;
 }
 .bottombar {
-  @apply fixed bottom-0 z-10 w-full rounded-t-3xl bg-glassmorphism p-4 backdrop-blur-lg xs:px-7 md:hidden;
+  @apply bg-glassmorphism xs:px-7 fixed bottom-0 z-10 w-full rounded-t-3xl p-4 backdrop-blur-lg md:hidden;
 }
 .listPage {
   max-width: calc(100vw - 3rem);
@@ -371,31 +371,34 @@ Note: Beware of modifying this element as it can break the animations - you shou
 
 .loader {
   animation: rotation 1s linear infinite;
-  @apply relative mx-auto 
+  @apply border-l-dark-2 border-r-dark-2 
+  border-t-dark-2 
+  dark:border-l-light-2 
+  dark:border-r-light-2 
+  dark:border-t-light-2
+  relative 
+  mx-auto 
   mt-36 
-  box-border 
-  flex 
+  box-border
+  flex
   h-12
-  w-12 
-  items-center 
-  justify-center 
+  w-12
+  items-center
+  justify-center
   rounded-full
   border-4
   border-b-transparent
-  border-l-dark-2
-  border-r-dark-2
-  border-t-dark-2
-  dark:border-b-transparent
-  dark:border-l-light-2
-  dark:border-r-light-2
-  dark:border-t-light-2;
+  dark:border-b-transparent;
 }
 
 .loader::after {
   content: '';
   animation: rotationBack 0.5s linear infinite;
   transform-origin: center center;
-  @apply absolute
+  @apply border-b-primary-500
+  border-r-primary-500
+  border-t-primary-500
+  absolute
   bottom-0
   left-0
   right-0
@@ -406,10 +409,7 @@ Note: Beware of modifying this element as it can break the animations - you shou
   w-6
   rounded-full
   border-4
-  border-b-primary-500
-  border-l-transparent
-  border-r-primary-500
-  border-t-primary-500;
+  border-l-transparent;
 }
 
 @keyframes rotation {

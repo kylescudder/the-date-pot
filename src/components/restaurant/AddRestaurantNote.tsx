@@ -33,7 +33,7 @@ export default function AddRestaurantNote(props: {
       />
       <Button
         radius='md'
-        className='mt-3 bg-primary-500 text-light-1 hover:bg-primary-hover'
+        className='bg-primary-500 text-light-1 hover:bg-primary-hover mt-3'
         type='button'
         onClick={handleSubmit}
       >
