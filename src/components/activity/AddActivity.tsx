@@ -3,21 +3,20 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from '@mantine/form'
 import { usePathname, useRouter } from 'next/navigation'
-import { IActivity } from '@/lib/models/activity'
 import { archiveActivity, updateActivity } from '@/lib/actions/activity.action'
 import { archiveToast, successToast } from '@/lib/actions/toast.actions'
 import { IconTrash } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
 import { Button, Select, TextInput } from '@mantine/core'
 import Map from '../shared/Map'
-import { option } from '@/lib/models/select-options'
 import ReloadMapPlaceholder from '../shared/ReloadMapPlaceholder'
-import { IExpense } from '@/lib/models/expense'
+import { Activity, Expense } from '@/server/db/schema'
+import { option } from '@/lib/models/select-options'
 
 export default function AddActivity(props: {
-  activity: IActivity
+  activity: Activity
   longLat: number[]
-  expenseList: IExpense[]
+  expenseList: Expense[]
 }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -29,42 +28,42 @@ export default function AddActivity(props: {
     console.log(address)
   }, [address])
 
-  const expenseOptions: option[] = props.expenseList.map((user: IExpense) => ({
-    value: user.expense,
+  const expenseOptions: option[] = props.expenseList.map((user: Expense) => ({
+    value: user.id,
     label: user.expense
   }))
 
   interface formActivity {
-    _id: string
+    id: string
     activityName: string
     address: string
     archive: boolean
-    userGroupID: string
-    expense: string
+    userGroupId: string
+    expenseId: string
   }
 
   const form = useForm({
     initialValues: {
-      _id: props.activity._id ? props.activity._id : '',
+      id: props.activity.id ? props.activity.id : '',
       activityName: props.activity.activityName
         ? props.activity.activityName
         : '',
       address: props.activity.address ? props.activity.address : '',
       archive: props.activity.archive ? props.activity.archive : false,
-      userGroupID: props.activity.userGroupID ? props.activity.userGroupID : '',
-      expense: props.activity.expense ? props.activity.expense : ''
+      userGroupId: props.activity.userGroupId ? props.activity.userGroupId : '',
+      expenseId: props.activity.expenseId ? props.activity.expenseId : ''
     }
   })
 
   const onSubmit = async (values: formActivity) => {
-    const payload: IActivity = {
+    const payload: Activity = {
       ...props.activity,
       activityName: values.activityName,
       address: values.address,
-      expense: values.expense
+      expenseId: values.expenseId
     }
 
-    const activity = await updateActivity(payload)
+    const [activity] = await updateActivity(payload)
     if (pathname.includes('/activity/')) {
       successToast(activity.activityName)
       setChangesMade(true)
@@ -73,12 +72,12 @@ export default function AddActivity(props: {
         setAddress(payload.address)
       }
     } else {
-      router.push(`/activity/${activity._id}`)
+      router.push(`/activity/${activity.id}`)
     }
   }
 
   const handleArchive = async () => {
-    await archiveActivity(props.activity._id)
+    await archiveActivity(props.activity.id)
     archiveToast(props.activity.activityName)
     setTimeout(() => {
       const url = `${window.location.protocol}//${window.location.host}`
@@ -100,7 +99,7 @@ export default function AddActivity(props: {
         />
         <Button
           className={`bg-danger text-light-1 ${
-            props.activity._id === '' ? 'hidden' : ''
+            props.activity.id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
           aria-label='archive'
@@ -111,7 +110,7 @@ export default function AddActivity(props: {
       <form
         onSubmit={form.onSubmit((values) => onSubmit(values))}
         className={`flex flex-col justify-start gap-10 pt-4 ${
-          props.activity._id === '' ? 'px-6' : ''
+          props.activity.id === '' ? 'px-6' : ''
         }`}
       >
         <TextInput
@@ -130,7 +129,7 @@ export default function AddActivity(props: {
           label='How much?!'
           placeholder='Pick one'
           data={expenseOptions}
-          {...form.getInputProps('expense')}
+          {...form.getInputProps('expenseId')}
         />
         <TextInput
           label='Address'
@@ -152,7 +151,7 @@ export default function AddActivity(props: {
           className='bg-primary-500 text-light-1 hover:bg-primary-hover'
           type='submit'
         >
-          {props.activity._id === '' ? 'Add' : 'Update'} Activity
+          {props.activity.id === '' ? 'Add' : 'Update'} Activity
         </Button>
       </form>
     </div>

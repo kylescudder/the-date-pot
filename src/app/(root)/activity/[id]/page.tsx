@@ -10,7 +10,7 @@ export default async function Activity({ params }: { params: { id: string } }) {
   const activity = await getActivity(params.id)
   const expenseList: Expense[] = await getExpenseList()
   let longLat: number[] = []
-  if (activity!.address !== undefined && activity!.address !== '') {
+  if (activity!.address !== null && activity!.address !== '') {
     longLat = await getLongLat(activity!.address)
   }
   return (

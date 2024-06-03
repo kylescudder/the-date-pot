@@ -64,9 +64,9 @@ export async function updateActivity(ActivityData: Activity) {
       ActivityData.id = uuidv4().toString()
     }
 
-    await db
-      .update(activity)
-      .set({
+    return await db
+      .insert(activity)
+      .values({
         id: ActivityData.id,
         activityName: ActivityData.activityName,
         address: ActivityData.address,
@@ -74,7 +74,17 @@ export async function updateActivity(ActivityData: Activity) {
         userGroupId: userGroup.id,
         expenseId: ActivityData.expenseId
       })
-      .where(eq(activity.id, ActivityData.id))
+      .onConflictDoUpdate({
+        target: activity.id,
+        set: {
+          activityName: ActivityData.activityName,
+          address: ActivityData.address,
+          archive: ActivityData.archive,
+          userGroupId: userGroup.id,
+          expenseId: ActivityData.expenseId
+        }
+      })
+      .returning()
   } catch (error: any) {
     throw new Error(`Failed to create/update activity: ${error.message}`)
   }
