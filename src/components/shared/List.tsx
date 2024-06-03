@@ -54,7 +54,7 @@ export default function List(props: {
     setLoading(true)
     // Access row data using params.data
     const rowData = params.data
-    router.push(`${props.potName.toLowerCase()}/${rowData._id}`)
+    router.push(`${props.potName.toLowerCase()}/${rowData.id}`)
   }
 
   const pullData = (data: boolean) => {

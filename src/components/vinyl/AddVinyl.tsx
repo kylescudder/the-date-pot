@@ -3,20 +3,20 @@
 import React, { useState } from 'react'
 import { useForm } from '@mantine/form'
 import { usePathname, useRouter } from 'next/navigation'
-import { IVinyl } from '@/lib/models/vinyl'
 import { archiveVinyl, updateVinyl } from '@/lib/actions/vinyl.action'
 import { archiveToast, successToast } from '@/lib/actions/toast.actions'
 import { IconTrash } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
 import { Button, Checkbox, TextInput } from '@mantine/core'
+import { Vinyl } from '@/server/db/schema'
 
-export default function AddVinyl(props: { vinyl: IVinyl }) {
+export default function AddVinyl(props: { vinyl: Vinyl }) {
   const router = useRouter()
   const pathname = usePathname()
   const [changesMade, setChangesMade] = useState<boolean>(false)
 
   interface formVinyl {
-    _id: string
+    id: string
     name: string
     artistName: string
     purchased: boolean
@@ -27,35 +27,36 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
 
   const form = useForm({
     initialValues: {
-      _id: props.vinyl._id ? props.vinyl._id : '',
+      id: props.vinyl.id ? props.vinyl.id : '',
       name: props.vinyl.name ? props.vinyl.name : '',
       artistName: props.vinyl.artistName ? props.vinyl.artistName : '',
       purchased: props.vinyl.purchased ? props.vinyl.purchased : false,
       archive: props.vinyl.archive ? props.vinyl.archive : false,
-      addedByID: props.vinyl.addedByID ? props.vinyl.addedByID : '',
-      userGroupID: props.vinyl.userGroupID ? props.vinyl.userGroupID : ''
+      addedByID: props.vinyl.addedById ? props.vinyl.addedById : '',
+      userGroupID: props.vinyl.userGroupId ? props.vinyl.userGroupId : ''
     }
   })
 
   const onSubmit = async (values: formVinyl) => {
-    const payload: IVinyl = {
+    const payload: Vinyl = {
       ...props.vinyl,
       name: values.name,
       artistName: values.artistName,
       purchased: values.purchased
     }
 
-    const vinyl = await updateVinyl(payload)
+    const [vinyl] = await updateVinyl(payload)
+
     if (pathname.includes('/vinyl/')) {
       successToast(vinyl.name)
       setChangesMade(true)
     } else {
-      router.push(`/vinyl/${vinyl._id}`)
+      router.push(`/vinyl/${vinyl.id}`)
     }
   }
 
   const handleArchive = async () => {
-    await archiveVinyl(props.vinyl._id)
+    await archiveVinyl(props.vinyl.id)
     archiveToast(props.vinyl.name)
     setTimeout(() => {
       const url = `${window.location.protocol}//${window.location.host}`
@@ -73,7 +74,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
         />
         <Button
           className={`bg-danger text-light-1 ${
-            props.vinyl._id === '' ? 'hidden' : ''
+            props.vinyl.id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
           aria-label='archive'
@@ -84,7 +85,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
       <form
         onSubmit={form.onSubmit((values) => onSubmit(values))}
         className={`flex flex-col justify-start gap-10 pt-4 ${
-          props.vinyl._id === '' ? 'px-6' : ''
+          props.vinyl.id === '' ? 'px-6' : ''
         }`}
       >
         <TextInput
@@ -116,7 +117,7 @@ export default function AddVinyl(props: { vinyl: IVinyl }) {
           className='bg-primary-500 text-light-1 hover:bg-primary-hover'
           type='submit'
         >
-          {props.vinyl._id === '' ? 'Add' : 'Update'} Vinyl
+          {props.vinyl.id === '' ? 'Add' : 'Update'} Vinyl
         </Button>
       </form>
     </div>

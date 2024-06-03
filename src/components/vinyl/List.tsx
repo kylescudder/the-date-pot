@@ -1,17 +1,17 @@
 'use client'
 
-import { IVinyl } from '@/lib/models/vinyl'
 import React from 'react'
 import { ICellRendererParams, RowStyle } from 'ag-grid-community'
 import AddVinyl from './AddVinyl'
 import Loading from '../shared/Loading'
 import List from '../shared/List'
+import { Vinyl } from '@/server/db/schema'
 
-export default function VinylList(props: { vinyls: IVinyl[] }) {
+export default function VinylList(props: { vinyls: Vinyl[] }) {
   const [loading, setLoading] = React.useState(false)
 
   const newVinyl = {
-    _id: '',
+    id: '',
     name: '',
     artistName: '',
     purchased: false,
@@ -20,7 +20,7 @@ export default function VinylList(props: { vinyls: IVinyl[] }) {
     userGroupID: ''
   }
 
-  const formatter = (params: { data: IVinyl }): any => {
+  const formatter = (params: { data: Vinyl }): any => {
     return params.data.purchased
       ? { backgroundColor: '#5865F2', color: 'white' }
       : { backgroundColor: '#FDFD96', color: 'black' }

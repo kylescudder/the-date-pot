@@ -30,7 +30,8 @@ export async function getVinyl(id: string) {
     const user = auth()
 
     if (!user.userId) throw new Error('Unauthorized')
-
+    console.log('user', user)
+    console.log('user?.userId', user?.userId)
     const userInfo = await getUserInfo(user?.userId ?? '')
     if (!userInfo) throw new Error('User info not found')
     const userGroup = await getUserGroup(userInfo.id)
@@ -63,9 +64,9 @@ export async function updateVinyl(vinylData: Vinyl) {
       vinylData.id = uuidv4().toString()
     }
 
-    await db
-      .update(vinyl)
-      .set({
+    return await db
+      .insert(vinyl)
+      .values({
         id: vinylData.id,
         name: vinylData.name,
         artistName: vinylData.artistName,
@@ -74,7 +75,18 @@ export async function updateVinyl(vinylData: Vinyl) {
         addedById: userInfo.id,
         userGroupId: userGroup.id
       })
-      .where(eq(vinyl.id, vinylData.id))
+      .onConflictDoUpdate({
+        target: vinyl.id,
+        set: {
+          name: vinylData.name,
+          artistName: vinylData.artistName,
+          purchased: vinylData.purchased,
+          archive: vinylData.archive,
+          addedById: userInfo.id,
+          userGroupId: userGroup.id
+        }
+      })
+      .returning()
   } catch (error: any) {
     throw new Error(`Failed to create/update vinyl: ${error.message}`)
   }
