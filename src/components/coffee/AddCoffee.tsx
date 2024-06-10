@@ -166,13 +166,13 @@ export default function AddCoffee(props: {
         />
         <Button
           radius='md'
-          className={`bg-danger text-light-1 ${
+          className={`bg-danger text-white ${
             props.coffee._id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
           aria-label='archive'
         >
-          <IconTrash className='text-light-1' />
+          <IconTrash className='text-white' />
         </Button>
       </div>
       <form
@@ -191,19 +191,19 @@ export default function AddCoffee(props: {
         />
         <div className='flex justify-between'>
           <div className='flex-grow pr-2'>
-            <p className='text-dark-1 dark:text-light-1 inline-block pt-3 text-base font-black'>
+            <p className='inline-block pt-3 text-base font-black text-zinc-900 dark:text-white'>
               Ratings
             </p>
           </div>
           <div className='mt-auto'>
             <Button
               radius='md'
-              className='r-0 bg-success text-light-1'
+              className='r-0 bg-success text-white'
               onClick={() => setOpen(true)}
               aria-label='add'
               size='md'
             >
-              <IconCirclePlus className='text-light-1' />
+              <IconCirclePlus className='text-white' />
             </Button>
           </div>
         </div>
@@ -212,10 +212,10 @@ export default function AddCoffee(props: {
             return (
               <div
                 key={rating.userID}
-                className='bg-light-3 dark:bg-dark-3 w-full overflow-hidden rounded-md shadow-lg'
+                className='dark:bg-dark-3 w-full overflow-hidden rounded-md text-zinc-600 shadow-lg'
               >
                 <div className='px-6 py-4'>
-                  <div className='text-dark-1 dark:text-light-1 mb-2 contents w-1/2 text-xl font-black'>
+                  <div className='mb-2 contents w-1/2 text-xl font-black text-zinc-900 dark:text-white'>
                     {rating.username}
                   </div>
                   <div className='contents w-1/2'>
@@ -253,9 +253,9 @@ export default function AddCoffee(props: {
             )
           })
         ) : (
-          <div className='bg-light-4 dark:bg-dark-4 w-full overflow-hidden rounded-md shadow-lg'>
+          <div className='w-full overflow-hidden rounded-md text-zinc-700 shadow-lg dark:text-black'>
             <div className='px-6 py-4'>
-              <div className='text-dark-1 dark:text-light-1 mb-2 contents w-1/2 text-xl font-bold'>
+              <div className='mb-2 contents w-1/2 text-xl font-bold text-zinc-900 dark:text-white'>
                 Please add a rating!
               </div>
             </div>
@@ -278,7 +278,7 @@ export default function AddCoffee(props: {
           props.longLat[1] === undefined && <ReloadMapPlaceholder />}
         <Button
           radius='md'
-          className='bg-primary-500 text-light-1 hover:bg-primary-hover'
+          className='hover:bg-primary-hover text-emerald-500 text-white'
           type='submit'
         >
           {props.coffee._id === '' ? 'Add' : 'Update'} Coffee

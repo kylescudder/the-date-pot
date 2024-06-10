@@ -16,7 +16,7 @@ export default function Logout(props: { placement: string }) {
         >
           <IconLogout
             size={24}
-            className='text-dark-1 dark:text-light-1'
+            className='text-zinc-900 dark:text-white'
             stroke={2}
             strokeLinejoin='miter'
           />

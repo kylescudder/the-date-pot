@@ -39,7 +39,7 @@ export default function Icon(props: IconProps) {
 
   return (
     <IconComponent
-      className={`${props.isActive && 'text-light-1'} text-dark-1 dark:text-light-1`}
+      className={`${props.isActive && 'text-white'} text-zinc-900 dark:text-white`}
       {...(props.stroke && { stroke: props.stroke })}
       {...(props.strokeLinejoin && { strokeLinejoin: props.strokeLinejoin })}
     />

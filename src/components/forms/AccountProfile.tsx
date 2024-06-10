@@ -121,7 +121,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
       <Button
         radius='md'
         size='md'
-        className='bg-primary-500 hover:bg-primary-hover'
+        className='hover:bg-primary-hover text-emerald-500'
         type='submit'
       >
         {btnTitle}

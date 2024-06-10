@@ -86,14 +86,14 @@ export default function List(props: {
           radius='md'
           className={`${
             searchOpen ? 'hidden' : 'absolute right-6'
-          } bg-primary-500 text-light-1 hover:bg-primary-hover`}
+          } hover:bg-primary-hover text-emerald-500 text-white`}
           onClick={handleSearchClickOpen}
         >
           <IconSearch width={24} height={24} strokeLinejoin='miter' />
         </Button>
         <Button
           radius='md'
-          className='bg-primary-500 text-light-1 hover:bg-primary-hover absolute left-6'
+          className='hover:bg-primary-hover absolute left-6 text-emerald-500 text-white'
           onClick={handleClickOpen}
         >
           <IconFilePlus width={24} height={24} strokeLinejoin='miter' />

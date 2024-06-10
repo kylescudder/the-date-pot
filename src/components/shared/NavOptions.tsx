@@ -12,7 +12,7 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
       <a
         href='/'
         className={`${props.position}_link 
-        ${pathname === '/' && 'bg-primary-500 hover:bg-primary-hover'}`}
+        ${pathname === '/' && 'hover:bg-primary-hover text-emerald-500'}`}
       >
         <Icon
           name={'IconHome'}
@@ -20,7 +20,7 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
           strokeLinejoin='miter'
           isActive={false}
         />
-        <p className='text-dark-1 dark:text-light-1 relative flex font-black'>
+        <p className='relative flex font-black text-zinc-900 dark:text-white'>
           Home
         </p>
       </a>
@@ -53,7 +53,7 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
             href={`/${potNamePluralised}`}
             key={pot._id}
             className={`${props.position}_link 
-					${isActive && 'bg-primary-500 hover:bg-primary-hover'}`}
+					${isActive && 'hover:bg-primary-hover text-emerald-500'}`}
           >
             <Icon
               name={pot.icon}
@@ -62,7 +62,7 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
               isActive={isActive}
             />
             <p
-              className={`${isActive && 'text-light-1'} text-dark-1 dark:text-light-1 relative flex font-black`}
+              className={`${isActive && 'text-white'} relative flex font-black text-zinc-900 dark:text-white`}
             >
               {pot.potName}
             </p>

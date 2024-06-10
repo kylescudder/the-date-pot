@@ -13,7 +13,7 @@ export default function Error({
         <p className='from-primary-500 bg-gradient-to-r to-red-500 bg-clip-text pb-2 text-6xl font-extrabold text-transparent'>
           Oops! Something went wrong.
         </p>
-        <p className='text-light-1 mt-2 font-extrabold'>
+        <p className='mt-2 font-extrabold text-white'>
           Something went wrong getting that film!
         </p>
         <button

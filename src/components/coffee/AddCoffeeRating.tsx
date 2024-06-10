@@ -109,7 +109,7 @@ export default function AddCoffeeRating(props: {
       </div>
       <Button
         radius='md'
-        className='bg-primary-500 text-light-1 hover:bg-primary-hover'
+        className='hover:bg-primary-hover text-emerald-500 text-white'
         type='submit'
       >
         {props.coffeeRating._id === '' ? 'Add' : 'Update'} Rating
