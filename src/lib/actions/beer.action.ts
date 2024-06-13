@@ -2,20 +2,22 @@
 
 import { db } from '@/server/db'
 import {
-  Beer,
   BeerRating,
   BeerBreweries,
-  User,
   beer,
   beerBreweries,
   beerRating,
   beerTypes,
-  BeerTypes
+  BeerTypes,
+  user,
+  Beer
 } from '@/server/db/schema'
 import { auth } from '@clerk/nextjs/server'
-import { eq } from 'drizzle-orm/sql/expressions/conditions'
+import { and, eq } from 'drizzle-orm/sql/expressions/conditions'
 import { getUserGroup, getUserInfo } from './user.actions'
 import { uuidv4 } from '../utils'
+import { Beers } from '../models/beers'
+import { BeerRatings } from '../models/beerRatings'
 
 export async function getBeerList(id: string) {
   try {
@@ -23,22 +25,28 @@ export async function getBeerList(id: string) {
 
     if (!user.userId) throw new Error('Unauthorized')
 
-    const beers: Beer[] = await db.query.beer.findMany({
-      where(fields, operators) {
-        return operators.and(
-          eq(fields.userGroupId, id),
-          eq(fields.archive, false)
-        )
-      }
-    })
+    const beers = await db
+      .select()
+      .from(beer)
+      .where(and(eq(beer.userGroupId, id), eq(beer.archive, false)))
+
+    const beersWithRating: Beers[] = beers.map((beer) => ({
+      ...beer,
+      avgWankyness: 0,
+      avgTaste: 0,
+      avgRating: 0,
+      breweries: [],
+      beerTypes: []
+    }))
 
     await Promise.all(
-      beers.map(async (element) => {
+      beersWithRating.map(async (element: Beers) => {
         const beerRatings: BeerRating[] = await db.query.beerRating.findMany({
           where(fields, operators) {
             return operators.and(eq(fields.beerId, element.id))
           }
         })
+        if (beerRatings.length === 0) return
 
         let wankyness = 0
         let taste = 0
@@ -55,64 +63,91 @@ export async function getBeerList(id: string) {
         element.avgRating = Math.round(avg * 2) / 2
       })
     )
-    return beers
+    return beersWithRating
   } catch (error: any) {
     throw new Error(`Failed to find beers: ${error.message}`)
   }
 }
+
 export async function getBeer(id: string) {
   try {
     const user = auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
+    if (!user) return null
     const userInfo = await getUserInfo(user?.userId ?? '')
     if (!userInfo) throw new Error('User info not found')
     const userGroup = await getUserGroup(userInfo.id)
     if (!userGroup) throw new Error('User group info not found')
 
-    return await db.query.beer.findFirst({
-      where(fields, operators) {
-        return operators.and(
-          eq(fields.userGroupId, userGroup.id),
-          eq(fields.id, id)
-        )
-      }
-    })
+    const beers = await db.select().from(beer).where(eq(beer.id, id)).limit(1)
+
+    const beerDetail: Beers[] = beers.map((beer) => ({
+      ...beer,
+      avgWankyness: 0,
+      avgTaste: 0,
+      avgRating: 0,
+      breweries: [],
+      beerTypes: []
+    }))
+
+    const beerDetails = beerDetail[0]
+
+    const breweries: string[] = (
+      await db.query.beerBreweries.findMany({
+        columns: {
+          breweryId: true
+        },
+        where(fields, operators) {
+          return operators.and(eq(fields.beerId, beerDetails.id))
+        }
+      })
+    ).map((brewery) => brewery.breweryId || '')
+
+    const beerTypes: string[] = (
+      await db.query.beerTypes.findMany({
+        columns: {
+          beerTypeId: true
+        },
+        where(fields, operators) {
+          return operators.and(eq(fields.beerId, beerDetails.id))
+        }
+      })
+    ).map((beerType) => beerType.beerTypeId || '')
+
+    beerDetails.breweries = breweries
+    beerDetails.beerTypes = beerTypes
+
+    return beerDetails
   } catch (error: any) {
     throw new Error(`Failed to find beer: ${error.message}`)
   }
 }
 export async function getBeerRatings(id: string) {
   try {
-    const user = auth()
+    const authuser = auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!authuser.userId) throw new Error('Unauthorized')
 
-    const ratings: BeerRating[] = await db.query.beerRating.findMany({
-      where(fields, operators) {
-        return operators.and(eq(fields.beerId, id))
+    const extenededBeerRating = await db
+      .select()
+      .from(beerRating)
+      .innerJoin(user, eq(user.id, beerRating.userId))
+      .where(eq(beerRating.beerId, id))
+
+    const beerRatings: BeerRating[] = extenededBeerRating.map((beerRating) => {
+      return {
+        id: beerRating.beerRating.id,
+        beerId: beerRating.beerRating.beerId,
+        userId: beerRating.beerRating.userId,
+        wankyness: beerRating.beerRating.wankyness,
+        taste: beerRating.beerRating.taste,
+        username: beerRating.user.name
       }
     })
 
-    await Promise.all(
-      ratings.map(async (rating) => {
-        const u: User | undefined = await db.query.user.findFirst({
-          where(fields, operators) {
-            if (rating.userId !== null) {
-              return operators.and(eq(fields.id, rating.userId))
-            }
-          }
-        })
-
-        if (!u) {
-          throw new Error('User not found')
-        }
-
-        rating.username = u.name
-      })
-    )
-    return ratings
+    return beerRatings
   } catch (error: any) {
     throw new Error(`Failed to find beer ratings: ${error.message}`)
   }
@@ -123,16 +158,12 @@ export async function deleteBeerRating(id: string) {
 
     if (!user.userId) throw new Error('Unauthorized')
 
-    return await db.query.beerRating.findFirst({
-      where(fields, operators) {
-        return operators.and(eq(fields.id, id))
-      }
-    })
+    await db.delete(beerRating).where(eq(beerRating.id, id))
   } catch (error: any) {
-    throw new Error(`Failed to find beer ratings: ${error.message}`)
+    throw new Error(`Failed to delete beer ratings: ${error.message}`)
   }
 }
-export async function updateBeerRating(beerRatingData: BeerRating) {
+export async function updateBeerRating(beerRatingData: BeerRatings) {
   try {
     const user = auth()
 
@@ -142,25 +173,32 @@ export async function updateBeerRating(beerRatingData: BeerRating) {
       beerRatingData.id = uuidv4().toString()
     }
 
-    return await db
-      .update(beerRating)
-      .set({
+    const records = await db
+      .insert(beerRating)
+      .values({
         id: beerRatingData.id,
         beerId: beerRatingData.beerId,
         userId: beerRatingData.userId,
         wankyness: beerRatingData.wankyness,
         taste: beerRatingData.taste
       })
-      .where(eq(beerRating.id, beerRatingData.id))
+      .onConflictDoUpdate({
+        target: beerRating.id,
+        set: {
+          beerId: beerRatingData.beerId,
+          userId: beerRatingData.userId,
+          wankyness: beerRatingData.wankyness,
+          taste: beerRatingData.taste
+        }
+      })
+      .returning()
+
+    return records[0]
   } catch (error: any) {
     throw new Error(`Failed to create/update beer ratings: ${error.message}`)
   }
 }
-export async function updateBeer(
-  beerData: Beer,
-  beerBreweryData: BeerBreweries,
-  beerTypeData: BeerTypes
-) {
+export async function updateBeer(beerData: Beers) {
   try {
     const user = auth()
 
@@ -175,27 +213,9 @@ export async function updateBeer(
       beerData.id = uuidv4().toString()
     }
 
-    await db
-      .update(beerBreweries)
-      .set({
-        id: beerBreweryData.id,
-        beerId: beerBreweryData.beerId,
-        breweryId: beerBreweryData.breweryId
-      })
-      .where(eq(beerBreweries.id, beerBreweryData.id))
-
-    await db
-      .update(beerTypes)
-      .set({
-        id: beerTypeData.id,
-        beerId: beerTypeData.beerId,
-        beerTypeId: beerTypeData.beerTypeId
-      })
-      .where(eq(beerTypes.id, beerTypeData.id))
-
-    return await db
-      .update(beer)
-      .set({
+    const record = await db
+      .insert(beer)
+      .values({
         id: beerData.id,
         beerName: beerData.beerName,
         abv: beerData.abv,
@@ -203,7 +223,52 @@ export async function updateBeer(
         addedById: userInfo.id,
         userGroupId: userGroup.id
       })
-      .where(eq(beerRating.id, beerData.id))
+      .onConflictDoUpdate({
+        target: beer.id,
+        set: {
+          beerName: beerData.beerName,
+          abv: beerData.abv,
+          archive: beerData.archive,
+          addedById: userInfo.id,
+          userGroupId: userGroup.id
+        }
+      })
+      .returning()
+
+    beerData.breweries.forEach(async (brewery) => {
+      await db
+        .insert(beerBreweries)
+        .values({
+          id: uuidv4().toString(),
+          beerId: beerData.id,
+          breweryId: brewery
+        })
+        .onConflictDoUpdate({
+          target: [beerBreweries.beerId, beerBreweries.breweryId],
+          set: {
+            beerId: beerData.id,
+            breweryId: brewery
+          }
+        })
+    })
+    beerData.beerTypes.forEach(async (beerType) => {
+      await db
+        .insert(beerTypes)
+        .values({
+          id: uuidv4().toString(),
+          beerId: beerData.id,
+          beerTypeId: beerType
+        })
+        .onConflictDoUpdate({
+          target: [beerTypes.beerId, beerTypes.beerTypeId],
+          set: {
+            beerId: beerData.id,
+            beerTypeId: beerType
+          }
+        })
+    })
+
+    return record[0]
   } catch (error: any) {
     throw new Error(`Failed to create/update beer: ${error.message}`)
   }
@@ -214,7 +279,7 @@ export async function archiveBeer(id: string) {
 
     if (!user.userId) throw new Error('Unauthorized')
 
-    return await db
+    await db
       .update(beer)
       .set({
         archive: true

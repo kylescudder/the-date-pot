@@ -9,13 +9,13 @@
   "description": "A collection of films to watch, places to eat, things to do, coffee shops to rate and vinyls to buy with your loved one. This project is subject to change on a whim if I (and my loved ones) decide we want to change it.",
   "icons": [
     {
-      "src": "/assets/maskable_icon_x48",
+      "src": "/assets/maskable_icon_x48.png",
       "type": "image/png",
       "sizes": "48x48",
       "purpose": "any maskable"
     },
     {
-      "src": "/assets/maskable_icon_x72",
+      "src": "/assets/maskable_icon_x72.png",
       "type": "image/png",
       "sizes": "72x72",
       "purpose": "any maskable"

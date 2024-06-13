@@ -1,31 +1,26 @@
 'use client'
 
 import React from 'react'
-import { useRouter } from 'next/navigation'
-import { IBeer } from '@/lib/models/beer'
 import AddBeer from './AddBeer'
 import Loading from '../shared/Loading'
 import List from '../shared/List'
-import { IBeerRating } from '@/lib/models/beer-rating'
-import { IUser } from '@/lib/models/user'
 import { ICellRendererParams } from 'ag-grid-community'
 import { Rating } from '@mantine/core'
-import { IBrewery } from '@/lib/models/brewery'
-import { IBeerType } from '@/lib/models/beer-type'
+import { Beer, BeerType, Brewery, User } from '@/server/db/schema'
+import { BeerRatings } from '@/lib/models/beerRatings'
 
 export default function BeerList(props: {
-  beers: IBeer[]
-  users: IUser[]
-  breweryList: IBrewery[]
-  beerTypeList: IBeerType[]
+  beers: Beer[]
+  users: User[]
+  breweryList: Brewery[]
+  beerTypeList: BeerType[]
 }) {
   const [loading, setLoading] = React.useState(false)
 
-  const router = useRouter()
-  const ratings: IBeerRating[] = []
+  const ratings: BeerRatings[] = []
 
   const newBeer = {
-    _id: '',
+    id: '',
     beerName: '',
     abv: 0,
     breweries: [],
@@ -33,8 +28,8 @@ export default function BeerList(props: {
     avgWankyness: 0,
     avgTaste: 0,
     avgRating: 0,
-    userGroupID: '',
-    addedByID: '',
+    userGroupId: '',
+    addedById: '',
     archive: false
   }
   return loading ? (

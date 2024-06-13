@@ -19,12 +19,12 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
   icons: [
     {
-      url: '/assets/maskable_icon_x48',
+      url: '/assets/maskable_icon_x48.png',
       type: 'image/png',
       sizes: '48x48'
     },
     {
-      url: '/assets/maskable_icon_x72',
+      url: '/assets/maskable_icon_x72.png',
       type: 'image/png',
       sizes: '72x72'
     },

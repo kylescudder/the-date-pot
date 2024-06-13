@@ -3,19 +3,19 @@ import { currentUser } from '@clerk/nextjs/server'
 import React from 'react'
 import { redirect } from 'next/navigation'
 import Logout from '@/components/shared/Logout'
-import { IUser } from '@/lib/models/user'
 import { getUserInfo } from '@/lib/actions/user.actions'
+import { User } from '@/server/db/schema'
 
 export default async function page() {
   const user = await currentUser()
   if (!user) return null
 
-  const userInfo: IUser = await getUserInfo(user.id)
+  const userInfo: User = await getUserInfo(user.id)
   if (userInfo?.onboarded) redirect('/')
 
-  const userData: IUser = {
+  const userData: User = {
     clerkId: user.id,
-    _id: userInfo?._id,
+    id: userInfo?.id,
     username: userInfo
       ? userInfo?.username
       : user.emailAddresses[0]!.emailAddress,

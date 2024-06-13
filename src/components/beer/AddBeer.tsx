@@ -8,15 +8,12 @@ import {
   successToast
 } from '@/lib/actions/toast.actions'
 import { IconTrash, IconCirclePlus, IconCircleMinus } from '@tabler/icons-react'
-import { IBeer } from '@/lib/models/beer'
 import {
   archiveBeer,
   deleteBeerRating,
   updateBeer,
   updateBeerRating
 } from '@/lib/actions/beer.action'
-import { IBeerRating } from '@/lib/models/beer-rating'
-import { IBrewery } from '@/lib/models/brewery'
 import { option } from '@/lib/models/select-options'
 import { useForm } from '@mantine/form'
 import {
@@ -27,35 +24,36 @@ import {
   TextInput
 } from '@mantine/core'
 import BackButton from '../shared/BackButton'
-import { IUser } from '@/lib/models/user'
 import AddBeerRating from './AddBeerRating'
 import FullScreenModal from '../shared/FullScreenModal'
 import { addBrewery } from '@/lib/actions/brewer.action'
-import { IBeerType } from '@/lib/models/beer-type'
 import { addBeerType } from '@/lib/actions/beer-type'
+import { Beer, BeerRating, BeerType, Brewery, User } from '@/server/db/schema'
+import { BeerRatings } from '@/lib/models/beerRatings'
+import { Beers } from '@/lib/models/beers'
 
 export default function AddBeer(props: {
-  beer: IBeer
-  ratings: IBeerRating[]
-  users: IUser[]
-  breweryList: IBrewery[]
-  beerTypeList: IBeerType[]
+  beer: Beers
+  ratings: BeerRatings[]
+  users: User[]
+  breweryList: Brewery[]
+  beerTypeList: BeerType[]
 }) {
   const router = useRouter()
   const pathname = usePathname()
   const [changesMade, setChangesMade] = useState<boolean>(false)
-  const [beerRatings, setBeerRatings] = useState<IBeerRating[]>(props.ratings)
+  const [beerRatings, setBeerRatings] = useState<BeerRatings[]>(props.ratings)
   const [open, setOpen] = useState<boolean>(false)
 
   const breweryOptions: option[] = props.breweryList.map(
-    (brewery: IBrewery) => ({
-      value: brewery.breweryName,
+    (brewery: Brewery) => ({
+      value: brewery.id,
       label: brewery.breweryName
     })
   )
   const beerTypeOptions: option[] = props.beerTypeList.map(
-    (beerType: IBeerType) => ({
-      value: beerType.beerType,
+    (beerType: BeerType) => ({
+      value: beerType.id,
       label: beerType.beerType
     })
   )
@@ -63,7 +61,7 @@ export default function AddBeer(props: {
   const [beerTypes, setBeerTypes] = useState<option[]>(beerTypeOptions)
 
   interface formBeer {
-    _id: string
+    id: string
     archive: boolean
     beerName: string
     abv: number
@@ -76,25 +74,25 @@ export default function AddBeer(props: {
     avgRating: number
   }
 
-  const beerRating: IBeerRating = {
-    _id: '',
-    beerID: '',
+  const beerRating: BeerRatings = {
+    id: '',
+    beerId: '',
     wankyness: 0,
     taste: 0,
-    userID: '',
+    userId: '',
     username: ''
   }
 
   const form = useForm({
     initialValues: {
-      _id: props.beer._id ? props.beer._id : '',
+      id: props.beer.id ? props.beer.id : '',
       archive: props.beer.archive ? props.beer.archive : false,
       beerName: props.beer.beerName ? props.beer.beerName : '',
       abv: props.beer.abv ? props.beer.abv : 0,
       breweries: props.beer.breweries ? props.beer.breweries : [],
       beerTypes: props.beer.beerTypes ? props.beer.beerTypes : [],
-      addedByID: props.beer.addedByID ? props.beer.addedByID : '',
-      userGroupID: props.beer.userGroupID ? props.beer.userGroupID : '',
+      addedByID: props.beer.addedById ? props.beer.addedById : '',
+      userGroupID: props.beer.userGroupId ? props.beer.userGroupId : '',
       avgWankyness: 0,
       avgTaste: 0,
       avgRating: 0
@@ -102,17 +100,17 @@ export default function AddBeer(props: {
   })
 
   const handleRemoveRecord = async (id: string, index: number) => {
-    const updatedArray = await beerRatings.filter((item, i) => item._id !== id)
+    const updatedArray = await beerRatings.filter((item, i) => item.id !== id)
     setBeerRatings(updatedArray)
     if (id !== '') {
       await deleteBeerRating(id)
     }
-    const rating = await beerRatings.filter((item) => item._id === id)
+    const rating = await beerRatings.filter((item) => item.id === id)
     deleteToast(`${rating[0]!.username}'s rating`)
   }
 
   const onSubmit = async (values: formBeer) => {
-    const payload: IBeer = {
+    const payload: Beers = {
       ...props.beer,
       beerName: values.beerName,
       abv: values.abv,
@@ -121,18 +119,20 @@ export default function AddBeer(props: {
     }
 
     const beer = await updateBeer(payload)
-    beerRatings.map(async (rating: IBeerRating) => {
+
+    beerRatings.map(async (rating: BeerRatings) => {
       const updatedRating = {
         ...rating,
-        beerID: beer._id
+        beerId: beer.id
       }
+
       await updateBeerRating(updatedRating)
     })
     if (pathname.includes('/beer/')) {
       successToast(beer.beerName)
       setChangesMade(true)
     } else {
-      router.push(`/beer/${beer._id}`)
+      router.push(`/beer/${beer.id}`)
     }
   }
 
@@ -140,13 +140,13 @@ export default function AddBeer(props: {
     setOpen(data)
   }
 
-  const pullRating = async (data: IBeerRating) => {
-    const newCatList = [...beerRatings, data]
-    setBeerRatings(newCatList)
+  const pullRating = async (data: BeerRating) => {
+    const newRatingList = [...beerRatings, data]
+    setBeerRatings(newRatingList)
   }
 
   const handleArchive = async () => {
-    await archiveBeer(props.beer._id)
+    await archiveBeer(props.beer.id)
     archiveToast(props.beer.beerName)
     setTimeout(() => {
       const url = `${window.location.protocol}//${window.location.host}`
@@ -187,7 +187,7 @@ export default function AddBeer(props: {
         <Button
           radius='md'
           className={`bg-danger text-light-1 ${
-            props.beer._id === '' ? 'hidden' : ''
+            props.beer.id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
           aria-label='archive'
@@ -198,7 +198,7 @@ export default function AddBeer(props: {
       <form
         onSubmit={form.onSubmit((values) => onSubmit(values))}
         className={`flex flex-col justify-start gap-10 pt-4 ${
-          props.beer._id === '' ? 'px-6' : ''
+          props.beer.id === '' ? 'px-6' : ''
         }`}
       >
         <TextInput
@@ -219,7 +219,7 @@ export default function AddBeer(props: {
           getCreateLabel={(query) => `+ Create ${query}`}
           onCreate={(query) => {
             const item = { value: query, label: query }
-            const brewery: IBrewery = { _id: '', breweryName: query }
+            const brewery: Brewery = { id: '', breweryName: query }
             setBreweries((current) => [...current, item])
             addBrewery(brewery)
             return item
@@ -240,7 +240,7 @@ export default function AddBeer(props: {
           getCreateLabel={(query) => `+ Create ${query}`}
           onCreate={(query) => {
             const item = { value: query, label: query }
-            const beerType: IBeerType = { _id: '', beerType: query }
+            const beerType: BeerType = { id: '', beerType: query }
             setBeerTypes((current) => [...current, item])
             addBeerType(beerType)
             return item
@@ -280,10 +280,10 @@ export default function AddBeer(props: {
           </div>
         </div>
         {beerRatings.length !== 0 ? (
-          beerRatings.map((rating: IBeerRating, i: number) => {
+          beerRatings.map((rating: BeerRatings, i: number) => {
             return (
               <div
-                key={rating.userID}
+                key={rating.userId}
                 className='w-full overflow-hidden rounded-md bg-light-3 shadow-lg dark:bg-dark-3'
               >
                 <div className='px-6 py-4'>
@@ -292,7 +292,7 @@ export default function AddBeer(props: {
                   </div>
                   <div className='contents w-1/2'>
                     <IconCircleMinus
-                      onClick={() => handleRemoveRecord(rating._id, i)}
+                      onClick={() => handleRemoveRecord(rating.id, i)}
                       className='float-right text-danger'
                     />
                   </div>
@@ -338,7 +338,7 @@ export default function AddBeer(props: {
           className='bg-primary-500 text-light-1 hover:bg-primary-hover'
           type='submit'
         >
-          {props.beer._id === '' ? 'Add' : 'Update'} Beer
+          {props.beer.id === '' ? 'Add' : 'Update'} Beer
         </Button>
       </form>
       <FullScreenModal

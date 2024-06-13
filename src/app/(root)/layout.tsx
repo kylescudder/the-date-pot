@@ -7,12 +7,11 @@ import '@/styles/globals.css'
 import Topbar from '@/components/shared/Topbar'
 import { MainContent } from '@/components/shared/MainContent'
 import { getUserInfo } from '@/lib/actions/user.actions'
-import { IUser } from '@/lib/models/user'
 import { redirect } from 'next/navigation'
-import { IPot } from '@/lib/models/pot'
 import { Toast } from '@/components/shared/Toast'
 import { getPots } from '@/lib/actions/pot.actions'
 import '@fontsource/ubuntu'
+import { Pot } from '@/server/db/schema'
 
 export const viewport: Viewport = {
   themeColor: '#877EFF'
@@ -26,12 +25,12 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
   icons: [
     {
-      url: '/assets/maskable_icon_x48',
+      url: '/assets/maskable_icon_x48.png',
       type: 'image/png',
       sizes: '48x48'
     },
     {
-      url: '/assets/maskable_icon_x72',
+      url: '/assets/maskable_icon_x72.png',
       type: 'image/png',
       sizes: '72x72'
     },
@@ -101,10 +100,10 @@ export default async function RootLayout({
   const user = await currentUser()
   if (!user) return null
 
-  const userInfo: IUser = await getUserInfo(user.id)
+  const userInfo: User = await getUserInfo(user.id)
   if (!userInfo?.onboarded) redirect('/onboarding')
 
-  const pots: IPot[] = await getPots()
+  const pots: Pot[] = await getPots()
   return (
     <ClerkProvider
       appearance={{

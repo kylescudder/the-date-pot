@@ -1,61 +1,60 @@
 'use client'
 
-import { IBeer } from '@/lib/models/beer'
-import { IBeerRating } from '@/lib/models/beer-rating'
-import { getNewBeerID, updateBeerRating } from '@/lib/actions/beer.action'
-import { IUser } from '@/lib/models/user'
 import { Button, Rating, Select } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { option } from '@/lib/models/select-options'
+import { Beer, User } from '@/server/db/schema'
+import { BeerRatings } from '@/lib/models/beerRatings'
+import { updateBeerRating } from '@/lib/actions/beer.action'
 
 export default function AddBeerRating(props: {
-  beer: IBeer
-  beerRating: IBeerRating
-  users: IUser[]
-  addRating: (data: IBeerRating) => void
+  beer: Beer
+  beerRating: BeerRatings
+  users: User[]
+  addRating: (data: BeerRatings) => void
   func: (data: boolean) => void
 }) {
-  const options: option[] = props.users.map((user: IUser) => ({
-    value: user._id,
+  const options: option[] = props.users.map((user: User) => ({
+    value: user.id,
     label: user.name
   }))
 
   interface formRating {
-    _id: string
-    beerID: string
+    id: string
+    beerId: string
     wankyness: number
     taste: number
-    userID: string
+    userId: string
     username: string
   }
 
   const form = useForm({
     initialValues: {
-      _id: props.beerRating._id ? props.beerRating._id : '',
-      beerID: props.beer._id ? props.beer._id : '',
+      _id: props.beerRating.id ? props.beerRating.id : '',
+      beerId: props.beer.id ? props.beer.id : '',
       wankyness: props.beerRating.wankyness ? props.beerRating.wankyness : 0,
       taste: props.beerRating.taste ? props.beerRating.taste : 0,
-      userID: props.beerRating.userID ? props.beerRating.userID : '',
+      userId: props.beerRating.userId ? props.beerRating.userId : '',
       username: props.beerRating.username ? props.beerRating.username : ''
     }
   })
 
   const onSubmit = async (values: formRating) => {
     const filteredUsers = props.users.filter(
-      (user) => user._id === values.userID
+      (user) => user.id === values.userId
     )
     const username = filteredUsers.length > 0 ? filteredUsers[0]!.name : ''
-    const payload: IBeerRating = {
-      _id: values._id,
-      beerID: props.beer._id,
+    const payload: BeerRatings = {
+      id: values.id,
+      beerId: props.beer.id,
       wankyness: values.wankyness,
       taste: values.taste,
-      userID: values.userID,
+      userId: values.userId,
       username: username
     }
-    if (payload.beerID !== '') {
+    if (payload.beerId !== '') {
       const rating = await updateBeerRating(payload)
-      const ratingWithUsername: IBeerRating = {
+      const ratingWithUsername: BeerRatings = {
         ...rating,
         username: username
       }
@@ -70,7 +69,7 @@ export default function AddBeerRating(props: {
     <form
       onSubmit={form.onSubmit((values) => onSubmit(values))}
       className={`flex flex-col justify-start gap-10 pt-4 ${
-        props.beer._id === '' ? 'px-6' : ''
+        props.beer.id === '' ? 'px-6' : ''
       }`}
     >
       <Select
@@ -81,7 +80,7 @@ export default function AddBeerRating(props: {
         label='Who?'
         placeholder='Pick one'
         data={options}
-        {...form.getInputProps('userID')}
+        {...form.getInputProps('userId')}
       />
       <div className='flex items-center pt-2 text-base'>
         <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
@@ -110,7 +109,7 @@ export default function AddBeerRating(props: {
         className='bg-primary-500 text-light-1 hover:bg-primary-hover'
         type='submit'
       >
-        {props.beerRating._id === '' ? 'Add' : 'Update'} Rating
+        {props.beerRating.id === '' ? 'Add' : 'Update'} Rating
       </Button>
     </form>
   )
