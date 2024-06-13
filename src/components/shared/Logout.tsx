@@ -16,11 +16,11 @@ export default function Logout(props: { placement: string }) {
         >
           <IconLogout
             size={24}
-            className='text-dark-1 dark:text-light-1'
+            className='text-zinc-900 dark:text-white'
             stroke={2}
             strokeLinejoin='miter'
           />
-          <p className='font-black text-dark-2 dark:text-light-2 max-lg:hidden'>
+          <p className='text-dark-2 dark:text-light-2 font-black max-lg:hidden'>
             Logout
           </p>
         </div>

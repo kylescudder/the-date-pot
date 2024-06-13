@@ -7,7 +7,7 @@ body {
 }
 @layer components {
   .topbar {
-    @apply fixed top-0 z-30 flex w-full items-center justify-between bg-light-1 px-6 py-3 dark:bg-dark-1;
+    @apply fixed top-0 z-30 flex w-full items-center justify-between bg-white px-6 py-3 dark:bg-zinc-900;
   }
 }
 .bottombar_link {
@@ -15,12 +15,6 @@ body {
 }
 .leftsidebar_link {
   @apply relative flex justify-start gap-4 rounded-lg p-4;
-}
-.bottombar_container {
-  @apply flex items-center justify-between gap-3 xs:gap-5;
-}
-.bottombar {
-  @apply fixed bottom-0 z-10 w-full rounded-t-3xl bg-glassmorphism p-4 backdrop-blur-lg xs:px-7 md:hidden;
 }
 .listPage {
   max-width: calc(100vw - 3rem);
@@ -38,7 +32,7 @@ body {
 .mantine-NumberInput-label,
 .mantine-Checkbox-label,
 .mantine-Modal-title {
-  @apply text-dark-1 dark:text-light-1;
+  @apply text-zinc-900 dark:text-white;
 }
 .mantine-Button-label {
   @apply font-semibold;
@@ -51,34 +45,34 @@ body {
 .mantine-NumberInput-input,
 .mantine-NumberInput-control,
 .mantine-MultiSelect-input {
-  @apply bg-light-2 text-dark-1 dark:bg-dark-2 dark:text-light-1;
+  @apply text-zinc-400 text-zinc-900 dark:text-white dark:text-zinc-950;
 }
 .mantine-MultiSelect-value {
-  @apply bg-light-3 dark:bg-gray-700;
+  @apply text-zinc-600 dark:bg-gray-700;
 }
 .mantine-MultiSelect-value > button,
 .mantine-MultiSelect-value {
-  @apply text-light-1;
+  @apply text-white;
 }
 .mantine-Checkbox-input:checked,
 .mantine-NumberInput-control:not(:disabled):hover {
-  @apply bg-primary-500;
+  @apply text-emerald-500;
 }
 .mantine-Popover-dropdown {
-  @apply dark:bg-dark-4;
+  @apply dark:text-black;
 }
 button[data-outside] {
-  @apply text-light-4 !important;
+  @apply text-zinc-700 !important;
 }
 button[data-weekend] {
   @apply text-red-500 !important;
 }
 button[data-selected],
 .mantine-Checkbox-input:checked {
-  @apply bg-primary-500 !important;
+  @apply text-emerald-500 !important;
 }
 .focus-visible\:ring-2:focus-visible {
-  @apply border-primary-500 !important;
+  @apply border-emerald-500 !important;
 }
 .tabler-icon {
   color: white;
@@ -341,7 +335,7 @@ Note: Beware of modifying this element as it can break the animations - you shou
 
 /* General sidebar styles */
 .bm-menu {
-  @apply bg-light-2 dark:bg-dark-2;
+  @apply text-zinc-400 dark:text-zinc-950;
   padding: 2.5em 1.5em 0;
   font-size: 1.15em;
 }
@@ -382,13 +376,13 @@ Note: Beware of modifying this element as it can break the animations - you shou
   rounded-full
   border-4
   border-b-transparent
-  border-l-dark-2
-  border-r-dark-2
-  border-t-dark-2
+  border-l-zinc-500
+  border-r-zinc-500
+  border-t-zinc-500
   dark:border-b-transparent
-  dark:border-l-light-2
-  dark:border-r-light-2
-  dark:border-t-light-2;
+  dark:border-l-zinc-500
+  dark:border-r-zinc-500
+  dark:border-t-zinc-500;
 }
 
 .loader::after {
@@ -406,10 +400,10 @@ Note: Beware of modifying this element as it can break the animations - you shou
   w-6
   rounded-full
   border-4
-  border-b-primary-500
+  border-b-emerald-500
   border-l-transparent
-  border-r-primary-500
-  border-t-primary-500;
+  border-r-emerald-500
+  border-t-emerald-500;
 }
 
 @keyframes rotation {

@@ -7,7 +7,7 @@ export default function NoteCard(props: {
 }) {
   return (
     <Card
-      className='bg-light-4 dark:bg-dark-4'
+      className='text-zinc-700 dark:text-black'
       shadow='sm'
       padding='lg'
       radius='md'
@@ -16,10 +16,10 @@ export default function NoteCard(props: {
       <div className='contents w-1/2'>
         <IconCircleXFilled
           onClick={() => props.func(props.note)}
-          className='float-right text-danger'
+          className='text-danger float-right'
         />
       </div>
-      <Text className='text-dark-1 dark:text-light-1' fw={500}>
+      <Text className='text-zinc-900 dark:text-white' fw={500}>
         {props.note}
       </Text>
     </Card>

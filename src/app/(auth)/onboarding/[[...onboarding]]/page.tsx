@@ -28,15 +28,15 @@ export default async function page() {
   return (
     <main className='mx-auto flex max-w-3xl flex-col justify-start px-10 py-20'>
       <div className='flex justify-between'>
-        <h1 className='head-text text-3xl font-bold leading-6 text-dark-1 dark:text-light-1'>
+        <h1 className='head-text text-3xl font-bold leading-6 text-zinc-900 dark:text-white'>
           Onboarding
         </h1>
         <Logout placement='logout' />
       </div>
-      <p className='mt-3 text-base font-normal leading-6 text-dark-2 dark:text-light-2'>
+      <p className='text-dark-2 dark:text-light-2 mt-3 text-base font-normal leading-6'>
         Complete your profile now to use the Date Pot
       </p>
-      <section className='mt-9 bg-light-2 p-10 dark:bg-dark-2'>
+      <section className='mt-9 p-10 text-zinc-400 dark:text-zinc-950'>
         <AccountProfile user={userData} btnTitle='Continue' />
       </section>
     </main>

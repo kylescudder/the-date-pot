@@ -113,7 +113,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
         label='Bio'
         radius='md'
         placeholder='Tell me a little bit about yourself...'
-        className='text-lg font-semibold leading-6 text-dark-2 dark:text-light-2'
+        className='text-dark-2 dark:text-light-2 text-lg font-semibold leading-6'
         size='md'
         minRows={8}
         {...form.getInputProps('bio')}
@@ -121,7 +121,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
       <Button
         radius='md'
         size='md'
-        className='bg-primary-500 hover:bg-primary-hover'
+        className='hover:bg-primary-hover text-emerald-500'
         type='submit'
       >
         {btnTitle}

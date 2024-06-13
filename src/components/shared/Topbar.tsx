@@ -23,24 +23,24 @@ export default function Topbar(props: { pots: Pot[] }) {
             strokeLinejoin='miter'
             height={28}
             width={28}
-            className='text-dark-1 dark:text-light-1 max-sm:hidden'
+            className='text-zinc-900 dark:text-white max-sm:hidden'
           />
           <p
             className='text-2xl font-bold leading-6
-				  text-dark-1 dark:text-light-1 max-sm:hidden'
+				  text-zinc-900 dark:text-white max-sm:hidden'
           >
             The Date Pot
           </p>
         </Link>
         <Menu
-          burgerButtonClassName={'text-dark-1 dark:text-light-1'}
+          burgerButtonClassName={'text-zinc-900 dark:text-white'}
           customBurgerIcon={
             <IconHomeHeart
               stroke={2}
               strokeLinejoin='miter'
               height={28}
               width={28}
-              className='text-dark-1 dark:text-light-1'
+              className='text-zinc-900 dark:text-white'
             />
           }
         >

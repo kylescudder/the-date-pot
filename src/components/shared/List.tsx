@@ -76,8 +76,8 @@ export default function List(props: {
             placeholder='Search...'
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            className={`${searchOpen ? 'w-full' : 'w-0'} pl-2
-            text-dark-2 dark:text-light-2`}
+            className={`${searchOpen ? 'w-full' : 'w-0'} text-dark-2
+            dark:text-light-2 pl-2`}
             radius='md'
             size='sm'
           />
@@ -86,14 +86,14 @@ export default function List(props: {
           radius='md'
           className={`${
             searchOpen ? 'hidden' : 'absolute right-6'
-          } bg-primary-500 text-light-1 hover:bg-primary-hover`}
+          } hover:bg-primary-hover text-emerald-500 text-white`}
           onClick={handleSearchClickOpen}
         >
           <IconSearch width={24} height={24} strokeLinejoin='miter' />
         </Button>
         <Button
           radius='md'
-          className='absolute left-6 bg-primary-500 text-light-1 hover:bg-primary-hover'
+          className='hover:bg-primary-hover absolute left-6 text-emerald-500 text-white'
           onClick={handleClickOpen}
         >
           <IconFilePlus width={24} height={24} strokeLinejoin='miter' />

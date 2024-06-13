@@ -106,7 +106,7 @@ export default function AddBeerRating(props: {
       </div>
       <Button
         radius='md'
-        className='bg-primary-500 text-light-1 hover:bg-primary-hover'
+        className='hover:bg-primary-hover text-emerald-500 text-white'
         type='submit'
       >
         {props.beerRating.id === '' ? 'Add' : 'Update'} Rating

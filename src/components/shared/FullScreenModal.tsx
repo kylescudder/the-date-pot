@@ -25,8 +25,8 @@ export default function FullScreenModal(props: {
       fullScreen
       transitionProps={{ transition: 'slide-up', duration: 200 }}
     >
-      <Modal.Content className='bg-light-1 dark:bg-dark-1'>
-        <Modal.Header className='bg-light-1 dark:bg-dark-1'>
+      <Modal.Content className='bg-white dark:bg-zinc-900'>
+        <Modal.Header className='bg-white dark:bg-zinc-900'>
           <IconCross
             onClick={handleClose}
             aria-label='close'
@@ -34,7 +34,7 @@ export default function FullScreenModal(props: {
             height={24}
             strokeLinejoin='miter'
           />
-          <Modal.Title className='text-dark-1 dark:text-light-1'>
+          <Modal.Title className='text-zinc-900 dark:text-white'>
             {props.title}
           </Modal.Title>
         </Modal.Header>

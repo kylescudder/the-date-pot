@@ -148,13 +148,13 @@ export default function AddRestaurant(props: {
           page='restaurants'
         />
         <Button
-          className={`bg-danger text-light-1 ${
+          className={`bg-danger text-white ${
             props.restaurant.id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
           aria-label='archive'
         >
-          <IconTrash className='text-light-1' />
+          <IconTrash className='text-white' />
         </Button>
       </div>
       <form
@@ -233,19 +233,19 @@ export default function AddRestaurant(props: {
           props.longLat[1] === undefined && <ReloadMapPlaceholder />}
         <div className='flex justify-between'>
           <div className='flex-grow pr-2'>
-            <p className='inline-block pt-3 text-base font-black text-dark-1 dark:text-light-1'>
+            <p className='inline-block pt-3 text-base font-black text-zinc-900 dark:text-white'>
               Notes
             </p>
           </div>
           <div className='mt-auto'>
             <Button
               radius='md'
-              className='r-0 bg-success text-light-1'
+              className='r-0 bg-success text-white'
               onClick={() => setOpen(true)}
               aria-label='add'
               size='md'
             >
-              <IconCirclePlus className='text-light-1' />
+              <IconCirclePlus className='text-white' />
             </Button>
           </div>
         </div>
@@ -254,7 +254,7 @@ export default function AddRestaurant(props: {
         })}
         <Button
           radius='md'
-          className='bg-primary-500 text-light-1 hover:bg-primary-hover'
+          className='hover:bg-primary-hover text-emerald-500 text-white'
           type='submit'
         >
           {props.restaurant.id === '' ? 'Add' : 'Update'} Restaurant

@@ -130,13 +130,13 @@ export default function AddFilm(props: {
           page='films'
         />
         <Button
-          className={`bg-danger text-light-1 ${
+          className={`bg-danger text-white ${
             props.film.id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
           aria-label='archive'
         >
-          <IconTrash className='text-light-1' />
+          <IconTrash className='text-white' />
         </Button>
       </div>
       <form
@@ -241,7 +241,7 @@ export default function AddFilm(props: {
         />
         <Button
           radius='md'
-          className='bg-primary-500 text-light-1 hover:bg-primary-hover'
+          className='hover:bg-primary-hover text-emerald-500 text-white'
           type='submit'
         >
           {props.film.id === '' ? 'Add' : 'Update'} Film
