@@ -117,7 +117,7 @@ export async function updateRestaurant(restaurantData: Restaurants) {
         }
       })
       .returning()
-    console.log(restaurantData)
+
     restaurantData.cuisines.forEach(async (cuisine) => {
       await db
         .insert(restaurantCuisines)
