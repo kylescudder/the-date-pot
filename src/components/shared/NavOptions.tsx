@@ -3,7 +3,7 @@
 import React from 'react'
 import { usePathname } from 'next/navigation'
 import Icon from './Icon'
-import { Pot } from '@/server/db/schema';
+import { Pot } from '@/server/db/schema'
 
 export default function NavOptions(props: { position: string; pots: Pot[] }) {
   const pathname = usePathname()
