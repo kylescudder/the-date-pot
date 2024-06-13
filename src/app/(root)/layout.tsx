@@ -11,7 +11,7 @@ import { redirect } from 'next/navigation'
 import { Toast } from '@/components/shared/Toast'
 import { getPots } from '@/lib/actions/pot.actions'
 import '@fontsource/ubuntu'
-import { Pot } from '@/server/db/schema'
+import { Pot, User } from '@/server/db/schema'
 
 export const viewport: Viewport = {
   themeColor: '#877EFF'
@@ -100,7 +100,7 @@ export default async function RootLayout({
   const user = await currentUser()
   if (!user) return null
 
-  const userInfo: User = await getUserInfo(user.id)
+  const userInfo: User | undefined = await getUserInfo(user.id)
   if (!userInfo?.onboarded) redirect('/onboarding')
 
   const pots: Pot[] = await getPots()
