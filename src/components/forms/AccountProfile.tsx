@@ -1,15 +1,15 @@
 'use client'
 
 import { usePathname, useRouter } from 'next/navigation'
-import { ChangeEvent, useState } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
-import { IUser } from '@/lib/models/user'
 import { updateUser } from '@/lib/actions/user.actions'
 import { Button, FileInput, TextInput, Textarea } from '@mantine/core'
 import { useForm } from '@mantine/form'
+import { Users } from '@/lib/models/users'
 
 interface Props {
-  user: IUser
+  user: Users
   btnTitle: string
 }
 const AccountProfile = ({ user, btnTitle }: Props) => {
@@ -32,8 +32,8 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
     bio: string
   }
   const onSubmit = async (values: formUser) => {
-    const payload: IUser = {
-      _id: '',
+    const payload: Users = {
+      id: '',
       username: values.username,
       name: values.name,
       bio: values.bio,
