@@ -2,9 +2,9 @@
 
 import NavOptions from './NavOptions'
 import Logout from './Logout'
-import { IPot } from '@/lib/models/pot'
+import { Pot } from '@/server/db/schema'
 
-export default function LeftSidebar(props: { pots: IPot[] }) {
+export default function LeftSidebar(props: { pots: Pot[] }) {
   return (
     <section
       className='custom-scrollbar sticky left-0 top-0 z-20 
