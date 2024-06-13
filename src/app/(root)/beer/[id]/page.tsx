@@ -10,7 +10,7 @@ import { BeerType, Brewery } from '@/server/db/schema'
 import React from 'react'
 
 export default async function Beer({ params }: { params: { id: string } }) {
-  const beer = await getBeer(params.id)
+  const beer: Beers = await getBeer(params.id)
   const ratings: Beers[] = await getBeerRatings(params.id)
   const breweryList: Brewery[] = await getBreweryList()
   const beerTypeList: BeerType[] = await getBeerTypeList()

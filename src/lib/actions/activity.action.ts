@@ -37,14 +37,13 @@ export async function getActivity(id: string) {
     const userGroup = await getUserGroup(userInfo.id)
     if (!userGroup) throw new Error('User group info not found')
 
-    return await db.query.activity.findFirst({
-      where(fields, operators) {
-        return operators.and(
-          eq(fields.userGroupId, userGroup.id),
-          eq(fields.id, id)
-        )
-      }
-    })
+    const activities = await db
+      .select()
+      .from(activity)
+      .where(eq(activity.id, id))
+      .limit(1)
+
+    return activities[0]
   } catch (error: any) {
     throw new Error(`Failed to find activity: ${error.message}`)
   }
