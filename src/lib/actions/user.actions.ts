@@ -6,6 +6,7 @@ import { eq } from 'drizzle-orm/sql/expressions/conditions'
 import { revalidatePath } from 'next/cache'
 import { sql } from 'drizzle-orm/sql/sql'
 import { group, user, userGroups, type User } from '@/server/db/schema'
+import { Users } from '../models/users'
 
 export async function getUserInfo(id: string) {
   try {
@@ -74,16 +75,19 @@ export async function getGroupUsers() {
     const groupUsers = await getUserGroup(userInfo.id)
     if (!groupUsers) throw new Error('User group info not found')
 
-    const users = []
-
     const records = await db
       .select()
       .from(user)
       .innerJoin(userGroups, eq(user.id, userGroups.userId))
       .where(sql`${userGroups.groupId} = ${groupUsers.id}`)
 
+    let users: Users[] = []
     records.forEach(async (user) => {
-      users.push(user.user)
+      const userRecord = {
+        ...user.user,
+        image: ''
+      }
+      users.push(userRecord)
     })
 
     return users
