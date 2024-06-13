@@ -1,26 +1,25 @@
 'use client'
 
-import { IActivity } from '@/lib/models/activity'
 import React from 'react'
 import AddActivity from './AddActivity'
 import Loading from '../shared/Loading'
 import List from '../shared/List'
-import { IExpense } from '@/lib/models/expense'
+import { Activity, Expense } from '@/server/db/schema'
 
 export default function ActivityList(props: {
-  activities: IActivity[]
-  expenseList: IExpense[]
+  activities: Activity[]
+  expenseList: Expense[]
   longLat: number[]
 }) {
   const [loading, setLoading] = React.useState(false)
 
-  const newActivity: IActivity = {
+  const newActivity: Activity = {
     id: '',
     activityName: '',
     address: '',
     archive: false,
-    userGroupID: '',
-    expense: ''
+    userGroupId: '',
+    expenseId: ''
   }
 
   return loading ? (
