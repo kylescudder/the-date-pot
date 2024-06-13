@@ -9,6 +9,7 @@ import { getFilmList } from '@/lib/actions/film.action'
 import { getUserGroup, getUserInfo } from '@/lib/actions/user.actions'
 import { currentUser } from '@clerk/nextjs/server'
 import { Director, Film, Genre, Platform } from '@/server/db/schema'
+import { Films as FilmType } from '@/lib/models/films'
 
 export default async function Films() {
   const user = await currentUser()
@@ -16,7 +17,7 @@ export default async function Films() {
 
   const userInfo = await getUserInfo(user.id)
   const userGroup = await getUserGroup(userInfo!.id)
-  const films: Film[] = await getFilmList(userGroup.id)
+  const films: FilmType[] = await getFilmList(userGroup.id)
   const directorList: Director[] = await getDirectorList()
   const genreList: Genre[] = await getGenreList()
   const platformList: Platform[] = await getPlatformList()
