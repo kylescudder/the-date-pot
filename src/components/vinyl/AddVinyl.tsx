@@ -21,8 +21,8 @@ export default function AddVinyl(props: { vinyl: Vinyl }) {
     artistName: string
     purchased: boolean
     archive: boolean
-    addedByID: string
-    userGroupID: string
+    addedById: string
+    userGroupId: string
   }
 
   const form = useForm({
@@ -32,8 +32,8 @@ export default function AddVinyl(props: { vinyl: Vinyl }) {
       artistName: props.vinyl.artistName ? props.vinyl.artistName : '',
       purchased: props.vinyl.purchased ? props.vinyl.purchased : false,
       archive: props.vinyl.archive ? props.vinyl.archive : false,
-      addedByID: props.vinyl.addedById ? props.vinyl.addedById : '',
-      userGroupID: props.vinyl.userGroupId ? props.vinyl.userGroupId : ''
+      addedById: props.vinyl.addedById ? props.vinyl.addedById : '',
+      userGroupId: props.vinyl.userGroupId ? props.vinyl.userGroupId : ''
     }
   })
 

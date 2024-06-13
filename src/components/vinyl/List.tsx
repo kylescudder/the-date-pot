@@ -16,8 +16,8 @@ export default function VinylList(props: { vinyls: Vinyl[] }) {
     artistName: '',
     purchased: false,
     archive: false,
-    addedByID: '',
-    userGroupID: ''
+    addedById: '',
+    userGroupId: ''
   }
 
   const formatter = (params: { data: Vinyl }): any => {

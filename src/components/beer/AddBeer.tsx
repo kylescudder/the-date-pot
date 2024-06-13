@@ -67,8 +67,8 @@ export default function AddBeer(props: {
     abv: number
     breweries: string[]
     beerTypes: string[]
-    addedByID: string
-    userGroupID: string
+    addedById: string
+    userGroupId: string
     avgWankyness: number
     avgTaste: number
     avgRating: number
@@ -91,8 +91,8 @@ export default function AddBeer(props: {
       abv: props.beer.abv ? props.beer.abv : 0,
       breweries: props.beer.breweries ? props.beer.breweries : [],
       beerTypes: props.beer.beerTypes ? props.beer.beerTypes : [],
-      addedByID: props.beer.addedById ? props.beer.addedById : '',
-      userGroupID: props.beer.userGroupId ? props.beer.userGroupId : '',
+      addedById: props.beer.addedById ? props.beer.addedById : '',
+      userGroupId: props.beer.userGroupId ? props.beer.userGroupId : '',
       avgWankyness: 0,
       avgTaste: 0,
       avgRating: 0
