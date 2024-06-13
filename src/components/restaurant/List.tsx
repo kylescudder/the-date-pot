@@ -1,27 +1,26 @@
 'use client'
 
-import { IRestaurant } from '@/lib/models/restaurant'
 import React from 'react'
 import AddRestaurant from './AddRestaurant'
 import Loading from '../shared/Loading'
 import List from '../shared/List'
-import { ICuisine } from '@/lib/models/cuisine'
-import { IWhen } from '@/lib/models/when'
+import { Restaurants } from '@/lib/models/restaurants'
+import { Cuisine, When } from '@/server/db/schema'
 
 export default function RestaurantList(props: {
-  restaurants: IRestaurant[]
-  cuisineList: ICuisine[]
-  whenList: IWhen[]
+  restaurants: Restaurants[]
+  cuisineList: Cuisine[]
+  whenList: When[]
   longLat: number[]
 }) {
   const [loading, setLoading] = React.useState(false)
 
-  const newRestaurant: IRestaurant = {
-    _id: '',
+  const newRestaurant: Restaurants = {
+    id: '',
     restaurantName: '',
     address: '',
     archive: false,
-    userGroupID: '',
+    userGroupId: '',
     cuisines: [],
     whens: [],
     notes: []

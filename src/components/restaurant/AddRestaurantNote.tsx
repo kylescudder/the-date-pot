@@ -1,12 +1,12 @@
 'use client'
 
 import { Button, Textarea } from '@mantine/core'
-import { IRestaurant } from '@/lib/models/restaurant'
 import { ChangeEvent, useState } from 'react'
 import { addRestaurantNote } from '@/lib/actions/restaurant.action'
+import { Restaurants } from '@/lib/models/restaurants'
 
 export default function AddRestaurantNote(props: {
-  restaurant: IRestaurant
+  restaurant: Restaurants
   restaurantNote: string
   func: (data: boolean) => void
   addNote: (data: string) => void
@@ -17,7 +17,7 @@ export default function AddRestaurantNote(props: {
     setNote(e.target.value)
   }
   const handleSubmit = async () => {
-    await addRestaurantNote(note, props.restaurant._id)
+    await addRestaurantNote(note, props.restaurant.id)
     props.func(false)
     props.addNote(note)
   }
@@ -37,7 +37,7 @@ export default function AddRestaurantNote(props: {
         type='button'
         onClick={handleSubmit}
       >
-        {props.restaurant._id === '' ? 'Add' : 'Update'} Note
+        {props.restaurant.id === '' ? 'Add' : 'Update'} Note
       </Button>
     </div>
   )

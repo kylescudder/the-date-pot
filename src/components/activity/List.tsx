@@ -15,7 +15,7 @@ export default function ActivityList(props: {
   const [loading, setLoading] = React.useState(false)
 
   const newActivity: IActivity = {
-    _id: '',
+    id: '',
     activityName: '',
     address: '',
     archive: false,

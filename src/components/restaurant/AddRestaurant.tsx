@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from '@mantine/form'
 import { usePathname, useRouter } from 'next/navigation'
-import { IRestaurant } from '@/lib/models/restaurant'
 import {
   archiveRestaurant,
   deleteRestaurantNote,
@@ -18,21 +17,21 @@ import { IconTrash, IconCirclePlus } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
 import { Button, MultiSelect, TextInput } from '@mantine/core'
 import Map from '../shared/Map'
-import { ICuisine } from '@/lib/models/cuisine'
 import { option } from '@/lib/models/select-options'
-import { IWhen } from '@/lib/models/when'
 import NoteCard from './NoteCard'
 import FullScreenModal from '../shared/FullScreenModal'
 import AddRestaurantNote from './AddRestaurantNote'
 import ReloadMapPlaceholder from '../shared/ReloadMapPlaceholder'
 import { addCuisine } from '@/lib/actions/cuisine.action'
 import { addWhen } from '@/lib/actions/when.action'
+import { Cuisine, When } from '@/server/db/schema'
+import { Restaurants } from '@/lib/models/restaurants'
 
 export default function AddRestaurant(props: {
-  restaurant: IRestaurant
+  restaurant: Restaurants
   longLat: number[]
-  cuisineList: ICuisine[]
-  whenList: IWhen[]
+  cuisineList: Cuisine[]
+  whenList: When[]
 }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -49,25 +48,27 @@ export default function AddRestaurant(props: {
     console.log(address)
   }, [address])
 
-  const cuisineOptions: option[] = props.cuisineList.map((user: ICuisine) => ({
-    value: user.cuisine,
-    label: user.cuisine
-  }))
+  const cuisineOptions: option[] = props.cuisineList.map(
+    (cuisine: Cuisine) => ({
+      value: cuisine.id,
+      label: cuisine.cuisine
+    })
+  )
   const [cuisines, setCuisines] = useState<option[]>(cuisineOptions)
-  const whenOptions: option[] = props.whenList.map((user: IWhen) => ({
-    value: user.when,
-    label: user.when
+  const whenOptions: option[] = props.whenList.map((when: When) => ({
+    value: when.id,
+    label: when.when
   }))
   const [whens, setWhens] = useState<option[]>(whenOptions)
 
   const restaurantNote: string = ''
 
   interface formRestaurant {
-    _id: string
+    id: string
     restaurantName: string
     address: string
     archive: boolean
-    userGroupID: string
+    userGroupId: string
     cuisines: string[]
     whens: string[]
     notes: string[]
@@ -75,14 +76,14 @@ export default function AddRestaurant(props: {
 
   const form = useForm({
     initialValues: {
-      _id: props.restaurant._id ? props.restaurant._id : '',
+      id: props.restaurant.id ? props.restaurant.id : '',
       restaurantName: props.restaurant.restaurantName
         ? props.restaurant.restaurantName
         : '',
       address: props.restaurant.address ? props.restaurant.address : '',
       archive: props.restaurant.archive ? props.restaurant.archive : false,
-      userGroupID: props.restaurant.userGroupID
-        ? props.restaurant.userGroupID
+      userGroupId: props.restaurant.userGroupId
+        ? props.restaurant.userGroupId
         : '',
       cuisines: props.restaurant.cuisines ? props.restaurant.cuisines : [''],
       whens: props.restaurant.whens ? props.restaurant.whens : [''],
@@ -91,7 +92,7 @@ export default function AddRestaurant(props: {
   })
 
   const onSubmit = async (values: formRestaurant) => {
-    const payload: IRestaurant = {
+    const payload: Restaurants = {
       ...props.restaurant,
       restaurantName: values.restaurantName,
       address: values.address,
@@ -109,12 +110,12 @@ export default function AddRestaurant(props: {
         setAddress(payload.address)
       }
     } else {
-      router.push(`/restaurant/${restaurant._id}`)
+      router.push(`/restaurant/${restaurant.id}`)
     }
   }
 
   const handleArchive = async () => {
-    await archiveRestaurant(props.restaurant._id)
+    await archiveRestaurant(props.restaurant.id)
     archiveToast(props.restaurant.restaurantName)
     setTimeout(() => {
       const url = `${window.location.protocol}//${window.location.host}`
@@ -125,7 +126,7 @@ export default function AddRestaurant(props: {
   const pullNote = async (note: string) => {
     const updatedNotes = notes.filter((item) => item !== note)
     setNotes(updatedNotes)
-    await deleteRestaurantNote(note, props.restaurant._id)
+    await deleteRestaurantNote(note, props.restaurant.id)
     deleteToast('Note')
   }
 
@@ -148,7 +149,7 @@ export default function AddRestaurant(props: {
         />
         <Button
           className={`bg-danger text-light-1 ${
-            props.restaurant._id === '' ? 'hidden' : ''
+            props.restaurant.id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
           aria-label='archive'
@@ -159,7 +160,7 @@ export default function AddRestaurant(props: {
       <form
         onSubmit={form.onSubmit((values) => onSubmit(values))}
         className={`flex flex-col justify-start gap-10 pt-4 ${
-          props.restaurant._id === '' ? 'px-6' : ''
+          props.restaurant.id === '' ? 'px-6' : ''
         }`}
       >
         <TextInput
@@ -180,7 +181,7 @@ export default function AddRestaurant(props: {
           getCreateLabel={(query) => `+ Create ${query}`}
           onCreate={(query) => {
             const item = { value: query, label: query }
-            const cuisine: ICuisine = { _id: '', cuisine: query }
+            const cuisine: Cuisine = { id: '', cuisine: query }
             setCuisines((current) => [...current, item])
             addCuisine(cuisine)
             return item
@@ -201,7 +202,7 @@ export default function AddRestaurant(props: {
           getCreateLabel={(query) => `+ Create ${query}`}
           onCreate={(query) => {
             const item = { value: query, label: query }
-            const when: IWhen = { _id: '', when: query }
+            const when: When = { id: '', when: query }
             setWhens((current) => [...current, item])
             addWhen(when)
             return item
@@ -256,7 +257,7 @@ export default function AddRestaurant(props: {
           className='bg-primary-500 text-light-1 hover:bg-primary-hover'
           type='submit'
         >
-          {props.restaurant._id === '' ? 'Add' : 'Update'} Restaurant
+          {props.restaurant.id === '' ? 'Add' : 'Update'} Restaurant
         </Button>
       </form>
       <FullScreenModal

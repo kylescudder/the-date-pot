@@ -30,7 +30,7 @@ export default function AddBeerRating(props: {
 
   const form = useForm({
     initialValues: {
-      _id: props.beerRating.id ? props.beerRating.id : '',
+      id: props.beerRating.id ? props.beerRating.id : '',
       beerId: props.beer.id ? props.beer.id : '',
       wankyness: props.beerRating.wankyness ? props.beerRating.wankyness : 0,
       taste: props.beerRating.taste ? props.beerRating.taste : 0,

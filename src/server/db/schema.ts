@@ -164,7 +164,7 @@ export const restaurant = createTable('restaurant', {
   address: varchar('address').notNull()
 })
 
-export const restaurantNote = createTable('restaurantNote', {
+export const restaurantNotes = createTable('restaurantNotes', {
   id: uuid('id')
     .primaryKey()
     .$defaultFn(() => uuidv4()),
