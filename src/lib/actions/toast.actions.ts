@@ -1,7 +1,6 @@
 'use client'
 
 import { toast } from 'react-toastify'
-import { IVinyl } from '../models/vinyl'
 
 export const successToast = async (name: string) => {
   toast.success(`${name} updated! 🥳`, {
