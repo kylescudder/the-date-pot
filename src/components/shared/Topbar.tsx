@@ -7,9 +7,9 @@ import CustomThemeProvider from '@/components/shared/CustomThemeProvider'
 import { DarkModeToggle } from '../ui/dark-mode-toggle'
 import { slide as Menu } from 'react-burger-menu'
 import NavOptions from './NavOptions'
-import { IPot } from '@/lib/models/pot'
+import { Pot } from '@/server/db/schema'
 
-export default function Topbar(props: { pots: IPot[] }) {
+export default function Topbar(props: { pots: Pot[] }) {
   return (
     <CustomThemeProvider>
       <nav className='topbar'>
