@@ -89,7 +89,7 @@ export async function getBeer(id: string) {
       beerTypes: []
     }))
 
-    const beerDetails = beerDetail[0]
+    const beerDetails: Beers = beerDetail[0]
 
     const breweries: string[] = (
       await db.query.beerBreweries.findMany({
@@ -133,7 +133,7 @@ export async function getBeerRatings(id: string) {
       .innerJoin(user, eq(user.id, beerRating.userId))
       .where(eq(beerRating.beerId, id))
 
-    const beerRatings: BeerRating[] = extenededBeerRating.map((beerRating) => {
+    const beerRatings: BeerRatings[] = extenededBeerRating.map((beerRating) => {
       return {
         id: beerRating.beerRating.id,
         beerId: beerRating.beerRating.beerId,
