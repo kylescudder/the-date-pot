@@ -1,4 +1,4 @@
-import { Beer, BeerBreweries, BeerTypes } from '@/server/db/schema'
+import { Beer } from '@/server/db/schema'
 
 export interface Beers extends Beer {
   avgWankyness: number
