@@ -9,7 +9,7 @@ import {
   getUserGroup,
   getUserInfo
 } from '@/lib/actions/user.actions'
-import { Beers } from '@/lib/models/beers'
+import { Beers as BeersType } from '@/lib/models/beers'
 import { BeerType, Brewery } from '@/server/db/schema'
 import { currentUser } from '@clerk/nextjs/server'
 import React from 'react'
@@ -20,7 +20,7 @@ export default async function Beers() {
 
   const userInfo = await getUserInfo(user.id)
   const userGroup = await getUserGroup(userInfo!.id)
-  const beers: Beers[] = await getBeerList(userGroup.id)
+  const beers: BeersType[] = await getBeerList(userGroup.id)
   const breweryList: Brewery[] = await getBreweryList()
   const beerTypeList: BeerType[] = await getBeerTypeList()
   const users = (await getGroupUsers()) || []
