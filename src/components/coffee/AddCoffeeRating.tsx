@@ -1,21 +1,20 @@
 'use client'
 
-import { ICoffee } from '@/lib/models/coffee'
-import { ICoffeeRating } from '@/lib/models/coffee-rating'
-import { getNewCoffeeId, updateCoffeeRating } from '@/lib/actions/coffee.action'
-import { IUser } from '@/lib/models/user'
+import { updateCoffeeRating } from '@/lib/actions/coffee.action'
 import { Button, Rating, Select } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { option } from '@/lib/models/select-options'
+import { Coffee, User } from '@/server/db/schema'
+import { CoffeeRatings } from '@/lib/models/coffeeRatings'
 
 export default function AddCoffeeRating(props: {
-  coffee: ICoffee
-  coffeeRating: ICoffeeRating
-  users: IUser[]
-  addRating: (data: ICoffeeRating) => void
+  coffee: Coffee
+  coffeeRating: CoffeeRatings
+  users: User[]
+  addRating: (data: CoffeeRatings) => void
   func: (data: boolean) => void
 }) {
-  const options: option[] = props.users.map((user: IUser) => ({
+  const options: option[] = props.users.map((user: User) => ({
     value: user.id,
     label: user.name
   }))
@@ -47,7 +46,7 @@ export default function AddCoffeeRating(props: {
       (user) => user.id === values.userId
     )
     const username = filteredUsers.length > 0 ? filteredUsers[0]!.name : ''
-    const payload: ICoffeeRating = {
+    const payload: CoffeeRatings = {
       id: values.id,
       coffeeId: props.coffee.id,
       experience: values.experience,
@@ -57,7 +56,7 @@ export default function AddCoffeeRating(props: {
     }
     if (payload.coffeeId !== '') {
       const rating = await updateCoffeeRating(payload)
-      const ratingWithUsername: ICoffeeRating = {
+      const ratingWithUsername: CoffeeRatings = {
         ...rating,
         username: username
       }
