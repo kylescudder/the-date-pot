@@ -13,6 +13,7 @@ import { and, eq } from 'drizzle-orm/sql/expressions/conditions'
 import { getUserGroup, getUserInfo } from './user.actions'
 import { uuidv4 } from '../utils'
 import { Coffees } from '../models/coffees'
+import { CoffeeRatings } from '../models/coffeeRatings'
 
 export async function getCoffeeList(id: string) {
   try {
@@ -96,7 +97,7 @@ export async function getCoffeeRatings(id: string) {
       .innerJoin(user, eq(user.id, coffeeRating.userId))
       .where(eq(coffeeRating.coffeeId, id))
 
-    const coffeeRatings: CoffeeRating[] = extenededCoffeeRating.map(
+    const coffeeRatings: CoffeeRatings[] = extenededCoffeeRating.map(
       (coffeeRating) => {
         return {
           id: coffeeRating.coffeeRating.id,
