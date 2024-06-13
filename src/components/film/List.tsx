@@ -1,31 +1,29 @@
 'use client'
 
-import { IFilm } from '@/lib/models/film'
 import React from 'react'
 import AddFilm from './AddFilm'
 import Loading from '../shared/Loading'
 import List from '../shared/List'
-import { IDirector } from '@/lib/models/director'
-import { IPlatform } from '@/lib/models/platform'
-import { IGenre } from '@/lib/models/genre'
+import { Director, Genre, Platform } from '@/server/db/schema'
+import { Films } from '@/lib/models/films'
 
 export default function FilmList(props: {
-  films: IFilm[]
-  directorList: IDirector[]
-  genreList: IGenre[]
-  platformList: IPlatform[]
+  films: Films[]
+  directorList: Director[]
+  genreList: Genre[]
+  platformList: Platform[]
 }) {
   const [loading, setLoading] = React.useState(false)
 
-  const newFilm: IFilm = {
-    _id: '',
-    addedByID: '',
+  const newFilm: Films = {
+    id: '',
+    addedById: '',
     addedDate: new Date(),
     archive: false,
     filmName: '',
     releaseDate: new Date(),
     runTime: 0,
-    userGroupID: '',
+    userGroupId: '',
     watched: false,
     directors: [],
     genres: [],

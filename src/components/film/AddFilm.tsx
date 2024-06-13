@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import { useForm } from '@mantine/form'
 import { usePathname, useRouter } from 'next/navigation'
-import { IFilm } from '@/lib/models/film'
 import { archiveFilm, updateFilm } from '@/lib/actions/film.action'
 import { archiveToast, successToast } from '@/lib/actions/toast.actions'
 import { IconTrash } from '@tabler/icons-react'
@@ -17,18 +16,17 @@ import {
 } from '@mantine/core'
 import { DatePickerInput } from '@mantine/dates'
 import { option } from '@/lib/models/select-options'
-import { IDirector } from '@/lib/models/director'
-import { IGenre } from '@/lib/models/genre'
-import { IPlatform } from '@/lib/models/platform'
 import { addDirector } from '@/lib/actions/director.action'
 import { addGenre } from '@/lib/actions/genre.action'
 import { addPlatform } from '@/lib/actions/platform.action'
+import { Films } from '@/lib/models/films'
+import { Director, Genre, Platform } from '@/server/db/schema'
 
 export default function AddFilm(props: {
-  film: IFilm
-  directorList: IDirector[]
-  genreList: IGenre[]
-  platformList: IPlatform[]
+  film: Films
+  directorList: Director[]
+  genreList: Genre[]
+  platformList: Platform[]
 }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -36,20 +34,20 @@ export default function AddFilm(props: {
   const [open, setOpen] = useState<boolean>(false)
 
   const directorOptions: option[] = props.directorList.map(
-    (director: IDirector) => ({
-      value: director.directorName,
+    (director: Director) => ({
+      value: director.id,
       label: director.directorName
     })
   )
   const [directors, setDirectors] = useState<option[]>(directorOptions)
-  const genreOptions: option[] = props.genreList.map((genre: IGenre) => ({
-    value: genre.genreText,
+  const genreOptions: option[] = props.genreList.map((genre: Genre) => ({
+    value: genre.id,
     label: genre.genreText
   }))
   const [genres, setGenres] = useState<option[]>(genreOptions)
   const platformOptions: option[] = props.platformList.map(
-    (platform: IPlatform) => ({
-      value: platform.platformName,
+    (platform: Platform) => ({
+      value: platform.id,
       label: platform.platformName
     })
   )
@@ -58,14 +56,14 @@ export default function AddFilm(props: {
   const filmNote: string = ''
 
   interface formFilm {
-    _id: string
-    addedByID: string
+    id: string
+    addedById: string
     addedDate: Date
     archive: boolean
     filmName: string
     releaseDate: Date
     runTime: number
-    userGroupID: string
+    userGroupId: string
     watched: boolean
     directors: string[]
     genres: string[]
@@ -74,14 +72,14 @@ export default function AddFilm(props: {
 
   const form = useForm({
     initialValues: {
-      _id: props.film._id ? props.film._id : '',
-      addedByID: props.film.addedByID ? props.film.addedByID : '',
+      id: props.film.id ? props.film.id : '',
+      addedById: props.film.addedById ? props.film.addedById : '',
       addedDate: props.film.addedDate ? props.film.addedDate : new Date(),
       archive: props.film.archive ? props.film.archive : false,
       filmName: props.film.filmName ? props.film.filmName : '',
       releaseDate: props.film.releaseDate ? props.film.releaseDate : new Date(),
       runTime: props.film.runTime ? props.film.runTime : 0,
-      userGroupID: props.film.userGroupID ? props.film.userGroupID : '',
+      userGroupId: props.film.userGroupId ? props.film.userGroupId : '',
       watched: props.film.watched ? props.film.watched : false,
       directors: props.film.directors ? props.film.directors : [''],
       genres: props.film.genres ? props.film.genres : [''],
@@ -90,7 +88,7 @@ export default function AddFilm(props: {
   })
 
   const onSubmit = async (values: formFilm) => {
-    const payload: IFilm = {
+    const payload: Films = {
       ...props.film,
       filmName: values.filmName,
       releaseDate: values.releaseDate,
@@ -106,12 +104,12 @@ export default function AddFilm(props: {
       successToast(film.filmName)
       setChangesMade(true)
     } else {
-      router.push(`/film/${film._id}`)
+      router.push(`/film/${film.id}`)
     }
   }
 
   const handleArchive = async () => {
-    await archiveFilm(props.film._id)
+    await archiveFilm(props.film.id)
     archiveToast(props.film.filmName)
     setTimeout(() => {
       const url = `${window.location.protocol}//${window.location.host}`
@@ -133,7 +131,7 @@ export default function AddFilm(props: {
         />
         <Button
           className={`bg-danger text-light-1 ${
-            props.film._id === '' ? 'hidden' : ''
+            props.film.id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
           aria-label='archive'
@@ -144,7 +142,7 @@ export default function AddFilm(props: {
       <form
         onSubmit={form.onSubmit((values) => onSubmit(values))}
         className={`flex flex-col justify-start gap-10 pt-4 ${
-          props.film._id === '' ? 'px-6' : ''
+          props.film.id === '' ? 'px-6' : ''
         }`}
       >
         <TextInput
@@ -188,7 +186,7 @@ export default function AddFilm(props: {
           getCreateLabel={(query) => `+ Create ${query}`}
           onCreate={(query) => {
             const item = { value: query, label: query }
-            const director: IDirector = { _id: '', directorName: query }
+            const director: Director = { id: '', directorName: query }
             setDirectors((current) => [...current, item])
             addDirector(director)
             return item
@@ -209,7 +207,7 @@ export default function AddFilm(props: {
           getCreateLabel={(query) => `+ Create ${query}`}
           onCreate={(query) => {
             const item = { value: query, label: query }
-            const genre: IGenre = { _id: '', genreText: query }
+            const genre: Genre = { id: '', genreText: query }
             setGenres((current) => [...current, item])
             addGenre(genre)
             return item
@@ -230,13 +228,13 @@ export default function AddFilm(props: {
           getCreateLabel={(query) => `+ Create ${query}`}
           onCreate={(query) => {
             const item = { value: query, label: query }
-            const platform: IPlatform = { _id: '', platformName: query }
+            const platform: Platform = { id: '', platformName: query }
             setPlatforms((current) => [...current, item])
             addPlatform(platform)
             return item
           }}
           transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-          label='Genres'
+          label='Platforms'
           placeholder='Pick some'
           data={platforms}
           {...form.getInputProps('platforms')}
@@ -246,7 +244,7 @@ export default function AddFilm(props: {
           className='bg-primary-500 text-light-1 hover:bg-primary-hover'
           type='submit'
         >
-          {props.film._id === '' ? 'Add' : 'Update'} Film
+          {props.film.id === '' ? 'Add' : 'Update'} Film
         </Button>
       </form>
     </div>

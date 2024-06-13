@@ -2,19 +2,24 @@
 
 import { db } from '@/server/db'
 import { auth } from '@clerk/nextjs/server'
-import { eq } from 'drizzle-orm/sql/expressions/conditions'
+import { and, eq } from 'drizzle-orm/sql/expressions/conditions'
+import { sql } from 'drizzle-orm/sql/sql'
 import { getUserGroup, getUserInfo } from './user.actions'
 import {
   Film,
   FilmDirectors,
   FilmGenres,
   FilmPlatforms,
+  director,
   film,
   filmDirectors,
   filmGenres,
-  filmPlatforms
+  filmPlatforms,
+  genre,
+  platform
 } from '@/server/db/schema'
 import { uuidv4 } from '../utils'
+import { Films } from '../models/films'
 
 export async function getFilmList(id: string) {
   try {
@@ -22,14 +27,53 @@ export async function getFilmList(id: string) {
 
     if (!user.userId) throw new Error('Unauthorized')
 
-    return await db.query.film.findMany({
-      where(fields, operators) {
-        return operators.and(
-          eq(fields.userGroupId, id),
-          eq(fields.archive, false)
-        )
-      }
-    })
+    const films = await db
+      .select()
+      .from(film)
+      .where(and(eq(film.userGroupId, id), eq(film.archive, false)))
+
+    const filmDetails: Films[] = films.map((film) => ({
+      ...film,
+      directors: [],
+      genres: [],
+      platforms: []
+    }))
+
+    await Promise.all(
+      filmDetails.map(async (element: Films) => {
+        const directors = await db
+          .select()
+          .from(filmDirectors)
+          .innerJoin(director, eq(filmDirectors.directorId, director.id))
+          .where(sql`${filmDirectors.filmId} = ${element.id}`)
+
+        directors.map((director) => {
+          element.directors.push(director.director.directorName)
+        })
+
+        const genres = await db
+          .select()
+          .from(filmGenres)
+          .innerJoin(genre, eq(filmGenres.genreId, genre.id))
+          .where(sql`${filmGenres.filmId} = ${element.id}`)
+
+        genres.map((genre) => {
+          element.genres.push(genre.genre.genreText)
+        })
+
+        const platforms = await db
+          .select()
+          .from(filmPlatforms)
+          .innerJoin(platform, eq(filmPlatforms.platformId, platform.id))
+          .where(sql`${filmPlatforms.filmId} = ${element.id}`)
+
+        platforms.map((platform) => {
+          element.platforms.push(platform.platform.platformName)
+        })
+      })
+    )
+
+    return filmDetails
   } catch (error: any) {
     throw new Error(`Failed to find films: ${error.message}`)
   }
@@ -45,24 +89,60 @@ export async function getFilm(id: string) {
     const userGroup = await getUserGroup(userInfo.id)
     if (!userGroup) throw new Error('User group info not found')
 
-    return await db.query.film.findFirst({
-      where(fields, operators) {
-        return operators.and(
-          eq(fields.userGroupId, userGroup.id),
-          eq(fields.id, id)
-        )
-      }
-    })
+    const films = await db.select().from(film).where(eq(film.id, id)).limit(1)
+
+    const filmDetail: Films[] = films.map((film) => ({
+      ...film,
+      directors: [],
+      genres: [],
+      platforms: []
+    }))
+
+    const filmDetails = filmDetail[0]
+
+    const directors: string[] = (
+      await db.query.filmDirectors.findMany({
+        columns: {
+          directorId: true
+        },
+        where(fields, operators) {
+          return operators.and(eq(fields.filmId, filmDetails.id))
+        }
+      })
+    ).map((director) => director.directorId || '')
+
+    const genres: string[] = (
+      await db.query.filmGenres.findMany({
+        columns: {
+          genreId: true
+        },
+        where(fields, operators) {
+          return operators.and(eq(fields.filmId, filmDetails.id))
+        }
+      })
+    ).map((genre) => genre.genreId || '')
+
+    const platforms: string[] = (
+      await db.query.filmPlatforms.findMany({
+        columns: {
+          platformId: true
+        },
+        where(fields, operators) {
+          return operators.and(eq(fields.filmId, filmDetails.id))
+        }
+      })
+    ).map((platform) => platform.platformId || '')
+
+    filmDetails.directors = directors
+    filmDetails.genres = genres
+    filmDetails.platforms = platforms
+
+    return filmDetails
   } catch (error: any) {
     throw new Error(`Failed to find film: ${error.message}`)
   }
 }
-export async function updateFilm(
-  filmData: Film,
-  filmDirectorData: FilmDirectors,
-  filmGenreData: FilmGenres,
-  filmPlatformData: FilmPlatforms
-) {
+export async function updateFilm(filmData: Films) {
   try {
     const user = auth()
 
@@ -77,36 +157,9 @@ export async function updateFilm(
       filmData.id = uuidv4().toString()
     }
 
-    await db
-      .update(filmDirectors)
-      .set({
-        id: filmDirectorData.id,
-        filmId: filmDirectorData.filmId,
-        directorId: filmDirectorData.directorId
-      })
-      .where(eq(filmDirectors.id, filmDirectorData.id))
-
-    await db
-      .update(filmGenres)
-      .set({
-        id: filmGenreData.id,
-        filmId: filmGenreData.filmId,
-        genreId: filmGenreData.genreId
-      })
-      .where(eq(filmGenres.id, filmGenreData.id))
-
-    await db
-      .update(filmPlatforms)
-      .set({
-        id: filmPlatformData.id,
-        filmId: filmPlatformData.filmId,
-        platformId: filmPlatformData.platformId
-      })
-      .where(eq(filmPlatforms.id, filmPlatformData.id))
-
-    return await db
-      .update(film)
-      .set({
+    const record = await db
+      .insert(film)
+      .values({
         id: filmData.id,
         addedDate: filmData.addedDate,
         archive: filmData.archive,
@@ -116,7 +169,70 @@ export async function updateFilm(
         userGroupId: userGroup.id,
         watched: filmData.watched
       })
-      .where(eq(film.id, filmData.id))
+      .onConflictDoUpdate({
+        target: film.id,
+        set: {
+          addedDate: filmData.addedDate,
+          archive: filmData.archive,
+          filmName: filmData.filmName,
+          releaseDate: filmData.releaseDate,
+          runTime: filmData.runTime,
+          userGroupId: userGroup.id,
+          watched: filmData.watched
+        }
+      })
+      .returning()
+
+    filmData.directors.forEach(async (director) => {
+      await db
+        .insert(filmDirectors)
+        .values({
+          id: uuidv4().toString(),
+          filmId: filmData.id,
+          directorId: director
+        })
+        .onConflictDoUpdate({
+          target: [filmDirectors.filmId, filmDirectors.directorId],
+          set: {
+            filmId: filmData.id,
+            directorId: director
+          }
+        })
+    })
+    filmData.genres.forEach(async (genre) => {
+      await db
+        .insert(filmGenres)
+        .values({
+          id: uuidv4().toString(),
+          filmId: filmData.id,
+          genreId: genre
+        })
+        .onConflictDoUpdate({
+          target: [filmGenres.filmId, filmGenres.genreId],
+          set: {
+            filmId: filmData.id,
+            genreId: genre
+          }
+        })
+    })
+    filmData.platforms.forEach(async (platform) => {
+      await db
+        .insert(filmPlatforms)
+        .values({
+          id: uuidv4().toString(),
+          filmId: filmData.id,
+          platformId: platform
+        })
+        .onConflictDoUpdate({
+          target: [filmPlatforms.filmId, filmPlatforms.platformId],
+          set: {
+            filmId: filmData.id,
+            platformId: platform
+          }
+        })
+    })
+
+    return record[0]
   } catch (error: any) {
     throw new Error(`Failed to create/update film: ${error.message}`)
   }
