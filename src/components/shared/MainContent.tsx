@@ -2,10 +2,10 @@
 
 import CustomThemeProvider from '@/components/shared/CustomThemeProvider'
 import LeftSidebar from './LeftSidebar'
-import { IPot } from '@/lib/models/pot'
+import { Pot } from '@/server/db/schema'
 
 export const MainContent = (props: {
-  pots: IPot[]
+  pots: Pot[]
   children: React.ReactNode
 }) => {
   return (
