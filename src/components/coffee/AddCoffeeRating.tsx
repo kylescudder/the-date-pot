@@ -2,7 +2,7 @@
 
 import { ICoffee } from '@/lib/models/coffee'
 import { ICoffeeRating } from '@/lib/models/coffee-rating'
-import { getNewCoffeeID, updateCoffeeRating } from '@/lib/actions/coffee.action'
+import { getNewCoffeeId, updateCoffeeRating } from '@/lib/actions/coffee.action'
 import { IUser } from '@/lib/models/user'
 import { Button, Rating, Select } from '@mantine/core'
 import { useForm } from '@mantine/form'
@@ -16,46 +16,46 @@ export default function AddCoffeeRating(props: {
   func: (data: boolean) => void
 }) {
   const options: option[] = props.users.map((user: IUser) => ({
-    value: user._id,
+    value: user.id,
     label: user.name
   }))
 
   interface formRating {
-    _id: string
-    coffeeID: string
+    id: string
+    coffeeId: string
     experience: number
     taste: number
-    userID: string
+    userId: string
     username: string
   }
 
   const form = useForm({
     initialValues: {
-      _id: props.coffeeRating._id ? props.coffeeRating._id : '',
-      coffeeID: props.coffee._id ? props.coffee._id : '',
+      id: props.coffeeRating.id ? props.coffeeRating.id : '',
+      coffeeId: props.coffee.id ? props.coffee.id : '',
       experience: props.coffeeRating.experience
         ? props.coffeeRating.experience
         : 0,
       taste: props.coffeeRating.taste ? props.coffeeRating.taste : 0,
-      userID: props.coffeeRating.userID ? props.coffeeRating.userID : '',
+      userId: props.coffeeRating.userId ? props.coffeeRating.userId : '',
       username: props.coffeeRating.username ? props.coffeeRating.username : ''
     }
   })
 
   const onSubmit = async (values: formRating) => {
     const filteredUsers = props.users.filter(
-      (user) => user._id === values.userID
+      (user) => user.id === values.userId
     )
     const username = filteredUsers.length > 0 ? filteredUsers[0]!.name : ''
     const payload: ICoffeeRating = {
-      _id: values._id,
-      coffeeID: props.coffee._id,
+      id: values.id,
+      coffeeId: props.coffee.id,
       experience: values.experience,
       taste: values.taste,
-      userID: values.userID,
+      userId: values.userId,
       username: username
     }
-    if (payload.coffeeID !== '') {
+    if (payload.coffeeId !== '') {
       const rating = await updateCoffeeRating(payload)
       const ratingWithUsername: ICoffeeRating = {
         ...rating,
@@ -72,7 +72,7 @@ export default function AddCoffeeRating(props: {
     <form
       onSubmit={form.onSubmit((values) => onSubmit(values))}
       className={`flex flex-col justify-start gap-10 pt-4 ${
-        props.coffee._id === '' ? 'px-6' : ''
+        props.coffee.id === '' ? 'px-6' : ''
       }`}
     >
       <Select
@@ -83,7 +83,7 @@ export default function AddCoffeeRating(props: {
         label='Who?'
         placeholder='Pick one'
         data={options}
-        {...form.getInputProps('userID')}
+        {...form.getInputProps('userId')}
       />
       <div className='flex items-center pt-2 text-base'>
         <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
@@ -112,7 +112,7 @@ export default function AddCoffeeRating(props: {
         className='bg-primary-500 text-light-1 hover:bg-primary-hover'
         type='submit'
       >
-        {props.coffeeRating._id === '' ? 'Add' : 'Update'} Rating
+        {props.coffeeRating.id === '' ? 'Add' : 'Update'} Rating
       </Button>
     </form>
   )

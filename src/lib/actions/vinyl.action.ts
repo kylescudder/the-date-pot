@@ -30,8 +30,7 @@ export async function getVinyl(id: string) {
     const user = auth()
 
     if (!user.userId) throw new Error('Unauthorized')
-    console.log('user', user)
-    console.log('user?.userId', user?.userId)
+
     const userInfo = await getUserInfo(user?.userId ?? '')
     if (!userInfo) throw new Error('User info not found')
     const userGroup = await getUserGroup(userInfo.id)

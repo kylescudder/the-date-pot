@@ -3,14 +3,11 @@
 import { db } from '@/server/db'
 import {
   BeerRating,
-  BeerBreweries,
   beer,
   beerBreweries,
   beerRating,
   beerTypes,
-  BeerTypes,
-  user,
-  Beer
+  user
 } from '@/server/db/schema'
 import { auth } from '@clerk/nextjs/server'
 import { and, eq } from 'drizzle-orm/sql/expressions/conditions'

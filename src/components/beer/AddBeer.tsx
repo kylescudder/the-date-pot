@@ -140,7 +140,7 @@ export default function AddBeer(props: {
     setOpen(data)
   }
 
-  const pullRating = async (data: BeerRating) => {
+  const pullRating = async (data: BeerRatings) => {
     const newRatingList = [...beerRatings, data]
     setBeerRatings(newRatingList)
   }

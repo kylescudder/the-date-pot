@@ -117,8 +117,7 @@ export const coffeeRating = createTable('coffeeRating', {
   userId: uuid('userId').references(() => user.id),
   coffeeId: uuid('coffeeId').references(() => coffee.id),
   experience: integer('experience').notNull(),
-  taste: integer('taste').notNull(),
-  username: varchar('username')
+  taste: integer('taste').notNull()
 })
 
 export type CoffeeRating = typeof coffeeRating.$inferSelect
@@ -131,10 +130,6 @@ export const coffee = createTable('coffee', {
   archive: boolean('archive'),
   userGroupId: uuid('userGroupId').references(() => userGroups.id),
   addedById: uuid('addedById').references(() => user.id),
-  userId: uuid('userId').references(() => user.id),
-  avgExperience: integer('avgExperience'),
-  avgTaste: integer('avgTaste'),
-  avgRating: integer('avgRating'),
   address: varchar('address').notNull()
 })
 

@@ -1,33 +1,31 @@
 'use client'
 
 import React from 'react'
-import { useRouter } from 'next/navigation'
-import { ICoffee } from '@/lib/models/coffee'
 import AddCoffee from './AddCoffee'
 import Loading from '../shared/Loading'
 import List from '../shared/List'
-import { ICoffeeRating } from '@/lib/models/coffee-rating'
-import { IUser } from '@/lib/models/user'
 import { Rating } from '@mantine/core'
 import { ICellRendererParams } from 'ag-grid-community'
+import { Coffee, User } from '@/server/db/schema'
+import { CoffeeRatings } from '@/lib/models/coffeeRatings'
 
 export default function CoffeeList(props: {
-  coffees: ICoffee[]
-  users: IUser[]
+  coffees: Coffee[]
+  users: User[]
   longLat: number[]
 }) {
   const [loading, setLoading] = React.useState(false)
 
-  const ratings: ICoffeeRating[] = []
+  const ratings: CoffeeRatings[] = []
 
   const newCoffee = {
-    _id: '',
+    id: '',
     coffeeName: '',
     avgExperience: 0,
     avgTaste: 0,
     avgRating: 0,
-    userGroupID: '',
-    addedByID: '',
+    userGroupId: '',
+    addedById: '',
     archive: false,
     address: ''
   }

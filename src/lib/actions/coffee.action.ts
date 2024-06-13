@@ -4,14 +4,15 @@ import { db } from '@/server/db'
 import {
   Coffee,
   CoffeeRating,
-  User,
   coffee,
-  coffeeRating
+  coffeeRating,
+  user
 } from '@/server/db/schema'
 import { auth } from '@clerk/nextjs/server'
-import { eq } from 'drizzle-orm/sql/expressions/conditions'
+import { and, eq } from 'drizzle-orm/sql/expressions/conditions'
 import { getUserGroup, getUserInfo } from './user.actions'
 import { uuidv4 } from '../utils'
+import { Coffees } from '../models/coffees'
 
 export async function getCoffeeList(id: string) {
   try {
@@ -19,23 +20,27 @@ export async function getCoffeeList(id: string) {
 
     if (!user.userId) throw new Error('Unauthorized')
 
-    const coffees: Coffee[] = await db.query.coffee.findMany({
-      where(fields, operators) {
-        return operators.and(
-          eq(fields.userGroupId, id),
-          eq(fields.archive, false)
-        )
-      }
-    })
+    const coffees = await db
+      .select()
+      .from(coffee)
+      .where(and(eq(coffee.userGroupId, id), eq(coffee.archive, false)))
+
+    const coffeesWithRating: Coffees[] = coffees.map((coffee) => ({
+      ...coffee,
+      avgExperience: 0,
+      avgTaste: 0,
+      avgRating: 0
+    }))
 
     await Promise.all(
-      coffees.map(async (element) => {
+      coffeesWithRating.map(async (element: Coffees) => {
         const coffeeRatings: CoffeeRating[] =
           await db.query.coffeeRating.findMany({
             where(fields, operators) {
               return operators.and(eq(fields.coffeeId, element.id))
             }
           })
+        if (coffeeRatings.length === 0) return
 
         let experience = 0
         let taste = 0
@@ -52,7 +57,7 @@ export async function getCoffeeList(id: string) {
         element.avgRating = Math.round(avg * 2) / 2
       })
     )
-    return coffees
+    return coffeesWithRating
   } catch (error: any) {
     throw new Error(`Failed to find coffees: ${error.message}`)
   }
@@ -68,48 +73,43 @@ export async function getCoffee(id: string) {
     const userGroup = await getUserGroup(userInfo.id)
     if (!userGroup) throw new Error('User group info not found')
 
-    return await db.query.coffee.findFirst({
-      where(fields, operators) {
-        return operators.and(
-          eq(fields.userGroupId, userGroup.id),
-          eq(fields.id, id)
-        )
-      }
-    })
+    const records = await db
+      .select()
+      .from(coffee)
+      .where(eq(coffee.id, id))
+      .limit(1)
+
+    return records[0]
   } catch (error: any) {
     throw new Error(`Failed to find coffee: ${error.message}`)
   }
 }
 export async function getCoffeeRatings(id: string) {
   try {
-    const user = auth()
+    const authuser = auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!authuser.userId) throw new Error('Unauthorized')
 
-    const ratings: CoffeeRating[] = await db.query.coffeeRating.findMany({
-      where(fields, operators) {
-        return operators.and(eq(fields.coffeeId, id))
-      }
-    })
+    const extenededCoffeeRating = await db
+      .select()
+      .from(coffeeRating)
+      .innerJoin(user, eq(user.id, coffeeRating.userId))
+      .where(eq(coffeeRating.coffeeId, id))
 
-    await Promise.all(
-      ratings.map(async (rating) => {
-        const u: User | undefined = await db.query.user.findFirst({
-          where(fields, operators) {
-            if (rating.userId !== null) {
-              return operators.and(eq(fields.id, rating.userId))
-            }
-          }
-        })
-
-        if (!u) {
-          throw new Error('User not found')
+    const coffeeRatings: CoffeeRating[] = extenededCoffeeRating.map(
+      (coffeeRating) => {
+        return {
+          id: coffeeRating.coffeeRating.id,
+          coffeeId: coffeeRating.coffeeRating.coffeeId,
+          userId: coffeeRating.coffeeRating.userId,
+          experience: coffeeRating.coffeeRating.experience,
+          taste: coffeeRating.coffeeRating.taste,
+          username: coffeeRating.user.name
         }
-
-        rating.username = u.name
-      })
+      }
     )
-    return ratings
+
+    return coffeeRatings
   } catch (error: any) {
     throw new Error(`Failed to find coffee ratings: ${error.message}`)
   }
@@ -120,11 +120,7 @@ export async function deleteCoffeeRating(id: string) {
 
     if (!user.userId) throw new Error('Unauthorized')
 
-    return await db.query.coffeeRating.findFirst({
-      where(fields, operators) {
-        return operators.and(eq(fields.id, id))
-      }
-    })
+    await db.delete(coffeeRating).where(eq(coffeeRating.id, id))
   } catch (error: any) {
     throw new Error(`Failed to find coffee ratings: ${error.message}`)
   }
@@ -139,16 +135,27 @@ export async function updateCoffeeRating(coffeeRatingData: CoffeeRating) {
       coffeeRatingData.id = uuidv4().toString()
     }
 
-    return await db
-      .update(coffeeRating)
-      .set({
+    const records = await db
+      .insert(coffeeRating)
+      .values({
         id: coffeeRatingData.id,
         coffeeId: coffeeRatingData.coffeeId,
         userId: coffeeRatingData.userId,
         experience: coffeeRatingData.experience,
         taste: coffeeRatingData.taste
       })
-      .where(eq(coffeeRating.id, coffeeRatingData.id))
+      .onConflictDoUpdate({
+        target: coffeeRating.id,
+        set: {
+          coffeeId: coffeeRatingData.coffeeId,
+          userId: coffeeRatingData.userId,
+          experience: coffeeRatingData.experience,
+          taste: coffeeRatingData.taste
+        }
+      })
+      .returning()
+
+    return records[0]
   } catch (error: any) {
     throw new Error(`Failed to create/update coffee ratings: ${error.message}`)
   }
@@ -168,9 +175,9 @@ export async function updateCoffee(coffeeData: Coffee) {
       coffeeData.id = uuidv4().toString()
     }
 
-    return await db
-      .update(coffee)
-      .set({
+    const records = await db
+      .insert(coffee)
+      .values({
         id: coffeeData.id,
         coffeeName: coffeeData.coffeeName,
         archive: coffeeData.archive,
@@ -178,7 +185,19 @@ export async function updateCoffee(coffeeData: Coffee) {
         userGroupId: userGroup.id,
         address: coffeeData.address
       })
-      .where(eq(coffeeRating.id, coffeeData.id))
+      .onConflictDoUpdate({
+        target: coffee.id,
+        set: {
+          coffeeName: coffeeData.coffeeName,
+          archive: coffeeData.archive,
+          addedById: userInfo.id,
+          userGroupId: userGroup.id,
+          address: coffeeData.address
+        }
+      })
+      .returning()
+
+    return records[0]
   } catch (error: any) {
     throw new Error(`Failed to create/update coffee: ${error.message}`)
   }
