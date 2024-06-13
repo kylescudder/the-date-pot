@@ -3,9 +3,9 @@
 import React from 'react'
 import { usePathname } from 'next/navigation'
 import Icon from './Icon'
-import { IPot } from '@/lib/models/pot'
+import { Pot } from '@/server/db/schema';
 
-export default function NavOptions(props: { position: string; pots: IPot[] }) {
+export default function NavOptions(props: { position: string; pots: Pot[] }) {
   const pathname = usePathname()
   return (
     <div className='contents w-full'>
@@ -51,7 +51,7 @@ export default function NavOptions(props: { position: string; pots: IPot[] }) {
         return (
           <a
             href={`/${potNamePluralised}`}
-            key={pot._id}
+            key={pot.id}
             className={`${props.position}_link 
 					${isActive && 'bg-primary-500 hover:bg-primary-hover'}`}
           >
