@@ -4,11 +4,11 @@ import React from 'react'
 import AddRestaurant from './AddRestaurant'
 import Loading from '../shared/Loading'
 import List from '../shared/List'
+import { Cuisine, Restaurant, When } from '@/server/db/schema'
 import { Restaurants } from '@/lib/models/restaurants'
-import { Cuisine, When } from '@/server/db/schema'
 
 export default function RestaurantList(props: {
-  restaurants: Restaurants[]
+  restaurants: Restaurant[]
   cuisineList: Cuisine[]
   whenList: When[]
   longLat: number[]
