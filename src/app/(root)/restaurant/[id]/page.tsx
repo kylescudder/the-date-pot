@@ -17,7 +17,7 @@ export default async function Restaurant({
   const cuisineList: Cuisine[] = await getCuisineList()
   const whenList: When[] = await getWhenList()
   let longLat: number[] = []
-  if (restaurant!.address !== undefined && restaurant!.address !== '') {
+  if (restaurant!.address !== null && restaurant!.address !== '') {
     longLat = await getLongLat(restaurant!.address)
   }
   return (

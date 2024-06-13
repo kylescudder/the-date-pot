@@ -12,7 +12,7 @@ export default async function Coffee({ params }: { params: { id: string } }) {
   const ratings: CoffeeRating[] = await getCoffeeRatings(params.id)
   const users = (await getGroupUsers()) || []
   let longLat: number[] = []
-  if (coffee!.address !== undefined && coffee!.address !== '') {
+  if (coffee!.address !== null && coffee!.address !== '') {
     longLat = await getLongLat(coffee!.address)
   }
 
