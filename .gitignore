@@ -47,3 +47,9 @@ public/workbox-*
 .flaskenv*
 !.env.project
 !.env.vault
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+playwright/.auth
