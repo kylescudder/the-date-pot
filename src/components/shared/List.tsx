@@ -38,8 +38,12 @@ export default function List(props: {
       const lowercaseSearchValue = searchValue.toLowerCase()
       const filtered = props.records.filter((record) =>
         props.filterColumns.some((element) => {
-          if (record[element] !== null) {
-            return record[element].toLowerCase().includes(lowercaseSearchValue)
+          if (
+            record[element] !== null &&
+            !(Array.isArray(record[element]) && record[element].length === 0)
+          ) {
+            if (typeof record[element] === 'string') {
+              return record[element]
           }
           return false
         })
