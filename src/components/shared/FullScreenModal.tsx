@@ -36,9 +36,6 @@ export default function FullScreenModal(props: {
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button variant='outline'>Edit Profile</Button>
-        </DialogTrigger>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
             <DialogTitle>{props.title}</DialogTitle>
@@ -54,9 +51,6 @@ export default function FullScreenModal(props: {
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        <Button variant='outline'>Edit Profile</Button>
-      </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className='text-left'>
           <DrawerTitle>{props.title}</DrawerTitle>
