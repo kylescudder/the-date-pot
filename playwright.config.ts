@@ -1,49 +1,55 @@
 import { defineConfig, devices } from '@playwright/test'
-require('dotenv').config()
+import path from 'path'
 
+// Use process.env.PORT by default and fallback to port 3000
+const PORT = process.env.PORT || 3000
+
+// Set webServer.url and use.baseURL with the location of the WebServer respecting the correct set port
+const baseURL = `http://localhost:${PORT}`
+
+// Reference: https://playwright.dev/docs/test-configuration
 export default defineConfig({
-  testDir: './tests',
-  fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
-  use: {
-    baseURL: 'http://127.0.0.1:3000',
-    trace: 'on-first-retry',
-    storageState: 'auth.json' // Use the saved auth state for all tests
+  timeout: 30 * 1000,
+  testDir: path.join(__dirname, 'e2e'),
+  retries: 1,
+  outputDir: 'test-results/',
+  webServer: {
+    command: 'bun dev',
+    url: baseURL,
+    timeout: 120 * 1000,
+    reuseExistingServer: !process.env.CI
   },
+
+  use: {
+    baseURL,
+    trace: 'retry-with-trace'
+  },
+
   projects: [
     {
-      name: 'setup',
-      testMatch: /global\.setup\.ts/,
-      use: {
-        ...devices['Desktop Chrome']
-      }
+      name: 'global setup',
+      testMatch: /global\.setup\.ts/
     },
     {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome']
-      }
+      },
+      dependencies: ['global setup']
     },
     {
       name: 'firefox',
       use: {
         ...devices['Desktop Firefox']
-      }
+      },
+      dependencies: ['global setup']
     },
     {
       name: 'webkit',
       use: {
         ...devices['Desktop Safari']
-      }
+      },
+      dependencies: ['global setup']
     }
-  ],
-  webServer: {
-    command: 'npm run start',
-    url: 'http://127.0.0.1:3000',
-    reuseExistingServer: !process.env.CI
-  },
-  globalSetup: require.resolve('./global.setup.ts') // Add this line to specify the global setup script
+  ]
 })

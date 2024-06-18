@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
-    "test": "bun start && bunx playwright test"
+    "test:e2e": "playwright test",
+    "test:report": "playwright show-report"
   },
   "dependencies": {
     "@clerk/nextjs": "5.0.8",
@@ -67,7 +68,7 @@
   },
   "devDependencies": {
     "@clerk/testing": "^1.1.6",
-    "@playwright/test": "^1.44.1",
+    "@playwright/test": "1.44.0",
     "@types/google.maps": "3.55.9",
     "@types/react-burger-menu": "2.8.7",
     "drizzle-kit": "^0.22.1",
