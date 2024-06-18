@@ -7,11 +7,11 @@ import { archiveVinyl, updateVinyl } from '@/lib/actions/vinyl.action'
 import { archiveToast, successToast } from '@/lib/actions/toast.actions'
 import { IconTrash } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
-import { Checkbox } from '@mantine/core'
 import { Vinyl } from '@/server/db/schema'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
 
 export default function AddVinyl(props: { vinyl: Vinyl }) {
   const router = useRouter()
@@ -98,13 +98,13 @@ export default function AddVinyl(props: { vinyl: Vinyl }) {
           placeholder='GOATs only plz'
           {...form.getInputProps('artistName')}
         />
-        <Checkbox
-          mt='md'
-          radius='md'
-          label={<p>Purchased</p>}
-          size='md'
-          {...form.getInputProps('purchased', { type: 'checkbox' })}
-        />
+        <Checkbox {...form.getInputProps('purchased', { type: 'checkbox' })} />
+        <label
+          htmlFor='terms'
+          className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+        >
+          Purchased
+        </label>
         <Button className='hover:bg-primary-hover' type='submit'>
           {props.vinyl.id === '' ? 'Add' : 'Update'} Vinyl
         </Button>
