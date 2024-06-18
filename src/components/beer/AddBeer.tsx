@@ -16,13 +16,7 @@ import {
 } from '@/lib/actions/beer.action'
 import { option } from '@/lib/models/select-options'
 import { useForm } from '@mantine/form'
-import {
-  Button,
-  MultiSelect,
-  NumberInput,
-  Rating,
-  TextInput
-} from '@mantine/core'
+import { MultiSelect, NumberInput, Rating, TextInput } from '@mantine/core'
 import BackButton from '../shared/BackButton'
 import AddBeerRating from './AddBeerRating'
 import FullScreenModal from '../shared/FullScreenModal'
@@ -31,6 +25,7 @@ import { addBeerType } from '@/lib/actions/beer-type'
 import { Beer, BeerRating, BeerType, Brewery, User } from '@/server/db/schema'
 import { BeerRatings } from '@/lib/models/beerRatings'
 import { Beers } from '@/lib/models/beers'
+import { Button } from '@/components/ui/button'
 
 export default function AddBeer(props: {
   beer: Beers
@@ -185,7 +180,6 @@ export default function AddBeer(props: {
           page='beers'
         />
         <Button
-          radius='md'
           className={`bg-danger text-white ${
             props.beer.id === '' ? 'hidden' : ''
           }`}
@@ -269,11 +263,9 @@ export default function AddBeer(props: {
           </div>
           <div className='mt-auto'>
             <Button
-              radius='md'
               className='r-0 bg-success text-white'
               onClick={() => setOpen(true)}
               aria-label='add'
-              size='md'
             >
               <IconCirclePlus className='text-white' />
             </Button>
@@ -334,7 +326,6 @@ export default function AddBeer(props: {
           </div>
         )}
         <Button
-          radius='md'
           className='hover:bg-primary-hover bg-emerald-500 text-white'
           type='submit'
         >

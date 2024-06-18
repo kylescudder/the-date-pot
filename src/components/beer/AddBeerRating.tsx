@@ -1,11 +1,12 @@
 'use client'
 
-import { Button, Rating, Select } from '@mantine/core'
+import { Rating, Select } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { option } from '@/lib/models/select-options'
 import { Beer, User } from '@/server/db/schema'
 import { BeerRatings } from '@/lib/models/beerRatings'
 import { updateBeerRating } from '@/lib/actions/beer.action'
+import { Button } from '@/components/ui/button'
 
 export default function AddBeerRating(props: {
   beer: Beer
@@ -105,7 +106,6 @@ export default function AddBeerRating(props: {
         />
       </div>
       <Button
-        radius='md'
         className='hover:bg-primary-hover bg-emerald-500 text-white'
         type='submit'
       >

@@ -7,11 +7,12 @@ import { archiveActivity, updateActivity } from '@/lib/actions/activity.action'
 import { archiveToast, successToast } from '@/lib/actions/toast.actions'
 import { IconTrash } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
-import { Button, Select, TextInput } from '@mantine/core'
+import { Select, TextInput } from '@mantine/core'
 import Map from '../shared/Map'
 import ReloadMapPlaceholder from '../shared/ReloadMapPlaceholder'
 import { Activity, Expense } from '@/server/db/schema'
 import { option } from '@/lib/models/select-options'
+import { Button } from '@/components/ui/button'
 
 export default function AddActivity(props: {
   activity: Activity
@@ -147,7 +148,6 @@ export default function AddActivity(props: {
           props.longLat[0] === undefined &&
           props.longLat[1] === undefined && <ReloadMapPlaceholder />}
         <Button
-          radius='md'
           className='hover:bg-primary-hover bg-emerald-500 text-white'
           type='submit'
         >

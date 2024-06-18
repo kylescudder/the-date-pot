@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation'
 import { ColDef, RowClickedEvent, RowStyle } from 'ag-grid-community'
 import { IconFilePlus, IconSearch } from '@tabler/icons-react'
 import FullScreenModal from './FullScreenModal'
-import { Button, Input } from '@mantine/core'
 import Grid from './Grid'
+import { Button } from '@/components/ui/button'
 
 export default function List(props: {
   records: any[]
@@ -72,7 +72,6 @@ export default function List(props: {
       <div className='mb-4 flex'>
         <Button
           id='add-button'
-          radius='md'
           className='hover:bg-primary-hover mr-auto bg-emerald-500 text-white'
           onClick={handleClickOpen}
         >
@@ -96,7 +95,6 @@ export default function List(props: {
         </div>
         <Button
           id='search-button'
-          radius='md'
           className={`${
             searchOpen ? 'hidden' : 'ml-auto'
           } hover:bg-primary-hover bg-emerald-500 text-white`}

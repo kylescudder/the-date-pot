@@ -7,8 +7,9 @@ import { archiveVinyl, updateVinyl } from '@/lib/actions/vinyl.action'
 import { archiveToast, successToast } from '@/lib/actions/toast.actions'
 import { IconTrash } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
-import { Button, Checkbox, TextInput } from '@mantine/core'
+import { Checkbox, TextInput } from '@mantine/core'
 import { Vinyl } from '@/server/db/schema'
+import { Button } from '@/components/ui/button'
 
 export default function AddVinyl(props: { vinyl: Vinyl }) {
   const router = useRouter()
@@ -113,7 +114,6 @@ export default function AddVinyl(props: { vinyl: Vinyl }) {
           {...form.getInputProps('purchased', { type: 'checkbox' })}
         />
         <Button
-          radius='md'
           className='hover:bg-primary-hover bg-emerald-500 text-white'
           type='submit'
         >

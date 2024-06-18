@@ -1,9 +1,10 @@
 'use client'
 
-import { Button, Textarea } from '@mantine/core'
+import { Textarea } from '@mantine/core'
 import { ChangeEvent, useState } from 'react'
 import { addRestaurantNote } from '@/lib/actions/restaurant.action'
 import { Restaurants } from '@/lib/models/restaurants'
+import { Button } from '@/components/ui/button'
 
 export default function AddRestaurantNote(props: {
   restaurant: Restaurants
@@ -32,7 +33,6 @@ export default function AddRestaurantNote(props: {
         onChange={handleChange}
       />
       <Button
-        radius='md'
         className='hover:bg-primary-hover mt-3 bg-emerald-500 text-white'
         type='button'
         onClick={handleSubmit}

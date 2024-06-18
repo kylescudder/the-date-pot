@@ -15,7 +15,7 @@ import {
   updateCoffeeRating
 } from '@/lib/actions/coffee.action'
 import { useForm } from '@mantine/form'
-import { Button, Rating, TextInput } from '@mantine/core'
+import { Rating, TextInput } from '@mantine/core'
 import BackButton from '../shared/BackButton'
 import Map from '@/components/shared/Map'
 import AddCoffeeRating from './AddCoffeeRating'
@@ -23,6 +23,7 @@ import FullScreenModal from '../shared/FullScreenModal'
 import ReloadMapPlaceholder from '@/components/shared/ReloadMapPlaceholder'
 import { Coffee, CoffeeRating, User } from '@/server/db/schema'
 import { CoffeeRatings } from '@/lib/models/coffeeRatings'
+import { Button } from '@/components/ui/button'
 
 export default function AddCoffee(props: {
   coffee: Coffee
@@ -164,7 +165,6 @@ export default function AddCoffee(props: {
           page='coffees'
         />
         <Button
-          radius='md'
           className={`bg-danger text-white ${
             props.coffee.id === '' ? 'hidden' : ''
           }`}
@@ -196,11 +196,9 @@ export default function AddCoffee(props: {
           </div>
           <div className='mt-auto'>
             <Button
-              radius='md'
               className='r-0 bg-success text-white'
               onClick={() => setOpen(true)}
               aria-label='add'
-              size='md'
             >
               <IconCirclePlus className='text-white' />
             </Button>
@@ -276,7 +274,6 @@ export default function AddCoffee(props: {
           props.longLat[0] === undefined &&
           props.longLat[1] === undefined && <ReloadMapPlaceholder />}
         <Button
-          radius='md'
           className='hover:bg-primary-hover bg-emerald-500 text-white'
           type='submit'
         >

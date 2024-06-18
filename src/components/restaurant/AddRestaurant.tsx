@@ -15,7 +15,7 @@ import {
 } from '@/lib/actions/toast.actions'
 import { IconTrash, IconCirclePlus } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
-import { Button, MultiSelect, TextInput } from '@mantine/core'
+import { MultiSelect, TextInput } from '@mantine/core'
 import Map from '../shared/Map'
 import { option } from '@/lib/models/select-options'
 import NoteCard from './NoteCard'
@@ -26,6 +26,7 @@ import { addCuisine } from '@/lib/actions/cuisine.action'
 import { addWhen } from '@/lib/actions/when.action'
 import { Cuisine, When } from '@/server/db/schema'
 import { Restaurants } from '@/lib/models/restaurants'
+import { Button } from '@/components/ui/button'
 
 export default function AddRestaurant(props: {
   restaurant: Restaurants
@@ -239,11 +240,9 @@ export default function AddRestaurant(props: {
           </div>
           <div className='mt-auto'>
             <Button
-              radius='md'
               className='r-0 bg-success text-white'
               onClick={() => setOpen(true)}
               aria-label='add'
-              size='md'
             >
               <IconCirclePlus className='text-white' />
             </Button>
@@ -253,7 +252,6 @@ export default function AddRestaurant(props: {
           return <NoteCard key={note} note={note} func={pullNote} />
         })}
         <Button
-          radius='md'
           className='hover:bg-primary-hover bg-emerald-500 text-white'
           type='submit'
         >

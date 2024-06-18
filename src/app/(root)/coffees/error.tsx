@@ -1,5 +1,7 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
+
 export default function Error({
   error,
   reset
@@ -16,12 +18,12 @@ export default function Error({
         <p className='mt-2 font-extrabold text-white'>
           Something went wrong getting the coffee list!
         </p>
-        <button
+        <Button
           className='from-primary-500 mt-3 rounded bg-gradient-to-r to-red-500 px-4 py-2 text-white transition hover:bg-blue-600'
           onClick={reset}
         >
           Try again
-        </button>
+        </Button>
       </div>
     </div>
   )

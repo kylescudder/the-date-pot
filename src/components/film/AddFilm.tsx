@@ -7,13 +7,7 @@ import { archiveFilm, updateFilm } from '@/lib/actions/film.action'
 import { archiveToast, successToast } from '@/lib/actions/toast.actions'
 import { IconTrash } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
-import {
-  Button,
-  Checkbox,
-  MultiSelect,
-  NumberInput,
-  TextInput
-} from '@mantine/core'
+import { Checkbox, MultiSelect, NumberInput, TextInput } from '@mantine/core'
 import { DatePickerInput } from '@mantine/dates'
 import { option } from '@/lib/models/select-options'
 import { addDirector } from '@/lib/actions/director.action'
@@ -21,6 +15,7 @@ import { addGenre } from '@/lib/actions/genre.action'
 import { addPlatform } from '@/lib/actions/platform.action'
 import { Films } from '@/lib/models/films'
 import { Director, Genre, Platform } from '@/server/db/schema'
+import { Button } from '@/components/ui/button'
 
 export default function AddFilm(props: {
   film: Films
@@ -240,7 +235,6 @@ export default function AddFilm(props: {
           {...form.getInputProps('platforms')}
         />
         <Button
-          radius='md'
           className='hover:bg-primary-hover bg-emerald-500 text-white'
           type='submit'
         >

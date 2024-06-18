@@ -1,11 +1,12 @@
 'use client'
 
 import { updateCoffeeRating } from '@/lib/actions/coffee.action'
-import { Button, Rating, Select } from '@mantine/core'
+import { Rating, Select } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { option } from '@/lib/models/select-options'
 import { Coffee, User } from '@/server/db/schema'
 import { CoffeeRatings } from '@/lib/models/coffeeRatings'
+import { Button } from '@/components/ui/button'
 
 export default function AddCoffeeRating(props: {
   coffee: Coffee
@@ -107,7 +108,6 @@ export default function AddCoffeeRating(props: {
         />
       </div>
       <Button
-        radius='md'
         className='hover:bg-primary-hover bg-emerald-500 text-white'
         type='submit'
       >

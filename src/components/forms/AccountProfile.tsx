@@ -4,9 +4,10 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Image from 'next/image'
 import { updateUser } from '@/lib/actions/user.actions'
-import { Button, FileInput, TextInput, Textarea } from '@mantine/core'
+import { FileInput, TextInput, Textarea } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { Users } from '@/lib/models/users'
+import { Button } from '@/components/ui/button'
 
 interface Props {
   user: Users
@@ -119,8 +120,6 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
         {...form.getInputProps('bio')}
       />
       <Button
-        radius='md'
-        size='md'
         className='hover:bg-primary-hover bg-emerald-500'
         type='submit'
       >

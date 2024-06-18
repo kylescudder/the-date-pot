@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { IconArrowNarrowLeft } from '@tabler/icons-react'
-import { Button } from '@mantine/core'
+import { Button } from '@/components/ui/button'
 
 export default function BackButton(props: {
   record: any
@@ -26,7 +26,6 @@ export default function BackButton(props: {
 
   return (
     <Button
-      radius='md'
       className={`hover:bg-primary-hover bg-emerald-500 ${
         props.record.id === '' ? 'hidden' : ''
       }`}
