@@ -168,7 +168,6 @@ export default function AddRestaurant(props: {
           label='Name'
           radius='md'
           placeholder='The good yum yum place'
-          className='text-dark-2 dark:text-light-2'
           size='md'
           {...form.getInputProps('restaurantName')}
         />
@@ -218,7 +217,6 @@ export default function AddRestaurant(props: {
           label='Address'
           radius='md'
           placeholder='Where it at?'
-          className='text-dark-2 dark:text-light-2'
           size='md'
           {...form.getInputProps('address')}
         />
@@ -234,27 +232,22 @@ export default function AddRestaurant(props: {
           props.longLat[1] === undefined && <ReloadMapPlaceholder />}
         <div className='flex justify-between'>
           <div className='flex-grow pr-2'>
-            <p className='inline-block pt-3 text-base font-black text-zinc-900 dark:text-white'>
-              Notes
-            </p>
+            <p className='inline-block pt-3 text-base font-black'>Notes</p>
           </div>
           <div className='mt-auto'>
             <Button
-              className='r-0 bg-success text-white'
+              className='r-0 bg-success'
               onClick={() => setOpen(true)}
               aria-label='add'
             >
-              <IconCirclePlus className='text-white' />
+              <IconCirclePlus />
             </Button>
           </div>
         </div>
         {notes.map((note: string) => {
           return <NoteCard key={note} note={note} func={pullNote} />
         })}
-        <Button
-          className='hover:bg-primary-hover bg-emerald-500 text-white'
-          type='submit'
-        >
+        <Button className='hover:bg-primary-hover bg-emerald-500' type='submit'>
           {props.restaurant.id === '' ? 'Add' : 'Update'} Restaurant
         </Button>
       </form>

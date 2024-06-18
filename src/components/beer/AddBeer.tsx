@@ -199,7 +199,6 @@ export default function AddBeer(props: {
           label='Name'
           radius='md'
           placeholder='The best beer in the world'
-          className='text-dark-2 dark:text-light-2'
           size='md'
           {...form.getInputProps('beerName')}
         />
@@ -251,23 +250,20 @@ export default function AddBeer(props: {
           precision={1}
           step={0.1}
           placeholder='Session or strong?'
-          className='text-dark-2 dark:text-light-2'
           size='md'
           {...form.getInputProps('abv')}
         />
         <div className='flex justify-between'>
           <div className='flex-grow pr-2'>
-            <p className='inline-block pt-3 text-base font-black text-zinc-900 dark:text-white'>
-              Ratings
-            </p>
+            <p className='inline-block pt-3 text-base font-black'>Ratings</p>
           </div>
           <div className='mt-auto'>
             <Button
-              className='r-0 bg-success text-white'
+              className='r-0 bg-success'
               onClick={() => setOpen(true)}
               aria-label='add'
             >
-              <IconCirclePlus className='text-white' />
+              <IconCirclePlus />
             </Button>
           </div>
         </div>
@@ -276,10 +272,10 @@ export default function AddBeer(props: {
             return (
               <div
                 key={rating.userId}
-                className='dark:bg-dark-3 w-full overflow-hidden rounded-md text-zinc-600 shadow-lg'
+                className='w-full overflow-hidden rounded-md shadow-lg'
               >
                 <div className='px-6 py-4'>
-                  <div className='mb-2 contents w-1/2 text-xl font-black text-zinc-900 dark:text-white'>
+                  <div className='mb-2 contents w-1/2 text-xl font-black'>
                     {rating.username}
                   </div>
                   <div className='contents w-1/2'>
@@ -317,18 +313,15 @@ export default function AddBeer(props: {
             )
           })
         ) : (
-          <div className='w-full overflow-hidden rounded-md text-zinc-700 shadow-lg dark:text-black'>
+          <div className='w-full overflow-hidden rounded-md shadow-lg'>
             <div className='px-6 py-4'>
-              <div className='mb-2 contents w-1/2 text-xl font-bold text-zinc-900 dark:text-white'>
+              <div className='mb-2 contents w-1/2 text-xl font-bold'>
                 Please add a rating!
               </div>
             </div>
           </div>
         )}
-        <Button
-          className='hover:bg-primary-hover bg-emerald-500 text-white'
-          type='submit'
-        >
+        <Button className='hover:bg-primary-hover' type='submit'>
           {props.beer.id === '' ? 'Add' : 'Update'} Beer
         </Button>
       </form>

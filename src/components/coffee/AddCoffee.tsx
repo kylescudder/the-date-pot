@@ -184,23 +184,20 @@ export default function AddCoffee(props: {
           label='Name'
           radius='md'
           placeholder='The best coffee shop in the world'
-          className='text-dark-2 dark:text-light-2'
           size='md'
           {...form.getInputProps('coffeeName')}
         />
         <div className='flex justify-between'>
           <div className='flex-grow pr-2'>
-            <p className='inline-block pt-3 text-base font-black text-zinc-900 dark:text-white'>
-              Ratings
-            </p>
+            <p className='inline-block pt-3 text-base font-black'>Ratings</p>
           </div>
           <div className='mt-auto'>
             <Button
-              className='r-0 bg-success text-white'
+              className='r-0 bg-success'
               onClick={() => setOpen(true)}
               aria-label='add'
             >
-              <IconCirclePlus className='text-white' />
+              <IconCirclePlus />
             </Button>
           </div>
         </div>
@@ -209,10 +206,10 @@ export default function AddCoffee(props: {
             return (
               <div
                 key={rating.userId}
-                className='dark:bg-dark-3 w-full overflow-hidden rounded-md text-zinc-600 shadow-lg'
+                className='w-full overflow-hidden rounded-md shadow-lg'
               >
                 <div className='px-6 py-4'>
-                  <div className='mb-2 contents w-1/2 text-xl font-black text-zinc-900 dark:text-white'>
+                  <div className='mb-2 contents w-1/2 text-xl font-black'>
                     {rating.username}
                   </div>
                   <div className='contents w-1/2'>
@@ -222,7 +219,7 @@ export default function AddCoffee(props: {
                     />
                   </div>
                   <div className='flex items-center pt-2 text-base'>
-                    <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
+                    <span className='mr-2 inline-block w-32 rounded-full px-3 py-1 text-center text-sm font-black'>
                       Taste
                     </span>
                     <Rating
@@ -234,7 +231,7 @@ export default function AddCoffee(props: {
                     />
                   </div>
                   <div className='flex items-center pt-5 text-base'>
-                    <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
+                    <span className='mr-2 inline-block w-32 rounded-full px-3 py-1 text-center text-sm font-black'>
                       Experience
                     </span>
                     <Rating
@@ -250,9 +247,9 @@ export default function AddCoffee(props: {
             )
           })
         ) : (
-          <div className='w-full overflow-hidden rounded-md text-zinc-700 shadow-lg dark:text-black'>
+          <div className='w-full overflow-hidden rounded-md shadow-lg'>
             <div className='px-6 py-4'>
-              <div className='mb-2 contents w-1/2 text-xl font-bold text-zinc-900 dark:text-white'>
+              <div className='mb-2 contents w-1/2 text-xl font-bold'>
                 Please add a rating!
               </div>
             </div>
@@ -262,7 +259,6 @@ export default function AddCoffee(props: {
           label='Address'
           radius='md'
           placeholder='Where it at?'
-          className='text-dark-2 dark:text-light-2'
           size='md'
           {...form.getInputProps('address')}
         />
@@ -273,10 +269,7 @@ export default function AddCoffee(props: {
           address !== '' &&
           props.longLat[0] === undefined &&
           props.longLat[1] === undefined && <ReloadMapPlaceholder />}
-        <Button
-          className='hover:bg-primary-hover bg-emerald-500 text-white'
-          type='submit'
-        >
+        <Button className='hover:bg-primary-hover bg-emerald-500' type='submit'>
           {props.coffee.id === '' ? 'Add' : 'Update'} Coffee
         </Button>
       </form>

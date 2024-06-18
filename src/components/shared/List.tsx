@@ -44,6 +44,13 @@ export default function List(props: {
           ) {
             if (typeof record[element] === 'string') {
               return record[element]
+                .toLowerCase()
+                .includes(lowercaseSearchValue)
+            } else if (Array.isArray(record[element])) {
+              return record[element].some((item: string) =>
+                item.toLowerCase().includes(lowercaseSearchValue)
+              )
+            }
           }
           return false
         })
@@ -72,7 +79,7 @@ export default function List(props: {
       <div className='mb-4 flex'>
         <Button
           id='add-button'
-          className='hover:bg-primary-hover mr-auto bg-emerald-500 text-white'
+          className='mr-auto bg-primary'
           onClick={handleClickOpen}
         >
           <IconFilePlus width={24} height={24} strokeLinejoin='miter' />
@@ -95,9 +102,7 @@ export default function List(props: {
         </div>
         <Button
           id='search-button'
-          className={`${
-            searchOpen ? 'hidden' : 'ml-auto'
-          } hover:bg-primary-hover bg-emerald-500 text-white`}
+          className={`${searchOpen ? 'hidden' : 'ml-auto'}`}
           onClick={handleSearchClickOpen}
         >
           <IconSearch width={24} height={24} strokeLinejoin='miter' />

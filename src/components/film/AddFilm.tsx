@@ -144,7 +144,6 @@ export default function AddFilm(props: {
           label='Name'
           radius='md'
           placeholder='Which cinematic masterpiece is it today?'
-          className='text-dark-2 dark:text-light-2'
           size='md'
           {...form.getInputProps('filmName')}
         />
@@ -152,7 +151,6 @@ export default function AddFilm(props: {
           label='Release Date'
           radius='md'
           valueFormat='DD/MM/YYYY'
-          className='text-dark-2 dark:text-light-2'
           size='md'
           {...form.getInputProps('releaseDate')}
         />
@@ -160,14 +158,12 @@ export default function AddFilm(props: {
           label='Run time'
           radius='md'
           placeholder='It is over 90 minutes?'
-          className='text-dark-2 dark:text-light-2'
           size='md'
           {...form.getInputProps('runTime')}
         />
         <Checkbox
           label='Watched'
           radius='md'
-          className='text-dark-2 dark:text-light-2'
           size='md'
           {...form.getInputProps('watched')}
         />

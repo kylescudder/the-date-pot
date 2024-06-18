@@ -12,6 +12,7 @@ import { Toast } from '@/components/shared/Toast'
 import { getPots } from '@/lib/actions/pot.actions'
 import '@fontsource/ubuntu'
 import { Pot, User } from '@/server/db/schema'
+import { ThemeProvider } from '@/components/theme-provider'
 
 export const viewport: Viewport = {
   themeColor: '#877EFF'
@@ -112,9 +113,16 @@ export default async function RootLayout({
     >
       <html lang='en'>
         <body>
-          <Topbar pots={pots} />
-          <MainContent pots={pots} children={children} />
-          <Toast />
+          <ThemeProvider
+            attribute='class'
+            defaultTheme='system'
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Topbar pots={pots} />
+            <MainContent pots={pots} children={children} />
+            <Toast />
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

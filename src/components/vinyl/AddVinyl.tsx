@@ -80,7 +80,7 @@ export default function AddVinyl(props: { vinyl: Vinyl }) {
           onClick={handleArchive}
           aria-label='archive'
         >
-          <IconTrash className='text-zinc-900 dark:text-white' />
+          <IconTrash />
         </Button>
       </div>
       <form
@@ -93,7 +93,6 @@ export default function AddVinyl(props: { vinyl: Vinyl }) {
           label='Name'
           radius='md'
           placeholder='The next AOTY'
-          className='text-dark-2 dark:text-light-2'
           size='md'
           {...form.getInputProps('name')}
         />
@@ -101,22 +100,17 @@ export default function AddVinyl(props: { vinyl: Vinyl }) {
           label='Artist Name'
           radius='md'
           placeholder='GOATs only plz'
-          className='text-dark-2 dark:text-light-2'
           size='md'
           {...form.getInputProps('artistName')}
         />
         <Checkbox
           mt='md'
           radius='md'
-          label={<p className='text-zinc-900 dark:text-white'>Purchased</p>}
-          className='text-dark-2 dark:text-light-2'
+          label={<p>Purchased</p>}
           size='md'
           {...form.getInputProps('purchased', { type: 'checkbox' })}
         />
-        <Button
-          className='hover:bg-primary-hover bg-emerald-500 text-white'
-          type='submit'
-        >
+        <Button className='hover:bg-primary-hover' type='submit'>
           {props.vinyl.id === '' ? 'Add' : 'Update'} Vinyl
         </Button>
       </form>

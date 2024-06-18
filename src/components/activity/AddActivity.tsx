@@ -99,13 +99,13 @@ export default function AddActivity(props: {
           page='activities'
         />
         <Button
-          className={`bg-danger text-white ${
+          className={`bg-destructive ${
             props.activity.id === '' ? 'hidden' : ''
           }`}
           onClick={handleArchive}
           aria-label='archive'
         >
-          <IconTrash className='text-zinc-900 dark:text-white' />
+          <IconTrash />
         </Button>
       </div>
       <form
@@ -118,7 +118,6 @@ export default function AddActivity(props: {
           label='Name'
           radius='md'
           placeholder='The good yum yum place'
-          className='text-dark-2 dark:text-light-2'
           size='md'
           {...form.getInputProps('activityName')}
         />
@@ -136,7 +135,6 @@ export default function AddActivity(props: {
           label='Address'
           radius='md'
           placeholder='Where it at?'
-          className='text-dark-2 dark:text-light-2'
           size='md'
           {...form.getInputProps('address')}
         />
@@ -147,10 +145,7 @@ export default function AddActivity(props: {
           address !== '' &&
           props.longLat[0] === undefined &&
           props.longLat[1] === undefined && <ReloadMapPlaceholder />}
-        <Button
-          className='hover:bg-primary-hover bg-emerald-500 text-white'
-          type='submit'
-        >
+        <Button className='text-white' type='submit'>
           {props.activity.id === '' ? 'Add' : 'Update'} Activity
         </Button>
       </form>

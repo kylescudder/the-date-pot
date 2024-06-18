@@ -20,9 +20,7 @@ export default function NavOptions(props: { position: string; pots: Pot[] }) {
           strokeLinejoin='miter'
           isActive={false}
         />
-        <p className='relative flex font-black text-zinc-900 dark:text-white'>
-          Home
-        </p>
+        <p className='relative flex font-black'>Home</p>
       </a>
       {props.pots.map((pot) => {
         const potNameDepluralised = pot.potName.endsWith('s')
@@ -62,7 +60,7 @@ export default function NavOptions(props: { position: string; pots: Pot[] }) {
               isActive={isActive}
             />
             <p
-              className={`${isActive && 'text-white'} relative flex font-black text-zinc-900 dark:text-white`}
+              className={`${isActive && 'text-white'} relative flex font-black`}
             >
               {pot.potName}
             </p>

@@ -14,15 +14,8 @@ export default function Logout(props: { placement: string }) {
             props.placement === 'top' && 'lg:hidden'
           }`}
         >
-          <IconLogout
-            size={24}
-            className='text-zinc-900 dark:text-white'
-            stroke={2}
-            strokeLinejoin='miter'
-          />
-          <p className='text-dark-2 dark:text-light-2 font-black max-lg:hidden'>
-            Logout
-          </p>
+          <IconLogout size={24} stroke={2} strokeLinejoin='miter' />
+          <p className='font-black max-lg:hidden'>Logout</p>
         </div>
       </SignOutButton>
     </SignedIn>

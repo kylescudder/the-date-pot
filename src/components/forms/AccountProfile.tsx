@@ -89,7 +89,6 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
       <FileInput
         label='Profile Picture'
         radius='md'
-        className='text-dark-2 dark:text-light-2'
         size='md'
         {...form.getInputProps('image')}
         onChange={(e) => handleImage(e!)}
@@ -98,7 +97,6 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
         label='Name'
         radius='md'
         placeholder="What's your name girl, what's you sign?"
-        className='text-dark-2 dark:text-light-2'
         size='md'
         {...form.getInputProps('name')}
       />
@@ -106,7 +104,6 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
         label='Username'
         radius='md'
         placeholder='your email address plz'
-        className='text-dark-2 dark:text-light-2'
         size='md'
         {...form.getInputProps('username')}
       />
@@ -114,15 +111,12 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
         label='Bio'
         radius='md'
         placeholder='Tell me a little bit about yourself...'
-        className='text-dark-2 dark:text-light-2 text-lg font-semibold leading-6'
+        className='text-lg font-semibold leading-6'
         size='md'
         minRows={8}
         {...form.getInputProps('bio')}
       />
-      <Button
-        className='hover:bg-primary-hover bg-emerald-500'
-        type='submit'
-      >
+      <Button className='hover:bg-primary-hover' type='submit'>
         {btnTitle}
       </Button>
     </form>

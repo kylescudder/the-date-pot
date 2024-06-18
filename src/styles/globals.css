@@ -54,7 +54,7 @@ body {
 }
 @layer components {
   .topbar {
-    @apply fixed top-0 z-30 flex w-full items-center justify-between bg-white px-6 py-3 dark:bg-zinc-900;
+    @apply fixed top-0 z-30 flex w-full items-center justify-between  px-6 py-3;
   }
 }
 .bottombar_link {
@@ -67,62 +67,12 @@ body {
   max-width: calc(100vw - 3rem);
   min-height: calc(100vw - 3rem);
 }
-.mantine-TextInput-label,
-.mantine-Textarea-label,
-.mantine-Select-label,
-.mantine-Select-item,
-.mantine-DatePickerInput-label,
-.mantine-DatePickerInput-calendarHeaderControl,
-.mantine-DatePickerInput-calendarHeaderLevel,
-.mantine-DatePickerInput-day,
-.mantine-MultiSelect-label,
-.mantine-NumberInput-label,
-.mantine-Checkbox-label,
-.mantine-Modal-title {
-  @apply text-zinc-900 dark:text-white;
-}
-.mantine-Button-label {
-  @apply font-semibold;
-}
-.mantine-TextInput-input,
-.mantine-Textarea-input,
-.mantine-Select-input,
-.mantine-Select-dropdown,
-.mantine-DatePickerInput-input,
-.mantine-NumberInput-input,
-.mantine-NumberInput-control,
-.mantine-MultiSelect-input {
-  @apply text-zinc-400 text-zinc-900 dark:text-white dark:text-zinc-950;
-}
-.mantine-MultiSelect-value {
-  @apply text-zinc-600 dark:bg-gray-700;
-}
-.mantine-MultiSelect-value > button,
-.mantine-MultiSelect-value {
-  @apply text-white;
-}
-.mantine-Checkbox-input:checked,
-.mantine-NumberInput-control:not(:disabled):hover {
-  @apply text-emerald-500;
-}
-.mantine-Popover-dropdown {
-  @apply dark:text-black;
-}
+
 button[data-outside] {
   @apply text-zinc-700 !important;
 }
 button[data-weekend] {
   @apply text-red-500 !important;
-}
-button[data-selected],
-.mantine-Checkbox-input:checked {
-  @apply text-emerald-500 !important;
-}
-.focus-visible\:ring-2:focus-visible {
-  @apply border-emerald-500 !important;
-}
-.tabler-icon {
-  color: white;
 }
 @media screen and (min-width: 768px) {
   .header {
@@ -163,177 +113,6 @@ button[data-selected],
     background-position: 500px 0;
   }
 }
-
-/*Dark mode slider*/
-
-:root {
-  --toastify-color-success: #b2ac88;
-  --toastify-color-error: #be3455;
-  /** sunny side **/
-  --blue-background: #c2e9f6;
-  --blue-border: #72cce3;
-  --blue-color: #96dcee;
-  --yellow-background: #fffaa8;
-  --yellow-border: #f5eb71;
-  /** dark side **/
-  --indigo-background: #808fc7;
-  --indigo-border: #5d6baa;
-  --indigo-color: #6b7abb;
-  --gray-border: #e8e8ea;
-  --gray-dots: #e8e8ea;
-  /** general **/
-  --white: #fff;
-}
-
-.toggle--checkbox {
-  display: none;
-}
-.toggle--checkbox:checked {
-  /** This will all flip from sun to moon **/
-  /** Change the label color **/
-}
-.toggle--checkbox:checked ~ .background {
-  background: var(--indigo-background);
-}
-.toggle--checkbox:checked + .toggle--label {
-  background: var(--indigo-color);
-  border-color: var(--indigo-border);
-  /** Change the cloud to stars **/
-  /** Change the sun into the moon **/
-  /** Show the dimples on the moon **/
-}
-.toggle--checkbox:checked + .toggle--label .toggle--label-background {
-  left: 15px;
-  width: 1px;
-}
-.toggle--checkbox:checked + .toggle--label .toggle--label-background:before {
-  width: 1px;
-  height: 1px;
-  top: -6px;
-}
-.toggle--checkbox:checked + .toggle--label .toggle--label-background:after {
-  width: 1px;
-  height: 1px;
-  left: -7.5px;
-  top: 5px;
-}
-.toggle--checkbox:checked + .toggle--label:before {
-  background: var(--white);
-  border-color: var(--gray-border);
-  animation-name: switch;
-  animation-duration: 350ms;
-  animation-fill-mode: forwards;
-}
-.toggle--checkbox:checked + .toggle--label:after {
-  transition-delay: 350ms;
-  opacity: 1;
-}
-.toggle--label {
-  /** Placeholder element, starting at blue **/
-  width: 50px;
-  height: 25px;
-  background: var(--blue-color);
-  border-radius: 25px;
-  border: 1px solid var(--blue-border);
-  display: flex;
-  position: relative;
-  transition: all 350ms ease-in;
-  /** The sun cloud and moon stars **/
-  /** Sun/Moon element **/
-  /** Gray dots on the moon **/
-}
-.toggle--label-background {
-  width: 2.5px;
-  height: 1px;
-  border-radius: 1px;
-  position: relative;
-  background: var(--white);
-  left: 33px;
-  top: 10px;
-  transition: all 150ms ease-in;
-}
-.toggle--label-background:before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  width: 10px;
-  height: 1px;
-  border-radius: 1px;
-  background: var(--white);
-  left: -5px;
-  transition: all 150ms ease-in;
-}
-.toggle--label-background:after {
-  content: '';
-  position: absolute;
-  top: 1px;
-  width: 10px;
-  height: 1px;
-  border-radius: 1px;
-  background: var(--white);
-  left: -2.5px;
-  transition: all 150ms ease-in;
-}
-.toggle--label:before {
-  animation-name: reverse;
-  animation-duration: 350ms;
-  animation-fill-mode: forwards;
-  transition: all 350ms ease-in;
-  content: '';
-  width: 20px;
-  height: 20px;
-  border: 1px solid var(--yellow-border);
-  top: 1.5px;
-  left: 1px;
-  position: absolute;
-  border-radius: 20px;
-  background: var(--yellow-background);
-}
-.toggle--label:after {
-  transition-delay: 0ms;
-  transition: all 250ms ease-in;
-  position: absolute;
-  content: '';
-  box-shadow:
-    var(--gray-dots) -6.5px 0 0 0.75px,
-    var(--gray-dots) -8px 4px 0 0.1px;
-  left: 38px;
-  top: 5px;
-  width: 2.5px;
-  height: 2.5px;
-  background: transparent;
-  border-radius: 50%;
-  opacity: 0;
-}
-
-@keyframes switch {
-  0% {
-    left: 1px;
-  }
-  60% {
-    left: 1px;
-    width: 27.5px;
-  }
-  100% {
-    left: 27.5px;
-    width: 20px;
-  }
-}
-@keyframes reverse {
-  0% {
-    left: 25px;
-    width: 20px;
-  }
-  60% {
-    left: 18px;
-    width: 28px;
-  }
-  100% {
-    left: 1px;
-  }
-}
-
-/*END Dark mode slider*/
 
 /*Slide menu*/
 
@@ -409,64 +188,3 @@ Note: Beware of modifying this element as it can break the animations - you shou
 }
 
 /*END Slide menu*/
-
-.loader {
-  animation: rotation 1s linear infinite;
-  @apply relative mx-auto 
-  mt-36 
-  box-border 
-  flex 
-  h-12
-  w-12 
-  items-center 
-  justify-center 
-  rounded-full
-  border-4
-  border-b-transparent
-  border-l-zinc-500
-  border-r-zinc-500
-  border-t-zinc-500
-  dark:border-b-transparent
-  dark:border-l-zinc-500
-  dark:border-r-zinc-500
-  dark:border-t-zinc-500;
-}
-
-.loader::after {
-  content: '';
-  animation: rotationBack 0.5s linear infinite;
-  transform-origin: center center;
-  @apply absolute
-  bottom-0
-  left-0
-  right-0
-  top-0
-  m-auto
-  box-border
-  h-6
-  w-6
-  rounded-full
-  border-4
-  border-b-emerald-500
-  border-l-transparent
-  border-r-emerald-500
-  border-t-emerald-500;
-}
-
-@keyframes rotation {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes rotationBack {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(-360deg);
-  }
-}
