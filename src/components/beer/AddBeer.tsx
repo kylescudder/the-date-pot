@@ -16,16 +16,18 @@ import {
 } from '@/lib/actions/beer.action'
 import { option } from '@/lib/models/select-options'
 import { useForm } from '@mantine/form'
-import { MultiSelect, NumberInput, Rating, TextInput } from '@mantine/core'
+import { MultiSelect, NumberInput, Rating } from '@mantine/core'
 import BackButton from '../shared/BackButton'
 import AddBeerRating from './AddBeerRating'
 import FullScreenModal from '../shared/FullScreenModal'
 import { addBrewery } from '@/lib/actions/brewer.action'
 import { addBeerType } from '@/lib/actions/beer-type'
-import { Beer, BeerRating, BeerType, Brewery, User } from '@/server/db/schema'
+import { BeerType, Brewery, User } from '@/server/db/schema'
 import { BeerRatings } from '@/lib/models/beerRatings'
 import { Beers } from '@/lib/models/beers'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 export default function AddBeer(props: {
   beer: Beers
@@ -195,11 +197,9 @@ export default function AddBeer(props: {
           props.beer.id === '' ? 'px-6' : ''
         }`}
       >
-        <TextInput
-          label='Name'
-          radius='md'
+        <Label htmlFor='beerName'>Name</Label>
+        <Input
           placeholder='The best beer in the world'
-          size='md'
           {...form.getInputProps('beerName')}
         />
         <MultiSelect

@@ -7,6 +7,7 @@ import { IconFilePlus, IconSearch } from '@tabler/icons-react'
 import FullScreenModal from './FullScreenModal'
 import Grid from './Grid'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 export default function List(props: {
   records: any[]
@@ -94,10 +95,7 @@ export default function List(props: {
             placeholder='Search...'
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            className={`${searchOpen ? 'w-full' : 'w-0'} text-dark-2
-            dark:text-light-2 pl-2`}
-            radius='md'
-            size='sm'
+            className={`${searchOpen ? 'w-full' : 'w-0'} pl-2`}
           />
         </div>
         <Button

@@ -7,7 +7,7 @@ import { archiveFilm, updateFilm } from '@/lib/actions/film.action'
 import { archiveToast, successToast } from '@/lib/actions/toast.actions'
 import { IconTrash } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
-import { Checkbox, MultiSelect, NumberInput, TextInput } from '@mantine/core'
+import { Checkbox, MultiSelect, NumberInput } from '@mantine/core'
 import { DatePickerInput } from '@mantine/dates'
 import { option } from '@/lib/models/select-options'
 import { addDirector } from '@/lib/actions/director.action'
@@ -16,6 +16,8 @@ import { addPlatform } from '@/lib/actions/platform.action'
 import { Films } from '@/lib/models/films'
 import { Director, Genre, Platform } from '@/server/db/schema'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 export default function AddFilm(props: {
   film: Films
@@ -140,11 +142,9 @@ export default function AddFilm(props: {
           props.film.id === '' ? 'px-6' : ''
         }`}
       >
-        <TextInput
-          label='Name'
-          radius='md'
+        <Label htmlFor='filmName'>Name</Label>
+        <Input
           placeholder='Which cinematic masterpiece is it today?'
-          size='md'
           {...form.getInputProps('filmName')}
         />
         <DatePickerInput

@@ -7,9 +7,11 @@ import { archiveVinyl, updateVinyl } from '@/lib/actions/vinyl.action'
 import { archiveToast, successToast } from '@/lib/actions/toast.actions'
 import { IconTrash } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
-import { Checkbox, TextInput } from '@mantine/core'
+import { Checkbox } from '@mantine/core'
 import { Vinyl } from '@/server/db/schema'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 export default function AddVinyl(props: { vinyl: Vinyl }) {
   const router = useRouter()
@@ -89,18 +91,11 @@ export default function AddVinyl(props: { vinyl: Vinyl }) {
           props.vinyl.id === '' ? 'px-6' : ''
         }`}
       >
-        <TextInput
-          label='Name'
-          radius='md'
-          placeholder='The next AOTY'
-          size='md'
-          {...form.getInputProps('name')}
-        />
-        <TextInput
-          label='Artist Name'
-          radius='md'
+        <Label htmlFor='name'>Name</Label>
+        <Input placeholder='The next AOTY' {...form.getInputProps('name')} />
+        <Label htmlFor='artistName'>Artist Name</Label>
+        <Input
           placeholder='GOATs only plz'
-          size='md'
           {...form.getInputProps('artistName')}
         />
         <Checkbox

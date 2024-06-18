@@ -4,10 +4,12 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Image from 'next/image'
 import { updateUser } from '@/lib/actions/user.actions'
-import { FileInput, TextInput, Textarea } from '@mantine/core'
+import { FileInput, Textarea } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { Users } from '@/lib/models/users'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 interface Props {
   user: Users
@@ -93,18 +95,14 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
         {...form.getInputProps('image')}
         onChange={(e) => handleImage(e!)}
       />
-      <TextInput
-        label='Name'
-        radius='md'
+      <Label htmlFor='name'>Name</Label>
+      <Input
         placeholder="What's your name girl, what's you sign?"
-        size='md'
         {...form.getInputProps('name')}
       />
-      <TextInput
-        label='Username'
-        radius='md'
+      <Label htmlFor='username'>Username</Label>
+      <Input
         placeholder='your email address plz'
-        size='md'
         {...form.getInputProps('username')}
       />
       <Textarea

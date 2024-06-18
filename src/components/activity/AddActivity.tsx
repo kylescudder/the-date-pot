@@ -7,12 +7,14 @@ import { archiveActivity, updateActivity } from '@/lib/actions/activity.action'
 import { archiveToast, successToast } from '@/lib/actions/toast.actions'
 import { IconTrash } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
-import { Select, TextInput } from '@mantine/core'
+import { Select } from '@mantine/core'
 import Map from '../shared/Map'
 import ReloadMapPlaceholder from '../shared/ReloadMapPlaceholder'
 import { Activity, Expense } from '@/server/db/schema'
 import { option } from '@/lib/models/select-options'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 export default function AddActivity(props: {
   activity: Activity
@@ -114,11 +116,9 @@ export default function AddActivity(props: {
           props.activity.id === '' ? 'px-6' : ''
         }`}
       >
-        <TextInput
-          label='Name'
-          radius='md'
+        <Label htmlFor='activityName'>Name</Label>
+        <Input
           placeholder='The good yum yum place'
-          size='md'
           {...form.getInputProps('activityName')}
         />
         <Select
@@ -131,13 +131,8 @@ export default function AddActivity(props: {
           data={expenseOptions}
           {...form.getInputProps('expenseId')}
         />
-        <TextInput
-          label='Address'
-          radius='md'
-          placeholder='Where it at?'
-          size='md'
-          {...form.getInputProps('address')}
-        />
+        <Label htmlFor='address'>Address</Label>
+        <Input placeholder='Where it at?' {...form.getInputProps('address')} />
         {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
           <Map longLat={props.longLat} title={props.activity.activityName} />
         )}
@@ -145,7 +140,7 @@ export default function AddActivity(props: {
           address !== '' &&
           props.longLat[0] === undefined &&
           props.longLat[1] === undefined && <ReloadMapPlaceholder />}
-        <Button className='text-white' type='submit'>
+        <Button type='submit'>
           {props.activity.id === '' ? 'Add' : 'Update'} Activity
         </Button>
       </form>

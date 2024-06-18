@@ -15,15 +15,17 @@ import {
   updateCoffeeRating
 } from '@/lib/actions/coffee.action'
 import { useForm } from '@mantine/form'
-import { Rating, TextInput } from '@mantine/core'
+import { Rating } from '@mantine/core'
 import BackButton from '../shared/BackButton'
 import Map from '@/components/shared/Map'
 import AddCoffeeRating from './AddCoffeeRating'
 import FullScreenModal from '../shared/FullScreenModal'
 import ReloadMapPlaceholder from '@/components/shared/ReloadMapPlaceholder'
-import { Coffee, CoffeeRating, User } from '@/server/db/schema'
+import { Coffee, User } from '@/server/db/schema'
 import { CoffeeRatings } from '@/lib/models/coffeeRatings'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 export default function AddCoffee(props: {
   coffee: Coffee
@@ -180,11 +182,9 @@ export default function AddCoffee(props: {
           props.coffee.id === '' ? 'px-6' : ''
         }`}
       >
-        <TextInput
-          label='Name'
-          radius='md'
+        <Label htmlFor='coffeeName'>Name</Label>
+        <Input
           placeholder='The best coffee shop in the world'
-          size='md'
           {...form.getInputProps('coffeeName')}
         />
         <div className='flex justify-between'>
@@ -255,13 +255,8 @@ export default function AddCoffee(props: {
             </div>
           </div>
         )}
-        <TextInput
-          label='Address'
-          radius='md'
-          placeholder='Where it at?'
-          size='md'
-          {...form.getInputProps('address')}
-        />
+        <Label htmlFor='address'>Address</Label>
+        <Input placeholder='Where it at?' {...form.getInputProps('address')} />
         {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
           <Map longLat={props.longLat} title={props.coffee.coffeeName} />
         )}

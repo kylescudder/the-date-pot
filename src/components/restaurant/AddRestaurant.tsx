@@ -15,7 +15,7 @@ import {
 } from '@/lib/actions/toast.actions'
 import { IconTrash, IconCirclePlus } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
-import { MultiSelect, TextInput } from '@mantine/core'
+import { MultiSelect } from '@mantine/core'
 import Map from '../shared/Map'
 import { option } from '@/lib/models/select-options'
 import NoteCard from './NoteCard'
@@ -27,6 +27,8 @@ import { addWhen } from '@/lib/actions/when.action'
 import { Cuisine, When } from '@/server/db/schema'
 import { Restaurants } from '@/lib/models/restaurants'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 export default function AddRestaurant(props: {
   restaurant: Restaurants
@@ -164,11 +166,9 @@ export default function AddRestaurant(props: {
           props.restaurant.id === '' ? 'px-6' : ''
         }`}
       >
-        <TextInput
-          label='Name'
-          radius='md'
+        <Label htmlFor='restaurantName'>Name</Label>
+        <Input
           placeholder='The good yum yum place'
-          size='md'
           {...form.getInputProps('restaurantName')}
         />
         <MultiSelect
@@ -213,13 +213,8 @@ export default function AddRestaurant(props: {
           data={whens}
           {...form.getInputProps('whens')}
         />
-        <TextInput
-          label='Address'
-          radius='md'
-          placeholder='Where it at?'
-          size='md'
-          {...form.getInputProps('address')}
-        />
+        <Label htmlFor='address'>Address</Label>
+        <Input placeholder='Where it at?' {...form.getInputProps('address')} />
         {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
           <Map
             longLat={props.longLat}
