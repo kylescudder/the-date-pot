@@ -114,7 +114,7 @@ export default function AddVinyl(props: { vinyl: Vinyl }) {
         />
         <Button
           radius='md'
-          className='hover:bg-primary-hover text-emerald-500 text-white'
+          className='hover:bg-primary-hover bg-emerald-500 text-white'
           type='submit'
         >
           {props.vinyl.id === '' ? 'Add' : 'Update'} Vinyl

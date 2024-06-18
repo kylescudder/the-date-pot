@@ -277,7 +277,7 @@ export default function AddCoffee(props: {
           props.longLat[1] === undefined && <ReloadMapPlaceholder />}
         <Button
           radius='md'
-          className='hover:bg-primary-hover text-emerald-500 text-white'
+          className='hover:bg-primary-hover bg-emerald-500 text-white'
           type='submit'
         >
           {props.coffee.id === '' ? 'Add' : 'Update'} Coffee

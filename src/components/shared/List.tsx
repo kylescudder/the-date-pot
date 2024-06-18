@@ -86,7 +86,7 @@ export default function List(props: {
           radius='md'
           className={`${
             searchOpen ? 'hidden' : 'absolute right-6'
-          } hover:bg-primary-hover text-emerald-500 text-white`}
+          } hover:bg-primary-hover bg-emerald-500 text-white`}
           onClick={handleSearchClickOpen}
         >
           <IconSearch width={24} height={24} strokeLinejoin='miter' />
