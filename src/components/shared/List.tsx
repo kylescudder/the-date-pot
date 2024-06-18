@@ -66,6 +66,14 @@ export default function List(props: {
   return (
     <div>
       <div className='mb-4 flex'>
+        <Button
+          id='add-button'
+          radius='md'
+          className='hover:bg-primary-hover mr-auto bg-emerald-500 text-white'
+          onClick={handleClickOpen}
+        >
+          <IconFilePlus width={24} height={24} strokeLinejoin='miter' />
+        </Button>
         <div
           className={`relative ${
             searchOpen ? 'w-4/5' : 'w-0 overflow-hidden'
@@ -83,20 +91,14 @@ export default function List(props: {
           />
         </div>
         <Button
+          id='search-button'
           radius='md'
           className={`${
-            searchOpen ? 'hidden' : 'absolute right-6'
+            searchOpen ? 'hidden' : 'ml-auto'
           } hover:bg-primary-hover bg-emerald-500 text-white`}
           onClick={handleSearchClickOpen}
         >
           <IconSearch width={24} height={24} strokeLinejoin='miter' />
-        </Button>
-        <Button
-          radius='md'
-          className='hover:bg-primary-hover absolute left-6 text-emerald-500 text-white'
-          onClick={handleClickOpen}
-        >
-          <IconFilePlus width={24} height={24} strokeLinejoin='miter' />
         </Button>
       </div>
       <FullScreenModal
