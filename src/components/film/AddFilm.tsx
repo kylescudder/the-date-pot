@@ -154,12 +154,12 @@ export default function AddFilm(props: {
           size='md'
           {...form.getInputProps('releaseDate')}
         />
-        <NumberInput
-          label='Run time'
-          radius='md'
+        <Label htmlFor='runTime'>Run time</Label>
+        <Input
+          type='number'
+          step={1}
           placeholder='It is over 90 minutes?'
-          size='md'
-          {...form.getInputProps('runTime')}
+          {...form.getInputProps('abv')}
         />
         <Checkbox
           label='Watched'

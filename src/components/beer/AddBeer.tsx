@@ -16,7 +16,7 @@ import {
 } from '@/lib/actions/beer.action'
 import { option } from '@/lib/models/select-options'
 import { useForm } from '@mantine/form'
-import { MultiSelect, NumberInput, Rating } from '@mantine/core'
+import { MultiSelect, Rating } from '@mantine/core'
 import BackButton from '../shared/BackButton'
 import AddBeerRating from './AddBeerRating'
 import FullScreenModal from '../shared/FullScreenModal'
@@ -244,13 +244,11 @@ export default function AddBeer(props: {
           data={beerTypes}
           {...form.getInputProps('beerTypes')}
         />
-        <NumberInput
-          label='ABV'
-          radius='md'
-          precision={1}
+        <Label htmlFor='abv'>ABV</Label>
+        <Input
+          type='number'
           step={0.1}
           placeholder='Session or strong?'
-          size='md'
           {...form.getInputProps('abv')}
         />
         <div className='flex justify-between'>
