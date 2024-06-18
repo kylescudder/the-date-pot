@@ -21,11 +21,6 @@ export default function List(props: {
   const [filteredRecords, setFilteredRecords] = useState(props.records)
   const [open, setOpen] = React.useState(false)
   const [searchOpen, setSearchOpen] = React.useState(false)
-  const [loading, setLoading] = React.useState(false)
-
-  const handleClickOpen = () => {
-    setOpen(true)
-  }
 
   const handleSearchClickOpen = () => {
     setSearchOpen(true)
@@ -63,14 +58,9 @@ export default function List(props: {
   }, [searchValue, props.records, props.filterColumns])
 
   const onRowClicked = (params: RowClickedEvent) => {
-    setLoading(true)
     // Access row data using params.data
     const rowData = params.data
     router.push(`${props.potName.toLowerCase()}/${rowData.id}`)
-  }
-
-  const pullData = (data: boolean) => {
-    setOpen(data)
   }
 
   const focusRef = useRef<HTMLInputElement>(null)
@@ -78,13 +68,15 @@ export default function List(props: {
   return (
     <div>
       <div className='mb-4 flex'>
-        <Button
-          id='add-button'
-          className='mr-auto bg-primary'
-          onClick={handleClickOpen}
-        >
-          <IconFilePlus width={24} height={24} strokeLinejoin='miter' />
-        </Button>
+        <FullScreenModal
+          button={
+            <Button id='add-button'>
+              <IconFilePlus width={24} height={24} strokeLinejoin='miter' />
+            </Button>
+          }
+          form={props.addRecordComp}
+          title={`Add ${props.potName}`}
+        />
         <div
           className={`relative ${
             searchOpen ? 'w-4/5' : 'w-0 overflow-hidden'
@@ -106,12 +98,6 @@ export default function List(props: {
           <IconSearch width={24} height={24} strokeLinejoin='miter' />
         </Button>
       </div>
-      <FullScreenModal
-        open={open}
-        func={pullData}
-        form={props.addRecordComp}
-        title={`Add ${props.potName}`}
-      />
       <Grid
         records={filteredRecords}
         columns={props.columns}

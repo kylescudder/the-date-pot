@@ -255,15 +255,23 @@ export default function AddBeer(props: {
           <div className='flex-grow pr-2'>
             <p className='inline-block pt-3 text-base font-black'>Ratings</p>
           </div>
-          <div className='mt-auto'>
-            <Button
-              className='r-0 bg-success'
-              onClick={() => setOpen(true)}
-              aria-label='add'
-            >
-              <IconCirclePlus />
-            </Button>
-          </div>
+          <FullScreenModal
+            button={
+              <Button className='r-0 bg-success' aria-label='add'>
+                <IconCirclePlus />
+              </Button>
+            }
+            form={
+              <AddBeerRating
+                beer={props.beer}
+                beerRating={beerRating}
+                func={pullData}
+                addRating={pullRating}
+                users={props.users}
+              />
+            }
+            title='Add Rating'
+          />
         </div>
         {beerRatings.length !== 0 ? (
           beerRatings.map((rating: BeerRatings, i: number) => {
@@ -323,20 +331,6 @@ export default function AddBeer(props: {
           {props.beer.id === '' ? 'Add' : 'Update'} Beer
         </Button>
       </form>
-      <FullScreenModal
-        open={open}
-        func={pullData}
-        form={
-          <AddBeerRating
-            beer={props.beer}
-            beerRating={beerRating}
-            func={pullData}
-            addRating={pullRating}
-            users={props.users}
-          />
-        }
-        title='Add Rating'
-      />
     </div>
   )
 }

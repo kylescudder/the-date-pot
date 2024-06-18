@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { Button } from '@/components/ui/button'
 import {
@@ -19,23 +19,20 @@ import {
   DrawerTitle,
   DrawerTrigger
 } from '@/components/ui/drawer'
+import { IconFilePlus } from '@tabler/icons-react'
 
 export default function FullScreenModal(props: {
-  open: boolean
-  func: (open: boolean) => void
+  button: React.ReactElement
   form: React.ReactElement
   title: string
 }) {
-  const [open, setOpen] = useState<boolean>(props.open)
-
-  useEffect(() => {
-    setOpen(props.open)
-  }, [props.open])
+  const [open, setOpen] = useState(false)
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>{props.button}</DialogTrigger>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
             <DialogTitle>{props.title}</DialogTitle>
@@ -51,6 +48,7 @@ export default function FullScreenModal(props: {
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger asChild>{props.button}</DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className='text-left'>
           <DrawerTitle>{props.title}</DrawerTitle>

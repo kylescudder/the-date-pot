@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button'
 export default function AddRestaurantNote(props: {
   restaurant: Restaurants
   restaurantNote: string
-  func: (data: boolean) => void
   addNote: (data: string) => void
 }) {
   const [note, setNote] = useState<string>('')
@@ -19,7 +18,6 @@ export default function AddRestaurantNote(props: {
   }
   const handleSubmit = async () => {
     await addRestaurantNote(note, props.restaurant.id)
-    props.func(false)
     props.addNote(note)
   }
   return (

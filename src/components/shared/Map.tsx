@@ -28,7 +28,7 @@ const Map = (props: { longLat: number[]; title: string }) => {
 
   return isLoaded ? (
     <GoogleMap
-      mapContainerStyle={{ width: '100%', height: '400px' }}
+      mapContainerStyle={{ width: '100%', height: '200px' }}
       center={center}
       zoom={17}
       onLoad={onLoad}

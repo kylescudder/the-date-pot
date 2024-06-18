@@ -40,7 +40,6 @@ export default function AddRestaurant(props: {
   const pathname = usePathname()
   const [notes, setNotes] = useState(props.restaurant.notes || [])
   const [changesMade, setChangesMade] = useState<boolean>(false)
-  const [open, setOpen] = useState<boolean>(false)
   const [address, setAddress] = useState<string>(props.restaurant.address)
 
   useEffect(() => {
@@ -138,10 +137,6 @@ export default function AddRestaurant(props: {
     setNotes(newNoteList)
   }
 
-  const pullData = (data: boolean) => {
-    setOpen(data)
-  }
-
   return (
     <div>
       <div className='flex items-center justify-between'>
@@ -229,15 +224,21 @@ export default function AddRestaurant(props: {
           <div className='flex-grow pr-2'>
             <p className='inline-block pt-3 text-base font-black'>Notes</p>
           </div>
-          <div className='mt-auto'>
-            <Button
-              className='r-0 bg-success'
-              onClick={() => setOpen(true)}
-              aria-label='add'
-            >
-              <IconCirclePlus />
-            </Button>
-          </div>
+          <FullScreenModal
+            button={
+              <Button className='r-0 bg-success' aria-label='add'>
+                <IconCirclePlus />
+              </Button>
+            }
+            form={
+              <AddRestaurantNote
+                restaurant={props.restaurant}
+                restaurantNote={restaurantNote}
+                addNote={pullAddNote}
+              />
+            }
+            title='Add Note'
+          />
         </div>
         {notes.map((note: string) => {
           return <NoteCard key={note} note={note} func={pullNote} />
@@ -246,19 +247,6 @@ export default function AddRestaurant(props: {
           {props.restaurant.id === '' ? 'Add' : 'Update'} Restaurant
         </Button>
       </form>
-      <FullScreenModal
-        open={open}
-        func={pullData}
-        form={
-          <AddRestaurantNote
-            restaurant={props.restaurant}
-            restaurantNote={restaurantNote}
-            func={pullData}
-            addNote={pullAddNote}
-          />
-        }
-        title='Add Note'
-      />
     </div>
   )
 }
