@@ -1,20 +1,40 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useForm } from '@mantine/form'
 import { usePathname, useRouter } from 'next/navigation'
 import { archiveActivity, updateActivity } from '@/lib/actions/activity.action'
 import { archiveToast, successToast } from '@/lib/actions/toast.actions'
-import { IconTrash } from '@tabler/icons-react'
+import { IconTrash, IconCaretUpDown, IconCheck } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
-import { Select } from '@mantine/core'
 import Map from '../shared/Map'
 import ReloadMapPlaceholder from '../shared/ReloadMapPlaceholder'
 import { Activity, Expense } from '@/server/db/schema'
 import { option } from '@/lib/models/select-options'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { useForm, type FieldValues } from 'react-hook-form'
+import { cn } from '@/lib/utils'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList
+} from '@/components/ui/command'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover'
 
 export default function AddActivity(props: {
   activity: Activity
@@ -24,7 +44,6 @@ export default function AddActivity(props: {
   const router = useRouter()
   const pathname = usePathname()
   const [changesMade, setChangesMade] = useState<boolean>(false)
-  const [open, setOpen] = useState<boolean>(false)
   const [address, setAddress] = useState<string>(props.activity.address)
 
   useEffect(() => {
@@ -46,7 +65,7 @@ export default function AddActivity(props: {
   }
 
   const form = useForm({
-    initialValues: {
+    defaultValues: {
       id: props.activity.id ? props.activity.id : '',
       activityName: props.activity.activityName
         ? props.activity.activityName
@@ -88,10 +107,6 @@ export default function AddActivity(props: {
     }, 1000)
   }
 
-  const pullData = (data: boolean) => {
-    setOpen(data)
-  }
-
   return (
     <div>
       <div className='flex items-center justify-between'>
@@ -110,40 +125,125 @@ export default function AddActivity(props: {
           <IconTrash />
         </Button>
       </div>
-      <form
-        onSubmit={form.onSubmit((values) => onSubmit(values))}
-        className={`flex flex-col justify-start gap-10 pt-4 ${
-          props.activity.id === '' ? 'px-6' : ''
-        }`}
-      >
-        <Label htmlFor='activityName'>Name</Label>
-        <Input
-          placeholder='The good yum yum place'
-          {...form.getInputProps('activityName')}
-        />
-        <Select
-          radius='md'
-          size='md'
-          clearable
-          transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-          label='How much?!'
-          placeholder='Pick one'
-          data={expenseOptions}
-          {...form.getInputProps('expenseId')}
-        />
-        <Label htmlFor='address'>Address</Label>
-        <Input placeholder='Where it at?' {...form.getInputProps('address')} />
-        {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
-          <Map longLat={props.longLat} title={props.activity.activityName} />
-        )}
-        {address !== undefined &&
-          address !== '' &&
-          props.longLat[0] === undefined &&
-          props.longLat[1] === undefined && <ReloadMapPlaceholder />}
-        <Button type='submit'>
-          {props.activity.id === '' ? 'Add' : 'Update'} Activity
-        </Button>
-      </form>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <FormField
+            control={form.control}
+            name='activityName'
+            render={({ field }: { field: FieldValues }) => (
+              <FormItem>
+                <FormLabel htmlFor='activityName'>Name</FormLabel>
+                <FormControl>
+                  <div className='items-center gap-4'>
+                    <Input
+                      {...field}
+                      id='activityName'
+                      className='text-base'
+                      placeholder='The good yum yum place'
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='expenseId'
+            render={({ field }) => (
+              <FormItem className='flex flex-col'>
+                <FormLabel>Expense</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant='outline'
+                        role='combobox'
+                        className={cn(
+                          'w-[200px] justify-between',
+                          !field.value && 'text-muted-foreground'
+                        )}
+                      >
+                        {field.value
+                          ? expenseOptions.find(
+                              (expense) => expense.value === field.value
+                            )?.label
+                          : 'Select language'}
+                        <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-[200px] p-0'>
+                    <Command>
+                      <CommandInput placeholder='Search language...' />
+                      <CommandEmpty>No expense found.</CommandEmpty>
+                      <CommandGroup>
+                        <CommandList>
+                          {expenseOptions.map((expense) => (
+                            <CommandItem
+                              value={expense.label}
+                              key={expense.value}
+                              onSelect={() => {
+                                form.setValue('expenseId', expense.value)
+                              }}
+                            >
+                              <IconCheck
+                                className={cn(
+                                  'mr-2 h-4 w-4',
+                                  expense.value === field.value
+                                    ? 'opacity-100'
+                                    : 'opacity-0'
+                                )}
+                              />
+                              {expense.label}
+                            </CommandItem>
+                          ))}
+                        </CommandList>
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='address'
+            render={({ field }: { field: FieldValues }) => (
+              <FormItem>
+                <FormLabel htmlFor='address'>Address</FormLabel>
+                <FormControl>
+                  <div className='items-center gap-4'>
+                    <Input
+                      {...field}
+                      id='address'
+                      className='text-base'
+                      placeholder='Where it at?'
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className='my-2'>
+            {props.longLat[0] !== undefined &&
+              props.longLat[1] !== undefined && (
+                <Map
+                  longLat={props.longLat}
+                  title={props.activity.activityName}
+                />
+              )}
+            {address !== undefined &&
+              address !== '' &&
+              props.longLat[0] === undefined &&
+              props.longLat[1] === undefined && <ReloadMapPlaceholder />}
+          </div>
+          <Button type='submit'>
+            {props.activity.id === '' ? 'Add' : 'Update'} Activity
+          </Button>
+        </form>
+      </Form>
     </div>
   )
 }

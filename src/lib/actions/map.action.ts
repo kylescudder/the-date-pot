@@ -9,7 +9,7 @@ export const getLongLat = async (address: string) => {
     }
 
     const data = await response.json()
-
+    console.log(data)
     const lng = data.results[0].geometry.location.lng
     const lat = data.results[0].geometry.location.lat
 
