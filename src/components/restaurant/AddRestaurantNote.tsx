@@ -1,10 +1,11 @@
 'use client'
 
-import { Textarea } from '@mantine/core'
 import { ChangeEvent, useState } from 'react'
 import { addRestaurantNote } from '@/lib/actions/restaurant.action'
 import { Restaurants } from '@/lib/models/restaurants'
 import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
 
 export default function AddRestaurantNote(props: {
   restaurant: Restaurants
@@ -22,11 +23,8 @@ export default function AddRestaurantNote(props: {
   }
   return (
     <div>
+      <Label htmlFor='note'>Note</Label>
       <Textarea
-        minRows={8}
-        radius='md'
-        size='md'
-        label='Note'
         placeholder='Penny for your thoughts?'
         onChange={handleChange}
       />
