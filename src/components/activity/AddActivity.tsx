@@ -103,7 +103,7 @@ export default function AddActivity(props: {
     archiveToast(props.activity.activityName)
     setTimeout(() => {
       const url = `${window.location.protocol}//${window.location.host}`
-      window.location.href = `${url}/activitys`
+      window.location.href = `${url}/activities`
     }, 1000)
   }
 
