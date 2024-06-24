@@ -15,8 +15,7 @@ import {
   updateBeerRating
 } from '@/lib/actions/beer.action'
 import { option } from '@/lib/models/select-options'
-import { useForm } from '@mantine/form'
-import { MultiSelect, Rating } from '@mantine/core'
+import { Rating } from '@mantine/core'
 import BackButton from '../shared/BackButton'
 import AddBeerRating from './AddBeerRating'
 import FullScreenModal from '../shared/FullScreenModal'
@@ -25,9 +24,25 @@ import { addBeerType } from '@/lib/actions/beer-type'
 import { BeerType, Brewery, User } from '@/server/db/schema'
 import { BeerRatings } from '@/lib/models/beerRatings'
 import { Beers } from '@/lib/models/beers'
+import { useForm, type FieldValues } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form'
+import {
+  MultiSelector,
+  MultiSelectorContent,
+  MultiSelectorInput,
+  MultiSelectorItem,
+  MultiSelectorList,
+  MultiSelectorTrigger
+} from '@/components/ui/multi-select'
 
 export default function AddBeer(props: {
   beer: Beers
@@ -81,7 +96,7 @@ export default function AddBeer(props: {
   }
 
   const form = useForm({
-    initialValues: {
+    defaultValues: {
       id: props.beer.id ? props.beer.id : '',
       archive: props.beer.archive ? props.beer.archive : false,
       beerName: props.beer.beerName ? props.beer.beerName : '',
@@ -111,8 +126,20 @@ export default function AddBeer(props: {
       ...props.beer,
       beerName: values.beerName,
       abv: values.abv,
-      breweries: values.breweries,
-      beerTypes: values.beerTypes
+      breweries: breweries
+        .filter((brewery) =>
+          values.breweries.some(
+            (valueBrewery) => valueBrewery === brewery.label
+          )
+        )
+        .map((brewery) => brewery.value),
+      beerTypes: beerTypes
+        .filter((beerType) =>
+          values.beerTypes.some(
+            (valueBeerType) => valueBeerType === beerType.label
+          )
+        )
+        .map((beerType) => beerType.value)
     }
 
     const beer = await updateBeer(payload)
@@ -191,146 +218,198 @@ export default function AddBeer(props: {
           <IconTrash className='text-white' />
         </Button>
       </div>
-      <form
-        onSubmit={form.onSubmit((values) => onSubmit(values))}
-        className={`flex flex-col justify-start gap-10 pt-4 ${
-          props.beer.id === '' ? 'px-6' : ''
-        }`}
-      >
-        <Label htmlFor='beerName'>Name</Label>
-        <Input
-          placeholder='The best beer in the world'
-          {...form.getInputProps('beerName')}
-        />
-        <MultiSelect
-          multiple={true}
-          radius='md'
-          size='md'
-          clearable
-          searchable
-          creatable
-          getCreateLabel={(query) => `+ Create ${query}`}
-          onCreate={(query) => {
-            const item = { value: query, label: query }
-            const brewery: Brewery = { id: '', breweryName: query }
-            setBreweries((current) => [...current, item])
-            addBrewery(brewery)
-            return item
-          }}
-          transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-          label='Breweries'
-          placeholder='Pick some'
-          data={breweries}
-          {...form.getInputProps('breweries')}
-        />
-        <MultiSelect
-          multiple={true}
-          radius='md'
-          size='md'
-          clearable
-          searchable
-          creatable
-          getCreateLabel={(query) => `+ Create ${query}`}
-          onCreate={(query) => {
-            const item = { value: query, label: query }
-            const beerType: BeerType = { id: '', beerType: query }
-            setBeerTypes((current) => [...current, item])
-            addBeerType(beerType)
-            return item
-          }}
-          transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-          label='Type'
-          placeholder='Pick some'
-          data={beerTypes}
-          {...form.getInputProps('beerTypes')}
-        />
-        <Label htmlFor='abv'>ABV</Label>
-        <Input
-          type='number'
-          step={0.1}
-          placeholder='Session or strong?'
-          {...form.getInputProps('abv')}
-        />
-        <div className='flex justify-between'>
-          <div className='flex-grow pr-2'>
-            <p className='inline-block pt-3 text-base font-black'>Ratings</p>
-          </div>
-          <FullScreenModal
-            button={
-              <Button className='r-0 bg-success' aria-label='add'>
-                <IconCirclePlus />
-              </Button>
-            }
-            form={
-              <AddBeerRating
-                beer={props.beer}
-                beerRating={beerRating}
-                func={pullData}
-                addRating={pullRating}
-                users={props.users}
-              />
-            }
-            title='Add Rating'
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className={`flex flex-col justify-start gap-4 pt-4 ${
+            props.beer.id === '' ? 'px-6' : ''
+          }`}
+        >
+          <FormField
+            control={form.control}
+            name='beerName'
+            render={({ field }: { field: FieldValues }) => (
+              <FormItem>
+                <FormLabel htmlFor='beerName'>Name</FormLabel>
+                <FormControl>
+                  <div className='items-center gap-4'>
+                    <Input
+                      {...field}
+                      id='beerName'
+                      className='text-base'
+                      placeholder='The best beer in the world'
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        {beerRatings.length !== 0 ? (
-          beerRatings.map((rating: BeerRatings, i: number) => {
-            return (
-              <div
-                key={rating.userId}
-                className='w-full overflow-hidden rounded-md shadow-lg'
-              >
-                <div className='px-6 py-4'>
-                  <div className='mb-2 contents w-1/2 text-xl font-black'>
-                    {rating.username}
-                  </div>
-                  <div className='contents w-1/2'>
-                    <IconCircleMinus
-                      onClick={() => handleRemoveRecord(rating.id, i)}
-                      className='text-danger float-right'
+          <FormField
+            control={form.control}
+            name='breweries'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Breweries</FormLabel>
+                <MultiSelector
+                  onValuesChange={field.onChange}
+                  values={field.value}
+                >
+                  <MultiSelectorTrigger>
+                    <MultiSelectorInput placeholder='Pick some' />
+                  </MultiSelectorTrigger>
+                  <MultiSelectorContent>
+                    <MultiSelectorList>
+                      {breweries.map((brewery) => (
+                        <MultiSelectorItem
+                          key={brewery.value}
+                          value={brewery.label}
+                        >
+                          <div className='flex items-center space-x-2'>
+                            <span>{brewery.label}</span>
+                          </div>
+                        </MultiSelectorItem>
+                      ))}
+                    </MultiSelectorList>
+                  </MultiSelectorContent>
+                </MultiSelector>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='beerTypes'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Beer Types</FormLabel>
+                <MultiSelector
+                  onValuesChange={field.onChange}
+                  values={field.value}
+                >
+                  <MultiSelectorTrigger>
+                    <MultiSelectorInput placeholder='Pick some' />
+                  </MultiSelectorTrigger>
+                  <MultiSelectorContent>
+                    <MultiSelectorList>
+                      {beerTypes.map((beerType) => (
+                        <MultiSelectorItem
+                          key={beerType.value}
+                          value={beerType.label}
+                        >
+                          <div className='flex items-center space-x-2'>
+                            <span>{beerType.label}</span>
+                          </div>
+                        </MultiSelectorItem>
+                      ))}
+                    </MultiSelectorList>
+                  </MultiSelectorContent>
+                </MultiSelector>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='abv'
+            render={({ field }: { field: FieldValues }) => (
+              <FormItem>
+                <FormLabel htmlFor='abv'>ABV</FormLabel>
+                <FormControl>
+                  <div className='items-center gap-4'>
+                    <Input
+                      {...field}
+                      id='abv'
+                      type='number'
+                      step={1}
+                      className='text-base'
+                      placeholder='The best beer in the world'
                     />
                   </div>
-                  <div className='flex items-center pt-2 text-base'>
-                    <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
-                      Taste
-                    </span>
-                    <Rating
-                      name='taste'
-                      value={rating.taste}
-                      onChange={(value) => handleTasteChange(value, i)}
-                      fractions={2}
-                      size='xl'
-                    />
-                  </div>
-                  <div className='flex items-center pt-5 text-base'>
-                    <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
-                      Wankyness
-                    </span>
-                    <Rating
-                      name='wankyness'
-                      value={rating.wankyness}
-                      onChange={(value) => handleWankynessChange(value, i)}
-                      fractions={2}
-                      size='xl'
-                    />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className='flex justify-between'>
+            <div className='flex-grow pr-2'>
+              <p className='inline-block pt-3 text-base font-black'>Ratings</p>
+            </div>
+            <FullScreenModal
+              button={
+                <Button className='r-0 bg-success' aria-label='add'>
+                  <IconCirclePlus />
+                </Button>
+              }
+              form={
+                <AddBeerRating
+                  beer={props.beer}
+                  beerRating={beerRating}
+                  func={pullData}
+                  addRating={pullRating}
+                  users={props.users}
+                />
+              }
+              title='Add Rating'
+            />
+          </div>
+          {beerRatings.length !== 0 ? (
+            beerRatings.map((rating: BeerRatings, i: number) => {
+              return (
+                <div
+                  key={rating.userId}
+                  className='w-full overflow-hidden rounded-md shadow-lg'
+                >
+                  <div className='px-6 py-4'>
+                    <div className='mb-2 contents w-1/2 text-xl font-black'>
+                      {rating.username}
+                    </div>
+                    <div className='contents w-1/2'>
+                      <IconCircleMinus
+                        onClick={() => handleRemoveRecord(rating.id, i)}
+                        className='text-danger float-right'
+                      />
+                    </div>
+                    <div className='flex items-center pt-2 text-base'>
+                      <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
+                        Taste
+                      </span>
+                      <Rating
+                        name='taste'
+                        value={rating.taste}
+                        onChange={(value) => handleTasteChange(value, i)}
+                        fractions={2}
+                        size='xl'
+                      />
+                    </div>
+                    <div className='flex items-center pt-5 text-base'>
+                      <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
+                        Wankyness
+                      </span>
+                      <Rating
+                        name='wankyness'
+                        value={rating.wankyness}
+                        onChange={(value) => handleWankynessChange(value, i)}
+                        fractions={2}
+                        size='xl'
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            )
-          })
-        ) : (
-          <div className='w-full overflow-hidden rounded-md shadow-lg'>
-            <div className='px-6 py-4'>
-              <div className='mb-2 contents w-1/2 text-xl font-bold'>
-                Please add a rating!
+              )
+            })
+          ) : (
+            <div className='w-full overflow-hidden rounded-md shadow-lg'>
+              <div className='px-6 py-4'>
+                <div className='mb-2 contents w-1/2 text-xl font-bold'>
+                  Please add a rating!
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        <Button className='hover:bg-primary-hover' type='submit'>
-          {props.beer.id === '' ? 'Add' : 'Update'} Beer
-        </Button>
-      </form>
+          )}
+          <Button type='submit'>
+            {props.beer.id === '' ? 'Add' : 'Update'} Beer
+          </Button>
+        </form>
+      </Form>
     </div>
   )
 }
