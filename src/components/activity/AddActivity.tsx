@@ -13,15 +13,14 @@ import { option } from '@/lib/models/select-options'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useForm, type FieldValues } from 'react-hook-form'
-import { cn } from '@/lib/utils'
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList
-} from '@/components/ui/command'
+  MultiSelector,
+  MultiSelectorContent,
+  MultiSelectorInput,
+  MultiSelectorItem,
+  MultiSelectorList,
+  MultiSelectorTrigger
+} from '@/components/ui/multi-select'
 import {
   Form,
   FormControl,
@@ -30,11 +29,6 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from '@/components/ui/popover'
 
 export default function AddActivity(props: {
   activity: Activity
@@ -126,7 +120,12 @@ export default function AddActivity(props: {
         </Button>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className={`flex flex-col justify-start gap-4 pt-4 ${
+            props.activity.id === '' ? 'px-6' : ''
+          }`}
+        >
           <FormField
             control={form.control}
             name='activityName'
@@ -151,58 +150,31 @@ export default function AddActivity(props: {
             control={form.control}
             name='expenseId'
             render={({ field }) => (
-              <FormItem className='flex flex-col'>
+              <FormItem>
                 <FormLabel>Expense</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant='outline'
-                        role='combobox'
-                        className={cn(
-                          'w-[200px] justify-between',
-                          !field.value && 'text-muted-foreground'
-                        )}
-                      >
-                        {field.value
-                          ? expenseOptions.find(
-                              (expense) => expense.value === field.value
-                            )?.label
-                          : 'Select language'}
-                        <IconCaretUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className='w-[200px] p-0'>
-                    <Command>
-                      <CommandInput placeholder='Search language...' />
-                      <CommandEmpty>No expense found.</CommandEmpty>
-                      <CommandGroup>
-                        <CommandList>
-                          {expenseOptions.map((expense) => (
-                            <CommandItem
-                              value={expense.label}
-                              key={expense.value}
-                              onSelect={() => {
-                                form.setValue('expenseId', expense.value)
-                              }}
-                            >
-                              <IconCheck
-                                className={cn(
-                                  'mr-2 h-4 w-4',
-                                  expense.value === field.value
-                                    ? 'opacity-100'
-                                    : 'opacity-0'
-                                )}
-                              />
-                              {expense.label}
-                            </CommandItem>
-                          ))}
-                        </CommandList>
-                      </CommandGroup>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                <MultiSelector
+                  onValuesChange={field.onChange}
+                  values={[field.value]}
+                  single
+                >
+                  <MultiSelectorTrigger>
+                    <MultiSelectorInput placeholder='How spenny...?' />
+                  </MultiSelectorTrigger>
+                  <MultiSelectorContent>
+                    <MultiSelectorList>
+                      {expenseOptions.map((expense) => (
+                        <MultiSelectorItem
+                          key={expense.value}
+                          value={expense.label}
+                        >
+                          <div className='flex items-center space-x-2'>
+                            <span>{expense.label}</span>
+                          </div>
+                        </MultiSelectorItem>
+                      ))}
+                    </MultiSelectorList>
+                  </MultiSelectorContent>
+                </MultiSelector>
               </FormItem>
             )}
           />
