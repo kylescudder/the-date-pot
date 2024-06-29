@@ -18,16 +18,19 @@ import React, {
   useContext,
   useState
 } from 'react'
+import { option } from '@/lib/models/select-options'
 
 type MultiSelectorProps = {
   values: string[]
   single?: boolean
+  list: option[]
   onValuesChange: (value: string[]) => void
   loop?: boolean
 } & React.ComponentPropsWithoutRef<typeof CommandPrimitive>
 
 interface MultiSelectContextProps {
   value: string[]
+  list: option[]
   onValueChange: (value: any) => void
   open: boolean
   setOpen: (value: boolean) => void
@@ -49,6 +52,7 @@ const useMultiSelect = () => {
 
 const MultiSelector = ({
   values: value,
+  list: list,
   onValuesChange: onValueChange,
   loop = false,
   single = false,
@@ -140,6 +144,7 @@ const MultiSelector = ({
     <MultiSelectContext.Provider
       value={{
         value,
+        list,
         onValueChange: onValueChangeHandler,
         open,
         setOpen,
@@ -168,12 +173,14 @@ const MultiSelectorTrigger = forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, children, ...props }, ref) => {
-  const { value, onValueChange, activeIndex } = useMultiSelect()
+  const { value, list, onValueChange, activeIndex } = useMultiSelect()
 
   const mousePreventDefault = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
   }, [])
+
+  const listOptions = list.filter((listItem) => value.includes(listItem.value))
 
   return (
     <div
@@ -184,24 +191,24 @@ const MultiSelectorTrigger = forwardRef<
       )}
       {...props}
     >
-      {value.map((item, index) => (
+      {listOptions.map((item, index) => (
         <Badge
-          key={item}
+          key={item.value}
           className={cn(
             'flex items-center gap-1 rounded-xl px-1',
             activeIndex === index && 'ring-2 ring-muted-foreground '
           )}
           variant={'secondary'}
         >
-          <span className='text-xs'>{item}</span>
+          <span className='text-xs'>{item.label}</span>
           <button
-            aria-label={`Remove ${item} option`}
+            aria-label={`Remove ${item.label} option`}
             aria-roledescription='button to remove option'
             type='button'
             onMouseDown={mousePreventDefault}
-            onClick={() => onValueChange(item)}
+            onClick={() => onValueChange(item.value)}
           >
-            <span className='sr-only'>Remove {item} option</span>
+            <span className='sr-only'>Remove {item.label} option</span>
             <IconX className='h-4 w-4 hover:stroke-destructive' />
           </button>
         </Badge>

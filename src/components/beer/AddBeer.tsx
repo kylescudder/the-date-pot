@@ -253,6 +253,7 @@ export default function AddBeer(props: {
                 <MultiSelector
                   onValuesChange={field.onChange}
                   values={field.value}
+                  list={breweries}
                 >
                   <MultiSelectorTrigger>
                     <MultiSelectorInput placeholder='Pick some' />
@@ -284,6 +285,7 @@ export default function AddBeer(props: {
                 <MultiSelector
                   onValuesChange={field.onChange}
                   values={field.value}
+                  list={beerTypes}
                 >
                   <MultiSelectorTrigger>
                     <MultiSelectorInput placeholder='Pick some' />
