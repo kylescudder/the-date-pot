@@ -152,7 +152,8 @@ export default function AddActivity(props: {
                 <FormLabel>Expense</FormLabel>
                 <MultiSelector
                   onValuesChange={field.onChange}
-                  values={[field.value]}
+                  values={field.value}
+                  list={expenseOptions}
                   single
                 >
                   <MultiSelectorTrigger>
@@ -163,7 +164,7 @@ export default function AddActivity(props: {
                       {expenseOptions.map((expense) => (
                         <MultiSelectorItem
                           key={expense.value}
-                          value={expense.label}
+                          value={expense.value}
                         >
                           <div className='flex items-center space-x-2'>
                             <span>{expense.label}</span>
@@ -196,17 +197,16 @@ export default function AddActivity(props: {
             )}
           />
           <div className='my-2'>
-            {props.longLat[0] !== undefined &&
-              props.longLat[1] !== undefined && (
-                <Map
-                  longLat={props.longLat}
-                  title={props.activity.activityName}
-                />
-              )}
+            {props.longLat[0] !== 0 && props.longLat[1] !== 0 && (
+              <Map
+                longLat={props.longLat}
+                title={props.activity.activityName}
+              />
+            )}
             {address !== undefined &&
               address !== '' &&
-              props.longLat[0] === undefined &&
-              props.longLat[1] === undefined && <ReloadMapPlaceholder />}
+              props.longLat[0] === 0 &&
+              props.longLat[1] === 0 && <ReloadMapPlaceholder />}
           </div>
           <Button type='submit'>
             {props.activity.id === '' ? 'Add' : 'Update'} Activity

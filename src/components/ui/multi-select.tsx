@@ -21,7 +21,7 @@ import React, {
 import { option } from '@/lib/models/select-options'
 
 type MultiSelectorProps = {
-  values: string[]
+  values: string | string[]
   single?: boolean
   list: option[]
   onValuesChange: (value: string[]) => void
@@ -29,7 +29,7 @@ type MultiSelectorProps = {
 } & React.ComponentPropsWithoutRef<typeof CommandPrimitive>
 
 interface MultiSelectContextProps {
-  value: string[]
+  value: string | string[]
   list: option[]
   onValueChange: (value: any) => void
   open: boolean
@@ -68,8 +68,10 @@ const MultiSelector = ({
   const onValueChangeHandler = useCallback(
     (val: string) => {
       if (single) {
+        console.log(val)
+        console.log(value)
         // If single selection mode is enabled and the value is already selected, deselect it
-        if (value.includes(val)) {
+        if (Array.isArray(value) && value.includes(val)) {
           onValueChange([])
         } else {
           // If the value is not already selected, select it
@@ -77,10 +79,10 @@ const MultiSelector = ({
         }
       } else {
         // For multi-selection mode, toggle the selection status of the value
-        if (value.includes(val)) {
-          onValueChange(value.filter((item) => item !== val))
+        if (Array.isArray(value) && value.includes(val)) {
+          onValueChange((value as string[]).filter((item) => item !== val))
         } else {
-          onValueChange([...value, val])
+          onValueChange([...(value as string[]), val])
         }
       }
     },
