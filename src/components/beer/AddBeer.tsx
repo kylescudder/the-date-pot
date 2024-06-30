@@ -241,7 +241,6 @@ export default function AddBeer(props: {
                     />
                   </div>
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -319,7 +318,7 @@ export default function AddBeer(props: {
                       {...field}
                       id='abv'
                       type='number'
-                      step={1}
+                      step={0.1}
                       className='text-base'
                       placeholder='The best beer in the world'
                     />

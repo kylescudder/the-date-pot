@@ -4,12 +4,13 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Image from 'next/image'
 import { updateUser } from '@/lib/actions/user.actions'
-import { FileInput, Textarea } from '@mantine/core'
+import { FileInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { Users } from '@/lib/models/users'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 
 interface Props {
   user: Users
@@ -105,13 +106,10 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
         placeholder='your email address plz'
         {...form.getInputProps('username')}
       />
+      <Label htmlFor='bio'>Bio</Label>
       <Textarea
-        label='Bio'
-        radius='md'
         placeholder='Tell me a little bit about yourself...'
         className='text-lg font-semibold leading-6'
-        size='md'
-        minRows={8}
         {...form.getInputProps('bio')}
       />
       <Button className='hover:bg-primary-hover' type='submit'>

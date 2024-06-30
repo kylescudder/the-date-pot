@@ -26,8 +26,7 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
-  FormMessage
+  FormLabel
 } from '@/components/ui/form'
 
 export default function AddActivity(props: {
@@ -142,7 +141,6 @@ export default function AddActivity(props: {
                     />
                   </div>
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -194,7 +192,6 @@ export default function AddActivity(props: {
                     />
                   </div>
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
