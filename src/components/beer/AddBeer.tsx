@@ -126,20 +126,8 @@ export default function AddBeer(props: {
       ...props.beer,
       beerName: values.beerName,
       abv: values.abv,
-      breweries: breweries
-        .filter((brewery) =>
-          values.breweries.some(
-            (valueBrewery) => valueBrewery === brewery.label
-          )
-        )
-        .map((brewery) => brewery.value),
-      beerTypes: beerTypes
-        .filter((beerType) =>
-          values.beerTypes.some(
-            (valueBeerType) => valueBeerType === beerType.label
-          )
-        )
-        .map((beerType) => beerType.value)
+      breweries: values.breweries,
+      beerTypes: values.beerTypes
     }
 
     const beer = await updateBeer(payload)
@@ -263,7 +251,7 @@ export default function AddBeer(props: {
                       {breweries.map((brewery) => (
                         <MultiSelectorItem
                           key={brewery.value}
-                          value={brewery.label}
+                          value={brewery.value}
                         >
                           <div className='flex items-center space-x-2'>
                             <span>{brewery.label}</span>
@@ -295,7 +283,7 @@ export default function AddBeer(props: {
                       {beerTypes.map((beerType) => (
                         <MultiSelectorItem
                           key={beerType.value}
-                          value={beerType.label}
+                          value={beerType.value}
                         >
                           <div className='flex items-center space-x-2'>
                             <span>{beerType.label}</span>
