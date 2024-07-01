@@ -107,14 +107,17 @@ const MultiSelector = ({
 
       if ((e.key === 'Backspace' || e.key === 'Delete') && value.length > 0) {
         if (inputValue.length === 0) {
-          if (activeIndex !== -1 && activeIndex < value.length) {
-            onValueChange(value.filter((item) => item !== value[activeIndex]))
-            const newIndex = activeIndex - 1 < 0 ? 0 : activeIndex - 1
-            setActiveIndex(newIndex)
-          } else {
-            onValueChange(
-              value.filter((item) => item !== value[value.length - 1])
-            )
+          if (Array.isArray(value)) {
+            // Type check added here
+            if (activeIndex !== -1 && activeIndex < value.length) {
+              onValueChange(value.filter((item) => item !== value[activeIndex]))
+              const newIndex = activeIndex - 1 < 0 ? 0 : activeIndex - 1
+              setActiveIndex(newIndex)
+            } else {
+              onValueChange(
+                value.filter((item) => item !== value[value.length - 1])
+              )
+            }
           }
         }
       } else if (e.key === 'Enter') {
