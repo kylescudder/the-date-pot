@@ -1,12 +1,28 @@
-'use client'
+'usea   client'
 
 import { Rating, Select } from '@mantine/core'
-import { useForm } from '@mantine/form'
 import { option } from '@/lib/models/select-options'
 import { Beer, User } from '@/server/db/schema'
 import { BeerRatings } from '@/lib/models/beerRatings'
 import { updateBeerRating } from '@/lib/actions/beer.action'
 import { Button } from '@/components/ui/button'
+import { useForm, type FieldValues } from 'react-hook-form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form'
+import {
+  MultiSelector,
+  MultiSelectorContent,
+  MultiSelectorInput,
+  MultiSelectorItem,
+  MultiSelectorList,
+  MultiSelectorTrigger
+} from '@/components/ui/multi-select'
 
 export default function AddBeerRating(props: {
   beer: Beer
@@ -30,7 +46,7 @@ export default function AddBeerRating(props: {
   }
 
   const form = useForm({
-    initialValues: {
+    defaultValues: {
       id: props.beerRating.id ? props.beerRating.id : '',
       beerId: props.beer.id ? props.beer.id : '',
       wankyness: props.beerRating.wankyness ? props.beerRating.wankyness : 0,
@@ -67,50 +83,85 @@ export default function AddBeerRating(props: {
   }
 
   return (
-    <form
-      onSubmit={form.onSubmit((values) => onSubmit(values))}
-      className={`flex flex-col justify-start gap-10 pt-4 ${
-        props.beer.id === '' ? 'px-6' : ''
-      }`}
-    >
-      <Select
-        radius='md'
-        size='md'
-        clearable
-        transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-        label='Who?'
-        placeholder='Pick one'
-        data={options}
-        {...form.getInputProps('userId')}
-      />
-      <div className='flex items-center pt-2 text-base'>
-        <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
-          Taste
-        </span>
-        <Rating
-          name='taste'
-          fractions={2}
-          size='xl'
-          {...form.getInputProps('taste')}
-        />
-      </div>
-      <div className='flex items-center pt-5 text-base'>
-        <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
-          Wankyness
-        </span>
-        <Rating
-          name='wankyness'
-          fractions={2}
-          size='xl'
-          {...form.getInputProps('wankyness')}
-        />
-      </div>
-      <Button
-        className='hover:bg-primary-hover bg-emerald-500 text-white'
-        type='submit'
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className='flex flex-col justify-start gap-4 p-4'
+        d
       >
-        {props.beerRating.id === '' ? 'Add' : 'Update'} Rating
-      </Button>
-    </form>
+        <FormField
+          control={form.control}
+          name='userId'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Who?</FormLabel>
+              <MultiSelector
+                onValuesChange={field.onChange}
+                values={field.value}
+                list={options}
+                single
+              >
+                <MultiSelectorTrigger>
+                  <MultiSelectorInput placeholder='Pick one' />
+                </MultiSelectorTrigger>
+                <MultiSelectorContent>
+                  <MultiSelectorList>
+                    {options.map((option) => (
+                      <MultiSelectorItem
+                        key={option.value}
+                        value={option.value}
+                      >
+                        <div className='flex items-center space-x-2'>
+                          <span>{option.label}</span>
+                        </div>
+                      </MultiSelectorItem>
+                    ))}
+                  </MultiSelectorList>
+                </MultiSelectorContent>
+              </MultiSelector>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='taste'
+          render={({ field }: { field: FieldValues }) => (
+            <FormItem>
+              <div className='flex items-center pt-2 text-base'>
+                <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
+                  Taste
+                </span>
+                <FormControl>
+                  <Rating {...field} name='taste' fractions={2} size='xl' />
+                </FormControl>
+              </div>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='wankyness'
+          render={({ field }: { field: FieldValues }) => (
+            <FormItem>
+              <div className='flex items-center pt-2 text-base'>
+                <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
+                  Wankyness
+                </span>
+                <FormControl>
+                  <Rating {...field} name='wankyness' fractions={2} size='xl' />
+                </FormControl>
+              </div>
+            </FormItem>
+          )}
+        />
+
+        <Button
+          className='hover:bg-primary-hover bg-emerald-500 text-white'
+          type='submit'
+        >
+          {props.beerRating.id === '' ? 'Add' : 'Update'} Rating
+        </Button>
+      </form>
+    </Form>
   )
 }

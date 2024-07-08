@@ -122,7 +122,7 @@ export default function AddActivity(props: {
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className={`flex flex-col justify-start gap-4 pt-4 ${
-            props.activity.id === '' ? 'px-6' : ''
+            props.activity.id === '' ? 'p-4' : ''
           }`}
         >
           <FormField
