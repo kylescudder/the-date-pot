@@ -87,7 +87,6 @@ export default function AddBeerRating(props: {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className='flex flex-col justify-start gap-4 p-4'
-        d
       >
         <FormField
           control={form.control}
