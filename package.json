@@ -42,7 +42,7 @@
     "@types/node": "20.12.11",
     "@types/react": "18.3.2",
     "@types/react-dom": "18.3.0",
-    "ag-grid-community": "31.2.0",
+    "ag-grid-community": "32.1.0",
     "ag-grid-react": "31.2.0",
     "autoprefixer": "10.4.19",
     "class-variance-authority": "0.7.0",
