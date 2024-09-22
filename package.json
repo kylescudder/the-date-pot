@@ -76,12 +76,22 @@
   },
   "devDependencies": {
     "@clerk/testing": "^1.1.6",
+    "@eslint/js": "^9.11.0",
     "@playwright/test": "1.44.0",
+    "@types/bun": "latest",
     "@types/google.maps": "3.55.9",
     "@types/react-burger-menu": "2.8.7",
     "drizzle-kit": "^0.22.1",
-    "eslint": "^8.57.0",
+    "eslint": "^9.11.0",
+    "eslint-plugin-react": "^7.36.1",
+    "globals": "^15.9.0",
     "husky": "9.0.11",
-    "prettier": "3.2.5"
+    "prettier": "3.2.5",
+    "typescript-eslint": "^8.6.0"
+  },
+  "module": "index.ts",
+  "type": "module",
+  "peerDependencies": {
+    "typescript": "^5.0.0"
   }
 }
