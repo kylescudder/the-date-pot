@@ -6,7 +6,6 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "bun run build && next start",
-    "lint": "next lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
@@ -52,7 +51,6 @@
     "dayjs": "1.11.11",
     "dotenv": "16.4.5",
     "drizzle-orm": "^0.31.0",
-    "eslint-config-next": "14.2.3",
     "mongoose": "8.2.3",
     "next": "14.2.3",
     "next-themes": "0.3.0",
@@ -80,7 +78,6 @@
     "@types/google.maps": "3.55.9",
     "@types/react-burger-menu": "2.8.7",
     "drizzle-kit": "^0.22.1",
-    "eslint": "^8.57.0",
     "husky": "9.0.11",
     "prettier": "3.2.5"
   }
