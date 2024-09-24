@@ -94,10 +94,7 @@ export default function AddVinyl(props: { vinyl: Vinyl }) {
         <Label htmlFor='name'>Name</Label>
         <Input placeholder='The next AOTY' {...form.getInputProps('name')} />
         <Label htmlFor='artist'>Artist Name</Label>
-        <Input
-          placeholder='GOATs only plz'
-          {...form.getInputProps('artist')}
-        />
+        <Input placeholder='GOATs only plz' {...form.getInputProps('artist')} />
         <Checkbox {...form.getInputProps('purchased', { type: 'checkbox' })} />
         <label
           htmlFor='terms'
