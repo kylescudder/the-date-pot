@@ -67,7 +67,7 @@ export default function AddRestaurant(props: {
 
   interface formRestaurant {
     id: string
-    restaurantName: string
+    name: string
     address: string
     archive: boolean
     userGroupId: string
@@ -79,9 +79,7 @@ export default function AddRestaurant(props: {
   const form = useForm({
     initialValues: {
       id: props.restaurant.id ? props.restaurant.id : '',
-      restaurantName: props.restaurant.restaurantName
-        ? props.restaurant.restaurantName
-        : '',
+      name: props.restaurant.name ? props.restaurant.name : '',
       address: props.restaurant.address ? props.restaurant.address : '',
       archive: props.restaurant.archive ? props.restaurant.archive : false,
       userGroupId: props.restaurant.userGroupId
@@ -96,7 +94,7 @@ export default function AddRestaurant(props: {
   const onSubmit = async (values: formRestaurant) => {
     const payload: Restaurants = {
       ...props.restaurant,
-      restaurantName: values.restaurantName,
+      name: values.name,
       address: values.address,
       cuisines: values.cuisines,
       whens: values.whens,
@@ -105,7 +103,7 @@ export default function AddRestaurant(props: {
 
     const restaurant = await updateRestaurant(payload)
     if (pathname.includes('/restaurant/')) {
-      successToast(restaurant.restaurantName)
+      successToast(restaurant.name)
       setChangesMade(true)
 
       if (payload.address !== '') {
@@ -118,7 +116,7 @@ export default function AddRestaurant(props: {
 
   const handleArchive = async () => {
     await archiveRestaurant(props.restaurant.id)
-    archiveToast(props.restaurant.restaurantName)
+    archiveToast(props.restaurant.name)
     setTimeout(() => {
       const url = `${window.location.protocol}//${window.location.host}`
       window.location.href = `${url}/restaurants`
@@ -161,10 +159,10 @@ export default function AddRestaurant(props: {
           props.restaurant.id === '' ? 'px-6' : ''
         }`}
       >
-        <Label htmlFor='restaurantName'>Name</Label>
+        <Label htmlFor='name'>Name</Label>
         <Input
           placeholder='The good yum yum place'
-          {...form.getInputProps('restaurantName')}
+          {...form.getInputProps('name')}
         />
         <MultiSelect
           multiple={true}
@@ -211,10 +209,7 @@ export default function AddRestaurant(props: {
         <Label htmlFor='address'>Address</Label>
         <Input placeholder='Where it at?' {...form.getInputProps('address')} />
         {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
-          <Map
-            longLat={props.longLat}
-            title={props.restaurant.restaurantName}
-          />
+          <Map longLat={props.longLat} title={props.restaurant.name} />
         )}
         {address !== undefined &&
           address !== '' &&

@@ -102,7 +102,7 @@ export async function updateRestaurant(restaurantData: Restaurants) {
       .insert(restaurant)
       .values({
         id: restaurantData.id,
-        restaurantName: restaurantData.restaurantName,
+        name: restaurantData.name,
         address: restaurantData.address,
         archive: restaurantData.archive,
         userGroupId: userGroup.id
@@ -110,7 +110,7 @@ export async function updateRestaurant(restaurantData: Restaurants) {
       .onConflictDoUpdate({
         target: restaurant.id,
         set: {
-          restaurantName: restaurantData.restaurantName,
+          name: restaurantData.name,
           address: restaurantData.address,
           archive: restaurantData.archive,
           userGroupId: userGroup.id

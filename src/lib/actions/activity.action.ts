@@ -67,7 +67,7 @@ export async function updateActivity(ActivityData: Activity) {
       .insert(activity)
       .values({
         id: ActivityData.id,
-        activityName: ActivityData.activityName,
+        name: ActivityData.name,
         address: ActivityData.address,
         archive: ActivityData.archive,
         userGroupId: userGroup.id,
@@ -76,7 +76,7 @@ export async function updateActivity(ActivityData: Activity) {
       .onConflictDoUpdate({
         target: activity.id,
         set: {
-          activityName: ActivityData.activityName,
+          name: ActivityData.name,
           address: ActivityData.address,
           archive: ActivityData.archive,
           userGroupId: userGroup.id,

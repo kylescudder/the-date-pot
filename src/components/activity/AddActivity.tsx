@@ -50,7 +50,7 @@ export default function AddActivity(props: {
 
   interface formActivity {
     id: string
-    activityName: string
+    name: string
     address: string
     archive: boolean
     userGroupId: string
@@ -60,9 +60,7 @@ export default function AddActivity(props: {
   const form = useForm({
     defaultValues: {
       id: props.activity.id ? props.activity.id : '',
-      activityName: props.activity.activityName
-        ? props.activity.activityName
-        : '',
+      name: props.activity.name ? props.activity.name : '',
       address: props.activity.address ? props.activity.address : '',
       archive: props.activity.archive ? props.activity.archive : false,
       userGroupId: props.activity.userGroupId ? props.activity.userGroupId : '',
@@ -73,14 +71,14 @@ export default function AddActivity(props: {
   const onSubmit = async (values: formActivity) => {
     const payload: Activity = {
       ...props.activity,
-      activityName: values.activityName,
+      name: values.name,
       address: values.address,
       expenseId: values.expenseId
     }
 
     const [activity] = await updateActivity(payload)
     if (pathname.includes('/activity/')) {
-      successToast(activity.activityName)
+      successToast(activity.name)
       setChangesMade(true)
 
       if (payload.address !== '') {
@@ -93,7 +91,7 @@ export default function AddActivity(props: {
 
   const handleArchive = async () => {
     await archiveActivity(props.activity.id)
-    archiveToast(props.activity.activityName)
+    archiveToast(props.activity.name)
     setTimeout(() => {
       const url = `${window.location.protocol}//${window.location.host}`
       window.location.href = `${url}/activities`
@@ -127,15 +125,15 @@ export default function AddActivity(props: {
         >
           <FormField
             control={form.control}
-            name='activityName'
+            name='name'
             render={({ field }: { field: FieldValues }) => (
               <FormItem>
-                <FormLabel htmlFor='activityName'>Name</FormLabel>
+                <FormLabel htmlFor='name'>Name</FormLabel>
                 <FormControl>
                   <div className='items-center gap-4'>
                     <Input
                       {...field}
-                      id='activityName'
+                      id='name'
                       className='text-base'
                       placeholder='The good yum yum place'
                     />
@@ -198,10 +196,7 @@ export default function AddActivity(props: {
           />
           <div className='my-2'>
             {props.longLat[0] !== 0 && props.longLat[1] !== 0 && (
-              <Map
-                longLat={props.longLat}
-                title={props.activity.activityName}
-              />
+              <Map longLat={props.longLat} title={props.activity.name} />
             )}
             {address !== undefined &&
               address !== '' &&

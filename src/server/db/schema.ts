@@ -16,7 +16,7 @@ export const activity = createTable('activity', {
   id: uuid('id')
     .primaryKey()
     .$defaultFn(() => uuidv4()),
-  activityName: varchar('activityName').notNull(),
+  name: varchar('name').notNull(),
   archive: boolean('archive'),
   userGroupId: uuid('userGroupId').references(() => userGroups.id),
   address: varchar('address').notNull(),
@@ -158,7 +158,7 @@ export const restaurant = createTable('restaurant', {
   id: uuid('id')
     .primaryKey()
     .$defaultFn(() => uuidv4()),
-  restaurantName: varchar('restaurantName').notNull(),
+  name: varchar('name').notNull(),
   archive: boolean('archive'),
   userGroupId: uuid('userGroupId').references(() => userGroups.id),
   address: varchar('address').notNull()

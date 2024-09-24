@@ -2,17 +2,19 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ColDef, RowClickedEvent, RowStyle } from 'ag-grid-community'
+// import { ColDef, RowClickedEvent, RowStyle } from 'ag-grid-community'
+import { ColumnDef } from '@tanstack/react-table'
 import { IconFilePlus, IconSearch } from '@tabler/icons-react'
 import FullScreenModal from './FullScreenModal'
 import Grid from './Grid'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { DataTable } from '../ui/data-table'
 
 export default function List(props: {
   records: any[]
   potName: string
-  columns: ColDef[]
+  columns: ColumnDef
   filterColumns: string[]
   addRecordComp: React.ReactElement
   rowFormatter: any
@@ -98,13 +100,7 @@ export default function List(props: {
           <IconSearch width={24} height={24} strokeLinejoin='miter' />
         </Button>
       </div>
-      <Grid
-        records={filteredRecords}
-        columns={props.columns}
-        placeholder={`No ${props.potName}s...`}
-        rowClicked={onRowClicked}
-        rowFormatter={props.rowFormatter}
-      />
+      <DataTable columns={props.columns} data={filteredRecords} />
     </div>
   )
 }

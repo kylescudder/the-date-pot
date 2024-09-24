@@ -6,6 +6,8 @@ import Loading from '../shared/Loading'
 import List from '../shared/List'
 import { Cuisine, Restaurant, When } from '@/server/db/schema'
 import { Restaurants } from '@/lib/models/restaurants'
+import { ColumnDef } from '@tanstack/react-table'
+import { DataTableColumnHeader } from '../ui/data-table-header'
 
 export default function RestaurantList(props: {
   restaurants: Restaurant[]
@@ -17,7 +19,7 @@ export default function RestaurantList(props: {
 
   const newRestaurant: Restaurants = {
     id: '',
-    restaurantName: '',
+    name: '',
     address: '',
     archive: false,
     userGroupId: '',
@@ -26,6 +28,21 @@ export default function RestaurantList(props: {
     notes: []
   }
 
+  const columns: ColumnDef<Restaurant>[] = [
+    {
+      accessorKey: 'name',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Name' />
+      )
+    },
+    {
+      accessorKey: 'address',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Address' />
+      )
+    }
+  ]
+
   return loading ? (
     <Loading />
   ) : (
@@ -33,21 +50,8 @@ export default function RestaurantList(props: {
       records={props.restaurants}
       potName='Restaurant'
       rowFormatter={null}
-      columns={[
-        {
-          headerName: 'Name',
-          field: 'restaurantName',
-          resizable: false,
-          minWidth: 200
-        },
-        {
-          headerName: 'Address',
-          field: 'address',
-          resizable: false,
-          minWidth: 200
-        }
-      ]}
-      filterColumns={['restaurantName', 'address']}
+      columns={columns}
+      filterColumns={['name', 'address']}
       addRecordComp={
         <AddRestaurant
           restaurant={newRestaurant}

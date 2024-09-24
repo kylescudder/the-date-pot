@@ -5,6 +5,8 @@ import AddActivity from './AddActivity'
 import Loading from '../shared/Loading'
 import List from '../shared/List'
 import { Activity, Expense } from '@/server/db/schema'
+import { DataTableColumnHeader } from '../ui/data-table-header'
+import { ColumnDef } from '@tanstack/react-table'
 
 export default function ActivityList(props: {
   activities: Activity[]
@@ -15,12 +17,27 @@ export default function ActivityList(props: {
 
   const newActivity: Activity = {
     id: '',
-    activityName: '',
+    name: '',
     address: '',
     archive: false,
     userGroupId: '',
     expenseId: ''
   }
+
+  const columns: ColumnDef<Activity>[] = [
+    {
+      accessorKey: 'name',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Name' />
+      )
+    },
+    {
+      accessorKey: 'address',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Address' />
+      )
+    }
+  ]
 
   return loading ? (
     <Loading />
@@ -29,21 +46,8 @@ export default function ActivityList(props: {
       records={props.activities}
       potName='Activity'
       rowFormatter={null}
-      columns={[
-        {
-          headerName: 'Name',
-          field: 'activityName',
-          resizable: false,
-          minWidth: 200
-        },
-        {
-          headerName: 'Address',
-          field: 'address',
-          resizable: false,
-          minWidth: 200
-        }
-      ]}
-      filterColumns={['activityName', 'address']}
+      columns={columns}
+      filterColumns={['name', 'address']}
       addRecordComp={
         <AddActivity
           activity={newActivity}
