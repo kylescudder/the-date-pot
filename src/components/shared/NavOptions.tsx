@@ -11,8 +11,7 @@ export default function NavOptions(props: { position: string; pots: Pot[] }) {
     <div className='contents w-full'>
       <a
         href='/'
-        className={`${props.position}_link 
-        ${pathname === '/' && 'hover:bg-primary-hover text-emerald-500'}`}
+        className={`${props.position}_link ${pathname === '/' && 'hover:bg-primary-hover text-emerald-500'}`}
       >
         <Icon
           name={'IconHome'}
@@ -50,8 +49,7 @@ export default function NavOptions(props: { position: string; pots: Pot[] }) {
           <a
             href={`/${potNamePluralised}`}
             key={pot.id}
-            className={`${props.position}_link 
-					${isActive && 'hover:bg-primary-hover text-emerald-500'}`}
+            className={`${props.position}_link ${isActive && 'hover:bg-primary-hover text-emerald-500'}`}
           >
             <Icon
               name={pot.icon}

@@ -13,11 +13,7 @@ export default function Topbar(props: { pots: Pot[] }) {
   return (
     <CustomThemeProvider>
       <nav className='topbar'>
-        <Link
-          href='/'
-          className='flex 
-			items-center gap-4'
-        >
+        <Link href='/' className='flex items-center gap-4'>
           <IconHomeHeart
             stroke={2}
             strokeLinejoin='miter'

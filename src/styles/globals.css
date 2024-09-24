@@ -54,7 +54,7 @@ body {
 }
 @layer components {
   .topbar {
-    @apply fixed top-0 z-30 flex w-full items-center justify-between  px-6 py-3;
+    @apply fixed top-0 z-30 flex w-full items-center justify-between px-6 py-3;
   }
 }
 .bottombar_link {

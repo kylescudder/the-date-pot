@@ -68,8 +68,6 @@ const MultiSelector = ({
   const onValueChangeHandler = useCallback(
     (val: string) => {
       if (single) {
-        console.log(val)
-        console.log(value)
         // If single selection mode is enabled and the value is already selected, deselect it
         if (Array.isArray(value) && value.includes(val)) {
           onValueChange([])
@@ -201,7 +199,7 @@ const MultiSelectorTrigger = forwardRef<
           key={item.value}
           className={cn(
             'flex items-center gap-1 rounded-xl px-1',
-            activeIndex === index && 'ring-2 ring-muted-foreground '
+            activeIndex === index && 'ring-2 ring-muted-foreground'
           )}
           variant={'secondary'}
         >
@@ -310,7 +308,7 @@ const MultiSelectorItem = forwardRef<
         setInputValue('')
       }}
       className={cn(
-        'flex cursor-pointer justify-between rounded-md px-2 py-1 transition-colors ',
+        'flex cursor-pointer justify-between rounded-md px-2 py-1 transition-colors',
         className,
         isIncluded && 'cursor-default opacity-50',
         props.disabled && 'cursor-not-allowed opacity-50'

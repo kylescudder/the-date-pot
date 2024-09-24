@@ -10,7 +10,7 @@ export default function Error({
   reset: () => void
 }) {
   return (
-    <div className='flex min-h-full items-center justify-center '>
+    <div className='flex min-h-full items-center justify-center'>
       <div className='rounded-lg p-6 shadow-md'>
         <p className='from-primary-500 bg-gradient-to-r to-red-500 bg-clip-text pb-2 text-6xl font-extrabold text-transparent'>
           Oops! Something went wrong.
