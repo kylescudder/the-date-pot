@@ -68,7 +68,7 @@ export async function updateVinyl(vinylData: Vinyl) {
       .values({
         id: vinylData.id,
         name: vinylData.name,
-        artistName: vinylData.artistName,
+        artist: vinylData.artist,
         purchased: vinylData.purchased,
         archive: vinylData.archive,
         addedById: userInfo.id,
@@ -78,7 +78,7 @@ export async function updateVinyl(vinylData: Vinyl) {
         target: vinyl.id,
         set: {
           name: vinylData.name,
-          artistName: vinylData.artistName,
+          artist: vinylData.artist,
           purchased: vinylData.purchased,
           archive: vinylData.archive,
           addedById: userInfo.id,

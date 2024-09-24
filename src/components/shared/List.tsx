@@ -14,7 +14,7 @@ import { DataTable } from '../ui/data-table'
 export default function List(props: {
   records: any[]
   potName: string
-  columns: ColumnDef
+  columns: ColumnDef<any>[]
   filterColumns: string[]
   addRecordComp: React.ReactElement
   rowFormatter: any

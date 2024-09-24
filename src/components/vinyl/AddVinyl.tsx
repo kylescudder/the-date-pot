@@ -21,7 +21,7 @@ export default function AddVinyl(props: { vinyl: Vinyl }) {
   interface formVinyl {
     id: string
     name: string
-    artistName: string
+    artist: string
     purchased: boolean
     archive: boolean
     addedById: string
@@ -32,7 +32,7 @@ export default function AddVinyl(props: { vinyl: Vinyl }) {
     initialValues: {
       id: props.vinyl.id ? props.vinyl.id : '',
       name: props.vinyl.name ? props.vinyl.name : '',
-      artistName: props.vinyl.artistName ? props.vinyl.artistName : '',
+      artist: props.vinyl.artist ? props.vinyl.artist : '',
       purchased: props.vinyl.purchased ? props.vinyl.purchased : false,
       archive: props.vinyl.archive ? props.vinyl.archive : false,
       addedById: props.vinyl.addedById ? props.vinyl.addedById : '',
@@ -44,7 +44,7 @@ export default function AddVinyl(props: { vinyl: Vinyl }) {
     const payload: Vinyl = {
       ...props.vinyl,
       name: values.name,
-      artistName: values.artistName,
+      artist: values.artist,
       purchased: values.purchased
     }
 
@@ -93,10 +93,10 @@ export default function AddVinyl(props: { vinyl: Vinyl }) {
       >
         <Label htmlFor='name'>Name</Label>
         <Input placeholder='The next AOTY' {...form.getInputProps('name')} />
-        <Label htmlFor='artistName'>Artist Name</Label>
+        <Label htmlFor='artist'>Artist Name</Label>
         <Input
           placeholder='GOATs only plz'
-          {...form.getInputProps('artistName')}
+          {...form.getInputProps('artist')}
         />
         <Checkbox {...form.getInputProps('purchased', { type: 'checkbox' })} />
         <label

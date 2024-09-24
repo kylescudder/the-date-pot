@@ -351,7 +351,7 @@ export const vinyl = createTable('vinyl', {
     .primaryKey()
     .$defaultFn(() => uuidv4()),
   name: varchar('name').notNull(),
-  artistName: varchar('artistName').notNull(),
+  artist: varchar('artist').notNull(),
   archive: boolean('archive'),
   userGroupId: uuid('userGroupId').references(() => userGroups.id),
   addedById: uuid('addedById').references(() => user.id),
