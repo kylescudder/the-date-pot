@@ -2,11 +2,9 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-// import { ColDef, RowClickedEvent, RowStyle } from 'ag-grid-community'
 import { ColumnDef } from '@tanstack/react-table'
 import { IconFilePlus, IconSearch } from '@tabler/icons-react'
 import FullScreenModal from './FullScreenModal'
-import Grid from './Grid'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { DataTable } from '../ui/data-table'

@@ -62,7 +62,7 @@ export const beer = createTable('beer', {
   id: uuid('id')
     .primaryKey()
     .$defaultFn(() => uuidv4()),
-  beerName: varchar('beerName').notNull(),
+  name: varchar('name').notNull(),
   abv: doublePrecision('abv').notNull(),
   addedById: uuid('addedById').references(() => user.id),
   archive: boolean('archive'),
@@ -126,7 +126,7 @@ export const coffee = createTable('coffee', {
   id: uuid('id')
     .primaryKey()
     .$defaultFn(() => uuidv4()),
-  coffeeName: varchar('coffeeName').notNull(),
+  name: varchar('name').notNull(),
   archive: boolean('archive'),
   userGroupId: uuid('userGroupId').references(() => userGroups.id),
   addedById: uuid('addedById').references(() => user.id),
@@ -228,7 +228,7 @@ export const film = createTable('film', {
   id: uuid('id')
     .primaryKey()
     .$defaultFn(() => uuidv4()),
-  filmName: varchar('filmName').notNull(),
+  name: varchar('name').notNull(),
   archive: boolean('archive'),
   userGroupId: uuid('userGroupId').references(() => userGroups.id),
   addedById: uuid('addedById').references(() => user.id),

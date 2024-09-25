@@ -214,7 +214,7 @@ export async function updateBeer(beerData: Beers) {
       .insert(beer)
       .values({
         id: beerData.id,
-        beerName: beerData.beerName,
+        name: beerData.name,
         abv: beerData.abv,
         archive: beerData.archive,
         addedById: userInfo.id,
@@ -223,7 +223,7 @@ export async function updateBeer(beerData: Beers) {
       .onConflictDoUpdate({
         target: beer.id,
         set: {
-          beerName: beerData.beerName,
+          name: beerData.name,
           abv: beerData.abv,
           archive: beerData.archive,
           addedById: userInfo.id,

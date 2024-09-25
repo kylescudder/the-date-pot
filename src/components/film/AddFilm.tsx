@@ -57,7 +57,7 @@ export default function AddFilm(props: {
     addedById: string
     addedDate: Date
     archive: boolean
-    filmName: string
+    name: string
     releaseDate: Date
     runTime: number
     userGroupId: string
@@ -73,7 +73,7 @@ export default function AddFilm(props: {
       addedById: props.film.addedById ? props.film.addedById : '',
       addedDate: props.film.addedDate ? props.film.addedDate : new Date(),
       archive: props.film.archive ? props.film.archive : false,
-      filmName: props.film.filmName ? props.film.filmName : '',
+      name: props.film.name ? props.film.name : '',
       releaseDate: props.film.releaseDate ? props.film.releaseDate : new Date(),
       runTime: props.film.runTime ? props.film.runTime : 0,
       userGroupId: props.film.userGroupId ? props.film.userGroupId : '',
@@ -87,7 +87,7 @@ export default function AddFilm(props: {
   const onSubmit = async (values: formFilm) => {
     const payload: Films = {
       ...props.film,
-      filmName: values.filmName,
+      name: values.name,
       releaseDate: values.releaseDate,
       runTime: values.runTime,
       watched: values.watched,
@@ -98,7 +98,7 @@ export default function AddFilm(props: {
 
     const film = await updateFilm(payload)
     if (pathname.includes('/film/')) {
-      successToast(film.filmName)
+      successToast(film.name)
       setChangesMade(true)
     } else {
       router.push(`/film/${film.id}`)
@@ -107,7 +107,7 @@ export default function AddFilm(props: {
 
   const handleArchive = async () => {
     await archiveFilm(props.film.id)
-    archiveToast(props.film.filmName)
+    archiveToast(props.film.name)
     setTimeout(() => {
       const url = `${window.location.protocol}//${window.location.host}`
       window.location.href = `${url}/films`
@@ -142,10 +142,10 @@ export default function AddFilm(props: {
           props.film.id === '' ? 'px-6' : ''
         }`}
       >
-        <Label htmlFor='filmName'>Name</Label>
+        <Label htmlFor='name'>Name</Label>
         <Input
           placeholder='Which cinematic masterpiece is it today?'
-          {...form.getInputProps('filmName')}
+          {...form.getInputProps('name')}
         />
         <DatePickerInput
           label='Release Date'

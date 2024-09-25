@@ -4,10 +4,11 @@ import React from 'react'
 import AddBeer from './AddBeer'
 import Loading from '../shared/Loading'
 import List from '../shared/List'
-import { ICellRendererParams } from 'ag-grid-community'
 import { Rating } from '@mantine/core'
 import { Beer, BeerType, Brewery, User } from '@/server/db/schema'
 import { BeerRatings } from '@/lib/models/beerRatings'
+import { ColumnDef } from '@tanstack/react-table'
+import { DataTableColumnHeader } from '../ui/data-table-header'
 
 export default function BeerList(props: {
   beers: Beer[]
@@ -21,7 +22,7 @@ export default function BeerList(props: {
 
   const newBeer = {
     id: '',
-    beerName: '',
+    name: '',
     abv: 0,
     breweries: [],
     beerTypes: [],
@@ -32,6 +33,73 @@ export default function BeerList(props: {
     addedById: '',
     archive: false
   }
+
+  const columns: ColumnDef<Beer>[] = [
+    {
+      accessorKey: 'name',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Name' />
+      )
+    },
+    {
+      accessorKey: 'avgRating',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Rating' />
+      ),
+      cell: ({ row }) => {
+        return (
+          <div className='justify-center'>
+            <Rating
+              name='average'
+              fractions={2}
+              size='lg'
+              readOnly
+              value={row.getValue('avgRating')}
+            />
+          </div>
+        )
+      }
+    },
+    {
+      accessorKey: 'avgWankyness',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Wankyness' />
+      ),
+      cell: ({ row }) => {
+        return (
+          <div className='justify-center'>
+            <Rating
+              name='wankyness'
+              fractions={2}
+              size='lg'
+              readOnly
+              value={row.getValue('avgWankyness')}
+            />
+          </div>
+        )
+      }
+    },
+    {
+      accessorKey: 'avgTaste',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Taste' />
+      ),
+      cell: ({ row }) => {
+        return (
+          <div className='justify-center'>
+            <Rating
+              name='taste'
+              fractions={2}
+              size='lg'
+              readOnly
+              value={row.getValue('avgTaste')}
+            />
+          </div>
+        )
+      }
+    }
+  ]
+
   return loading ? (
     <Loading />
   ) : (
@@ -39,69 +107,8 @@ export default function BeerList(props: {
       records={props.beers}
       potName='Beer'
       rowFormatter={null}
-      columns={[
-        {
-          headerName: 'Name',
-          field: 'beerName',
-          resizable: false,
-          minWidth: 200
-        },
-        {
-          headerName: 'Rating',
-          field: 'avgRating',
-          cellClass: 'justify-center',
-          resizable: false,
-          cellRenderer: (params: ICellRendererParams) => {
-            return (
-              <Rating
-                name='average'
-                fractions={2}
-                size='lg'
-                readOnly
-                value={params.value}
-              />
-            )
-          },
-          minWidth: 150
-        },
-        {
-          headerName: 'Wankyness',
-          field: 'avgWankyness',
-          cellClass: 'justify-center',
-          resizable: false,
-          cellRenderer: (params: ICellRendererParams) => {
-            return (
-              <Rating
-                name='wankyness'
-                fractions={2}
-                size='lg'
-                readOnly
-                value={params.value}
-              />
-            )
-          },
-          minWidth: 150
-        },
-        {
-          headerName: 'Taste',
-          field: 'avgTaste',
-          cellClass: 'justify-center',
-          resizable: false,
-          cellRenderer: (params: ICellRendererParams) => {
-            return (
-              <Rating
-                name='taste'
-                fractions={2}
-                size='lg'
-                readOnly
-                value={params.value}
-              />
-            )
-          },
-          minWidth: 150
-        }
-      ]}
-      filterColumns={['beerName']}
+      columns={columns}
+      filterColumns={['name']}
       addRecordComp={
         <AddBeer
           beer={newBeer}

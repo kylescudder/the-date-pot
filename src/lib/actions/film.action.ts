@@ -163,7 +163,7 @@ export async function updateFilm(filmData: Films) {
         id: filmData.id,
         addedDate: filmData.addedDate,
         archive: filmData.archive,
-        filmName: filmData.filmName,
+        name: filmData.name,
         releaseDate: filmData.releaseDate,
         runTime: filmData.runTime,
         userGroupId: userGroup.id,
@@ -174,7 +174,7 @@ export async function updateFilm(filmData: Films) {
         set: {
           addedDate: filmData.addedDate,
           archive: filmData.archive,
-          filmName: filmData.filmName,
+          name: filmData.name,
           releaseDate: filmData.releaseDate,
           runTime: filmData.runTime,
           userGroupId: userGroup.id,

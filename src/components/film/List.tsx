@@ -6,6 +6,8 @@ import Loading from '../shared/Loading'
 import List from '../shared/List'
 import { Director, Genre, Platform } from '@/server/db/schema'
 import { Films } from '@/lib/models/films'
+import { ColumnDef } from '@tanstack/react-table'
+import { DataTableColumnHeader } from '../ui/data-table-header'
 
 export default function FilmList(props: {
   films: Films[]
@@ -20,7 +22,7 @@ export default function FilmList(props: {
     addedById: '',
     addedDate: new Date(),
     archive: false,
-    filmName: '',
+    name: '',
     releaseDate: new Date(),
     runTime: 0,
     userGroupId: '',
@@ -30,6 +32,39 @@ export default function FilmList(props: {
     platforms: []
   }
 
+  const columns: ColumnDef<Films>[] = [
+    {
+      accessorKey: 'name',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Name' />
+      )
+    },
+    {
+      accessorKey: 'runTime',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Run time' />
+      )
+    },
+    {
+      accessorKey: 'directors',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Directors' />
+      )
+    },
+    {
+      accessorKey: 'genres',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Genres' />
+      )
+    },
+    {
+      accessorKey: 'platforms',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Platforms' />
+      )
+    }
+  ]
+
   return loading ? (
     <Loading />
   ) : (
@@ -37,39 +72,8 @@ export default function FilmList(props: {
       records={props.films}
       potName='Film'
       rowFormatter={null}
-      columns={[
-        {
-          headerName: 'Name',
-          field: 'filmName',
-          resizable: false,
-          minWidth: 200
-        },
-        {
-          headerName: 'Run time',
-          field: 'runTime',
-          resizable: false,
-          minWidth: 200
-        },
-        {
-          headerName: 'Directors',
-          field: 'directors',
-          resizable: false,
-          minWidth: 200
-        },
-        {
-          headerName: 'Genre',
-          field: 'genres',
-          resizable: false,
-          minWidth: 200
-        },
-        {
-          headerName: 'Platforms',
-          field: 'platforms',
-          resizable: false,
-          minWidth: 200
-        }
-      ]}
-      filterColumns={['filmName', 'directors']}
+      columns={columns}
+      filterColumns={['name', 'directors']}
       addRecordComp={
         <AddFilm
           film={newFilm}

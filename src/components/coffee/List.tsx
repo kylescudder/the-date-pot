@@ -5,9 +5,10 @@ import AddCoffee from './AddCoffee'
 import Loading from '../shared/Loading'
 import List from '../shared/List'
 import { Rating } from '@mantine/core'
-import { ICellRendererParams } from 'ag-grid-community'
 import { Coffee, User } from '@/server/db/schema'
 import { CoffeeRatings } from '@/lib/models/coffeeRatings'
+import { ColumnDef } from '@tanstack/react-table'
+import { DataTableColumnHeader } from '../ui/data-table-header'
 
 export default function CoffeeList(props: {
   coffees: Coffee[]
@@ -20,7 +21,7 @@ export default function CoffeeList(props: {
 
   const newCoffee = {
     id: '',
-    coffeeName: '',
+    name: '',
     avgExperience: 0,
     avgTaste: 0,
     avgRating: 0,
@@ -29,6 +30,73 @@ export default function CoffeeList(props: {
     archive: false,
     address: ''
   }
+
+  const columns: ColumnDef<Coffee>[] = [
+    {
+      accessorKey: 'name',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Name' />
+      )
+    },
+    {
+      accessorKey: 'avgRating',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Rating' />
+      ),
+      cell: ({ row }) => {
+        return (
+          <div className='justify-center'>
+            <Rating
+              name='average'
+              fractions={2}
+              size='lg'
+              readOnly
+              value={row.getValue('avgRating')}
+            />
+          </div>
+        )
+      }
+    },
+    {
+      accessorKey: 'avgExperience',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Exerience' />
+      ),
+      cell: ({ row }) => {
+        return (
+          <div className='justify-center'>
+            <Rating
+              name='experience'
+              fractions={2}
+              size='lg'
+              readOnly
+              value={row.getValue('avgExperience')}
+            />
+          </div>
+        )
+      }
+    },
+    {
+      accessorKey: 'avgTaste',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Taste' />
+      ),
+      cell: ({ row }) => {
+        return (
+          <div className='justify-center'>
+            <Rating
+              name='taste'
+              fractions={2}
+              size='lg'
+              readOnly
+              value={row.getValue('avgTaste')}
+            />
+          </div>
+        )
+      }
+    }
+  ]
+
   return loading ? (
     <Loading />
   ) : (
@@ -36,70 +104,8 @@ export default function CoffeeList(props: {
       records={props.coffees}
       potName='Coffee'
       rowFormatter={null}
-      columns={[
-        {
-          headerName: 'Name',
-          field: 'coffeeName',
-          resizable: false,
-          cellClass: 'justify-center',
-          minWidth: 200
-        },
-        {
-          headerName: 'Rating',
-          field: 'avgRating',
-          resizable: false,
-          cellClass: 'justify-center',
-          cellRenderer: (params: ICellRendererParams) => {
-            return (
-              <Rating
-                name='average'
-                fractions={2}
-                size='lg'
-                readOnly
-                value={params.value}
-              />
-            )
-          },
-          minWidth: 150
-        },
-        {
-          headerName: 'Experience',
-          field: 'avgExperience',
-          resizable: false,
-          cellClass: 'justify-center',
-          cellRenderer: (params: ICellRendererParams) => {
-            return (
-              <Rating
-                name='experience'
-                fractions={2}
-                size='lg'
-                readOnly
-                value={params.value}
-              />
-            )
-          },
-          minWidth: 150
-        },
-        {
-          headerName: 'Taste',
-          field: 'avgTaste',
-          resizable: false,
-          cellClass: 'justify-center',
-          cellRenderer: (params: ICellRendererParams) => {
-            return (
-              <Rating
-                name='taste'
-                fractions={2}
-                size='lg'
-                readOnly
-                value={params.value}
-              />
-            )
-          },
-          minWidth: 150
-        }
-      ]}
-      filterColumns={['coffeeName']}
+      columns={columns}
+      filterColumns={['name']}
       addRecordComp={
         <AddCoffee
           coffee={newCoffee}

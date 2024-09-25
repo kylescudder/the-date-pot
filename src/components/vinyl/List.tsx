@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import { ICellRendererParams, RowStyle } from 'ag-grid-community'
 import AddVinyl from './AddVinyl'
 import Loading from '../shared/Loading'
 import List from '../shared/List'

@@ -75,7 +75,7 @@ export default function AddBeer(props: {
   interface formBeer {
     id: string
     archive: boolean
-    beerName: string
+    name: string
     abv: number
     breweries: string[]
     beerTypes: string[]
@@ -99,7 +99,7 @@ export default function AddBeer(props: {
     defaultValues: {
       id: props.beer.id ? props.beer.id : '',
       archive: props.beer.archive ? props.beer.archive : false,
-      beerName: props.beer.beerName ? props.beer.beerName : '',
+      name: props.beer.name ? props.beer.name : '',
       abv: props.beer.abv ? props.beer.abv : 0,
       breweries: props.beer.breweries ? props.beer.breweries : [],
       beerTypes: props.beer.beerTypes ? props.beer.beerTypes : [],
@@ -124,7 +124,7 @@ export default function AddBeer(props: {
   const onSubmit = async (values: formBeer) => {
     const payload: Beers = {
       ...props.beer,
-      beerName: values.beerName,
+      name: values.name,
       abv: values.abv,
       breweries: breweries
         .filter((brewery) =>
@@ -153,7 +153,7 @@ export default function AddBeer(props: {
       await updateBeerRating(updatedRating)
     })
     if (pathname.includes('/beer/')) {
-      successToast(beer.beerName)
+      successToast(beer.name)
       setChangesMade(true)
     } else {
       router.push(`/beer/${beer.id}`)
@@ -171,7 +171,7 @@ export default function AddBeer(props: {
 
   const handleArchive = async () => {
     await archiveBeer(props.beer.id)
-    archiveToast(props.beer.beerName)
+    archiveToast(props.beer.name)
     setTimeout(() => {
       const url = `${window.location.protocol}//${window.location.host}`
       window.location.href = `${url}/beers`
@@ -227,15 +227,15 @@ export default function AddBeer(props: {
         >
           <FormField
             control={form.control}
-            name='beerName'
+            name='name'
             render={({ field }: { field: FieldValues }) => (
               <FormItem>
-                <FormLabel htmlFor='beerName'>Name</FormLabel>
+                <FormLabel htmlFor='name'>Name</FormLabel>
                 <FormControl>
                   <div className='items-center gap-4'>
                     <Input
                       {...field}
-                      id='beerName'
+                      id='name'
                       className='text-base'
                       placeholder='The best beer in the world'
                     />

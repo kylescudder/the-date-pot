@@ -46,7 +46,7 @@ export default function AddCoffee(props: {
   interface formCoffee {
     id: string
     archive: boolean
-    coffeeName: string
+    name: string
     addedById: string
     userGroupId: string
     avgExperience: number
@@ -68,7 +68,7 @@ export default function AddCoffee(props: {
     initialValues: {
       id: props.coffee.id ? props.coffee.id : '',
       archive: props.coffee.archive ? props.coffee.archive : false,
-      coffeeName: props.coffee.coffeeName ? props.coffee.coffeeName : '',
+      name: props.coffee.name ? props.coffee.name : '',
       addedById: props.coffee.addedById ? props.coffee.addedById : '',
       userGroupId: props.coffee.userGroupId ? props.coffee.userGroupId : '',
       avgExperience: 0,
@@ -92,7 +92,7 @@ export default function AddCoffee(props: {
   const onSubmit = async (values: formCoffee) => {
     const payload: Coffee = {
       ...props.coffee,
-      coffeeName: values.coffeeName,
+      name: values.name,
       address: values.address
     }
 
@@ -107,7 +107,7 @@ export default function AddCoffee(props: {
       await updateCoffeeRating(updatedRating)
     })
     if (pathname.includes('/coffee/')) {
-      successToast(coffee.coffeeName)
+      successToast(coffee.name)
       setChangesMade(true)
 
       if (payload.address !== '') {
@@ -129,7 +129,7 @@ export default function AddCoffee(props: {
 
   const handleArchive = async () => {
     await archiveCoffee(props.coffee.id)
-    archiveToast(props.coffee.coffeeName)
+    archiveToast(props.coffee.name)
     setTimeout(() => {
       const url = `${window.location.protocol}//${window.location.host}`
       window.location.href = `${url}/coffees`
@@ -182,10 +182,10 @@ export default function AddCoffee(props: {
           props.coffee.id === '' ? 'px-6' : ''
         }`}
       >
-        <Label htmlFor='coffeeName'>Name</Label>
+        <Label htmlFor='name'>Name</Label>
         <Input
           placeholder='The best coffee shop in the world'
-          {...form.getInputProps('coffeeName')}
+          {...form.getInputProps('name')}
         />
         <div className='flex justify-between'>
           <div className='flex-grow pr-2'>
@@ -266,7 +266,7 @@ export default function AddCoffee(props: {
         <Label htmlFor='address'>Address</Label>
         <Input placeholder='Where it at?' {...form.getInputProps('address')} />
         {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
-          <Map longLat={props.longLat} title={props.coffee.coffeeName} />
+          <Map longLat={props.longLat} title={props.coffee.name} />
         )}
         {address !== undefined &&
           address !== '' &&

@@ -180,7 +180,7 @@ export async function updateCoffee(coffeeData: Coffee) {
       .insert(coffee)
       .values({
         id: coffeeData.id,
-        coffeeName: coffeeData.coffeeName,
+        name: coffeeData.name,
         archive: coffeeData.archive,
         addedById: userInfo.id,
         userGroupId: userGroup.id,
@@ -189,7 +189,7 @@ export async function updateCoffee(coffeeData: Coffee) {
       .onConflictDoUpdate({
         target: coffee.id,
         set: {
-          coffeeName: coffeeData.coffeeName,
+          name: coffeeData.name,
           archive: coffeeData.archive,
           addedById: userInfo.id,
           userGroupId: userGroup.id,
