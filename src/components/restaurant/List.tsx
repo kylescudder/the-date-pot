@@ -8,6 +8,16 @@ import { Cuisine, Restaurant, When } from '@/server/db/schema'
 import { Restaurants } from '@/lib/models/restaurants'
 import { ColumnDef } from '@tanstack/react-table'
 import { DataTableColumnHeader } from '../ui/data-table-header'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '../ui/dropdown-menu'
+import { Button } from '../ui/button'
+import { IconDots } from '@tabler/icons-react'
 
 export default function RestaurantList(props: {
   restaurants: Restaurant[]
@@ -40,6 +50,34 @@ export default function RestaurantList(props: {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title='Address' />
       )
+    },
+    {
+      id: 'actions',
+      cell: ({ row }) => {
+        const payment = row.original
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant='ghost' className='h-8 w-8 p-0'>
+                <span className='sr-only'>Open menu</span>
+                <IconDots className='h-4 w-4' />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align='end'>
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(payment.id)}
+              >
+                Copy payment ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>View customer</DropdownMenuItem>
+              <DropdownMenuItem>View payment details</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      }
     }
   ]
 
