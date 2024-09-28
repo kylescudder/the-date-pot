@@ -57,12 +57,6 @@ export default function List(props: {
     }
   }, [searchValue, props.records, props.filterColumns])
 
-  const onRowClicked = (params: RowClickedEvent) => {
-    // Access row data using params.data
-    const rowData = params.data
-    router.push(`${props.potName.toLowerCase()}/${rowData.id}`)
-  }
-
   const focusRef = useRef<HTMLInputElement>(null)
 
   return (
@@ -98,7 +92,11 @@ export default function List(props: {
           <IconSearch width={24} height={24} strokeLinejoin='miter' />
         </Button>
       </div>
-      <DataTable columns={props.columns} data={filteredRecords} />
+      <DataTable
+        potName={props.potName}
+        columns={props.columns}
+        data={filteredRecords}
+      />
     </div>
   )
 }

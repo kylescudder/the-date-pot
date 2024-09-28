@@ -23,20 +23,24 @@ import {
 } from '@/components/ui/table'
 import { DataTablePagination } from './data-table-pagination'
 import { DataTableViewOptions } from './data-table-column-toggle'
+import { useRouter } from 'next/navigation'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  potName: string
 }
 
 export function DataTable<TData, TValue>({
   columns,
-  data
+  data,
+  potName
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
+  const router = useRouter()
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
 
@@ -57,6 +61,12 @@ export function DataTable<TData, TValue>({
     }
   })
 
+  const handleRowClick = (rowIndex: number) => {
+    const row = table.getRowModel().rows[rowIndex]
+    const originalData = row.original // Retrieve the original row data
+    const id = (originalData as any).id
+    router.push(`${potName.toLowerCase()}/${id}`)
+  }
   return (
     <div>
       <div className='flex items-center py-4'>
@@ -84,10 +94,12 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map((row, rowIndex) => (
                 <TableRow
                   key={row.id}
+                  onClick={() => handleRowClick(rowIndex)}
                   data-state={row.getIsSelected() && 'selected'}
+                  className='cursor-pointer'
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
