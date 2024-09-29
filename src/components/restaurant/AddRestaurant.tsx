@@ -144,11 +144,10 @@ export default function AddRestaurant(props: {
           page='restaurants'
         />
         <Button
-          className={`bg-danger text-white ${
-            props.restaurant.id === '' ? 'hidden' : ''
-          }`}
+          className={`${props.restaurant.id === '' ? 'hidden' : ''}`}
           onClick={handleArchive}
           aria-label='archive'
+          variant={'destructive'}
         >
           <IconTrash className='text-white' />
         </Button>

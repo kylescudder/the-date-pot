@@ -209,11 +209,10 @@ export default function AddBeer(props: {
           page='beers'
         />
         <Button
-          className={`bg-danger text-white ${
-            props.beer.id === '' ? 'hidden' : ''
-          }`}
+          className={`{ props.beer.id === '' ? 'hidden' : '' }`}
           onClick={handleArchive}
           aria-label='archive'
+          variant={'destructive'}
         >
           <IconTrash className='text-white' />
         </Button>
@@ -366,7 +365,7 @@ export default function AddBeer(props: {
                     <div className='contents w-1/2'>
                       <IconCircleMinus
                         onClick={() => handleRemoveRecord(rating.id, i)}
-                        className='text-danger float-right'
+                        className='float-right text-destructive'
                       />
                     </div>
                     <div className='flex items-center pt-2 text-base'>

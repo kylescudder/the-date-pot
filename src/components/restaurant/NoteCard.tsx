@@ -10,7 +10,7 @@ export default function NoteCard(props: {
       <div className='contents w-1/2'>
         <IconCircleXFilled
           onClick={() => props.func(props.note)}
-          className='text-danger float-right'
+          className='float-right text-destructive'
         />
       </div>
       <Text fw={500}>{props.note}</Text>

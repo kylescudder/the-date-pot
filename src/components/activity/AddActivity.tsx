@@ -107,11 +107,10 @@ export default function AddActivity(props: {
           page='activities'
         />
         <Button
-          className={`bg-destructive ${
-            props.activity.id === '' ? 'hidden' : ''
-          }`}
+          className={`${props.activity.id === '' ? 'hidden' : ''}`}
           onClick={handleArchive}
           aria-label='archive'
+          variant={'destructive'}
         >
           <IconTrash />
         </Button>

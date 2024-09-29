@@ -167,11 +167,10 @@ export default function AddCoffee(props: {
           page='coffees'
         />
         <Button
-          className={`bg-danger text-white ${
-            props.coffee.id === '' ? 'hidden' : ''
-          }`}
+          className={`${props.coffee.id === '' ? 'hidden' : ''}`}
           onClick={handleArchive}
           aria-label='archive'
+          variant={'destructive'}
         >
           <IconTrash className='text-white' />
         </Button>
@@ -223,7 +222,7 @@ export default function AddCoffee(props: {
                   <div className='contents w-1/2'>
                     <IconCircleMinus
                       onClick={() => handleRemoveRecord(rating.id, i)}
-                      className='text-danger float-right'
+                      className='float-right text-destructive'
                     />
                   </div>
                   <div className='flex items-center pt-2 text-base'>

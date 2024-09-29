@@ -127,11 +127,10 @@ export default function AddFilm(props: {
           page='films'
         />
         <Button
-          className={`bg-danger text-white ${
-            props.film.id === '' ? 'hidden' : ''
-          }`}
+          className={`${props.film.id === '' ? 'hidden' : ''}`}
           onClick={handleArchive}
           aria-label='archive'
+          variant={'destructive'}
         >
           <IconTrash className='text-white' />
         </Button>

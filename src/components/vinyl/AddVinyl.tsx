@@ -76,11 +76,10 @@ export default function AddVinyl(props: { vinyl: Vinyl }) {
           page='vinyls'
         />
         <Button
-          className={`bg-danger text-white ${
-            props.vinyl.id === '' ? 'hidden' : ''
-          }`}
+          className={`${props.vinyl.id === '' ? 'hidden' : ''}`}
           onClick={handleArchive}
           aria-label='archive'
+          variant={'destructive'}
         >
           <IconTrash />
         </Button>
