@@ -226,6 +226,7 @@ export default function AddRestaurant(props: {
                       }}
                       placeholder='Pick some'
                       data={cuisines}
+                      {...field}
                     />
                   </div>
                 </FormControl>
@@ -261,6 +262,7 @@ export default function AddRestaurant(props: {
                       }}
                       placeholder='Pick some'
                       data={whens}
+                      {...field}
                     />
                   </div>
                 </FormControl>
