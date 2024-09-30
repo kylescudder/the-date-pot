@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger
@@ -13,13 +12,11 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger
 } from '@/components/ui/drawer'
-import { IconFilePlus } from '@tabler/icons-react'
 
 export default function FullScreenModal(props: {
   button: React.ReactElement
@@ -36,9 +33,6 @@ export default function FullScreenModal(props: {
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
             <DialogTitle>{props.title}</DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here. Click save when you're done.
-            </DialogDescription>
           </DialogHeader>
           {props.form}
         </DialogContent>
@@ -52,9 +46,6 @@ export default function FullScreenModal(props: {
       <DrawerContent>
         <DrawerHeader className='text-left'>
           <DrawerTitle>{props.title}</DrawerTitle>
-          <DrawerDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DrawerDescription>
         </DrawerHeader>
         {props.form}
         <DrawerFooter className='pt-2'>
