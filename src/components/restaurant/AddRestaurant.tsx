@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useForm } from '@mantine/form'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   archiveRestaurant,
@@ -28,7 +27,8 @@ import { Cuisine, When } from '@/server/db/schema'
 import { Restaurants } from '@/lib/models/restaurants'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form'
+import { FieldValues, useForm } from 'react-hook-form'
 
 export default function AddRestaurant(props: {
   restaurant: Restaurants
@@ -77,7 +77,7 @@ export default function AddRestaurant(props: {
   }
 
   const form = useForm({
-    initialValues: {
+    defaultValues: {
       id: props.restaurant.id ? props.restaurant.id : '',
       name: props.restaurant.name ? props.restaurant.name : '',
       address: props.restaurant.address ? props.restaurant.address : '',
@@ -152,95 +152,162 @@ export default function AddRestaurant(props: {
           <IconTrash className='text-white' />
         </Button>
       </div>
-      <form
-        onSubmit={form.onSubmit((values) => onSubmit(values))}
-        className={`flex flex-col justify-start gap-10 pt-4 ${
-          props.restaurant.id === '' ? 'px-6' : ''
-        }`}
-      >
-        <Label htmlFor='name'>Name</Label>
-        <Input
-          placeholder='The good yum yum place'
-          {...form.getInputProps('name')}
-        />
-        <MultiSelect
-          multiple={true}
-          radius='md'
-          size='md'
-          clearable
-          searchable
-          creatable
-          getCreateLabel={(query) => `+ Create ${query}`}
-          onCreate={(query) => {
-            const item = { value: query, label: query }
-            const cuisine: Cuisine = { id: '', cuisine: query }
-            setCuisines((current) => [...current, item])
-            addCuisine(cuisine)
-            return item
-          }}
-          transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-          label='Cuisine'
-          placeholder='Pick some'
-          data={cuisines}
-          {...form.getInputProps('cuisines')}
-        />
-        <MultiSelect
-          multiple={true}
-          radius='md'
-          size='md'
-          clearable
-          searchable
-          creatable
-          getCreateLabel={(query) => `+ Create ${query}`}
-          onCreate={(query) => {
-            const item = { value: query, label: query }
-            const when: When = { id: '', when: query }
-            setWhens((current) => [...current, item])
-            addWhen(when)
-            return item
-          }}
-          transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-          label='When'
-          placeholder='Pick some'
-          data={whens}
-          {...form.getInputProps('whens')}
-        />
-        <Label htmlFor='address'>Address</Label>
-        <Input placeholder='Where it at?' {...form.getInputProps('address')} />
-        {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
-          <Map longLat={props.longLat} title={props.restaurant.name} />
-        )}
-        {address !== undefined &&
-          address !== '' &&
-          props.longLat[0] === undefined &&
-          props.longLat[1] === undefined && <ReloadMapPlaceholder />}
-        <div className='flex justify-between'>
-          <div className='flex-grow pr-2'>
-            <p className='inline-block pt-3 text-base font-black'>Notes</p>
-          </div>
-          <FullScreenModal
-            button={
-              <Button className='r-0 bg-success' aria-label='add'>
-                <IconCirclePlus />
-              </Button>
-            }
-            form={
-              <AddRestaurantNote
-                restaurant={props.restaurant}
-                restaurantNote={restaurantNote}
-                addNote={pullAddNote}
-              />
-            }
-            title='Add Note'
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className={`flex flex-col justify-start gap-4 pt-4 ${
+            props.restaurant.id === '' ? 'px-6' : ''
+          }`}
+        >
+          <FormField
+            control={form.control}
+            name='name'
+            render={({ field }: { field: FieldValues }) => (
+              <FormItem>
+                <FormLabel htmlFor='name'>Name</FormLabel>
+                <FormControl>
+                  <div className='items-center gap-4'>
+                    <Input
+                      {...field}
+                      placeholder='The good yum yum place'
+                      id='name'
+                      className='text-base'
+                    />
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
           />
-        </div>
-        {notes.map((note: string) => {
-          return <NoteCard key={note} note={note} func={pullNote} />
-        })}
-        <Button className='hover:bg-primary-hover bg-emerald-500' type='submit'>
-          {props.restaurant.id === '' ? 'Add' : 'Update'} Restaurant
-        </Button>
-      </form>
+          <FormField
+            control={form.control}
+            name='address'
+            render={({ field }: { field: FieldValues }) => (
+              <FormItem>
+                <FormLabel htmlFor='address'>Address</FormLabel>
+                <FormControl>
+                  <div className='items-center gap-4'>
+                    <Input
+                      {...field}
+                      placeholder='Where it @?'
+                      id='address'
+                      className='text-base'
+                    />
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='cuisines'
+            render={({ field }: { field: FieldValues }) => (
+              <FormItem>
+                <FormLabel htmlFor='cuisines'>Cuisines</FormLabel>
+                <FormControl>
+                  <div className='items-center gap-4'>
+                    <MultiSelect
+                      multiple={true}
+                      radius='md'
+                      size='md'
+                      clearable
+                      searchable
+                      creatable
+                      getCreateLabel={(query) => `+ Create ${query}`}
+                      onCreate={(query) => {
+                        const item = { value: query, label: query }
+                        const cuisine: Cuisine = { id: '', cuisine: query }
+                        setCuisines((current) => [...current, item])
+                        addCuisine(cuisine)
+                        return item
+                      }}
+                      transitionProps={{
+                        transition: 'pop-bottom-left',
+                        duration: 200
+                      }}
+                      placeholder='Pick some'
+                      data={cuisines}
+                    />
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='whens'
+            render={({ field }: { field: FieldValues }) => (
+              <FormItem>
+                <FormLabel htmlFor='whens'>When</FormLabel>
+                <FormControl>
+                  <div className='items-center gap-4'>
+                    <MultiSelect
+                      multiple={true}
+                      radius='md'
+                      size='md'
+                      clearable
+                      searchable
+                      creatable
+                      getCreateLabel={(query) => `+ Create ${query}`}
+                      onCreate={(query) => {
+                        const item = { value: query, label: query }
+                        const when: When = { id: '', when: query }
+                        setWhens((current) => [...current, item])
+                        addWhen(when)
+                        return item
+                      }}
+                      transitionProps={{
+                        transition: 'pop-bottom-left',
+                        duration: 200
+                      }}
+                      placeholder='Pick some'
+                      data={whens}
+                    />
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          {props.longLat[0] !== undefined &&
+            props.longLat[1] !== undefined &&
+            props.longLat[0] !== 0 &&
+            props.longLat[1] !== 0 && (
+              <Map longLat={props.longLat} title={props.restaurant.name} />
+            )}
+          {address !== null &&
+            address !== '' &&
+            props.longLat[0] === undefined &&
+            props.longLat[1] === undefined && <ReloadMapPlaceholder />}
+          <div className='flex justify-between'>
+            <div className='flex-grow pr-2'>
+              <p className='inline-block pt-3 text-base font-black'>Notes</p>
+            </div>
+            <FullScreenModal
+              button={
+                <Button className='r-0 bg-success' aria-label='add'>
+                  <IconCirclePlus />
+                </Button>
+              }
+              form={
+                <AddRestaurantNote
+                  restaurant={props.restaurant}
+                  restaurantNote={restaurantNote}
+                  addNote={pullAddNote}
+                />
+              }
+              title='Add Note'
+            />
+          </div>
+          {notes.map((note: string) => {
+            return <NoteCard key={note} note={note} func={pullNote} />
+          })}
+          <Button
+            className='hover:bg-primary-hover bg-emerald-500'
+            type='submit'
+          >
+            {props.restaurant.id === '' ? 'Add' : 'Update'} Restaurant
+          </Button>
+        </form>
+      </Form>
     </div>
   )
 }
