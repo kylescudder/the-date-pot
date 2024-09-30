@@ -177,7 +177,7 @@ export default function AddCoffee(props: {
       </div>
       <form
         onSubmit={form.onSubmit((values) => onSubmit(values))}
-        className={`flex flex-col justify-start gap-10 pt-4 ${
+        className={`flex flex-col justify-start gap-4 pt-4 ${
           props.coffee.id === '' ? 'px-6' : ''
         }`}
       >

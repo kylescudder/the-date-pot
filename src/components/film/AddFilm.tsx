@@ -137,7 +137,7 @@ export default function AddFilm(props: {
       </div>
       <form
         onSubmit={form.onSubmit((values) => onSubmit(values))}
-        className={`flex flex-col justify-start gap-10 pt-4 ${
+        className={`flex flex-col justify-start gap-4 pt-4 ${
           props.film.id === '' ? 'px-6' : ''
         }`}
       >

@@ -69,7 +69,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
   return (
     <form
       onSubmit={form.onSubmit((values) => onSubmit(values))}
-      className='flex flex-col justify-start gap-10'
+      className='flex flex-col justify-start gap-4'
     >
       {form.values.image ? (
         <Image
