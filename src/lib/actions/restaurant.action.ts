@@ -8,7 +8,7 @@ import { uuidv4 } from '../utils'
 import {
   restaurant,
   restaurantCuisines,
-  restaurantNotes,
+  restaurantNote,
   restaurantWhens
 } from '@/server/db/schema'
 import { Restaurants } from '../models/restaurants'
@@ -165,23 +165,7 @@ export async function deleteRestaurantNote(note: string, id: string) {
 
     if (!user.userId) throw new Error('Unauthorized')
 
-    return await db.delete(restaurantNotes).where(eq(restaurantNotes.id, id))
-  } catch (error: any) {
-    throw new Error(`Failed to delete note: ${error.message}`)
-  }
-}
-export async function addRestaurantNote(note: string, id: string) {
-  try {
-    const user = auth()
-
-    if (!user.userId) throw new Error('Unauthorized')
-
-    return await db
-      .update(restaurantNotes)
-      .set({
-        note: note
-      })
-      .where(eq(restaurantNotes.id, id))
+    return await db.delete(restaurantNote).where(eq(restaurantNote.id, id))
   } catch (error: any) {
     throw new Error(`Failed to delete note: ${error.message}`)
   }

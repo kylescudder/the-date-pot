@@ -1,7 +1,6 @@
 'use client'
 
 import { ChangeEvent, useState } from 'react'
-import { addRestaurantNote } from '@/lib/actions/restaurant.action'
 import { Restaurants } from '@/lib/models/restaurants'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -18,7 +17,6 @@ export default function AddRestaurantNote(props: {
     setNote(e.target.value)
   }
   const handleSubmit = async () => {
-    await addRestaurantNote(note, props.restaurant.id)
     props.addNote(note)
   }
   return (
