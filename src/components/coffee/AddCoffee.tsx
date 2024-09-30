@@ -264,9 +264,12 @@ export default function AddCoffee(props: {
         )}
         <Label htmlFor='address'>Address</Label>
         <Input placeholder='Where it at?' {...form.getInputProps('address')} />
-        {props.longLat[0] !== undefined && props.longLat[1] !== undefined && (
-          <Map longLat={props.longLat} title={props.coffee.name} />
-        )}
+        {props.longLat[0] !== undefined &&
+          props.longLat[1] !== undefined &&
+          props.longLat[0] !== 0 &&
+          props.longLat[1] !== 0 && (
+            <Map longLat={props.longLat} title={props.coffee.name} />
+          )}
         {address !== undefined &&
           address !== '' &&
           props.longLat[0] === undefined &&

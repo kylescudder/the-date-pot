@@ -194,9 +194,12 @@ export default function AddActivity(props: {
             )}
           />
           <div className='my-2'>
-            {props.longLat[0] !== 0 && props.longLat[1] !== 0 && (
-              <Map longLat={props.longLat} title={props.activity.name} />
-            )}
+            {props.longLat[0] !== undefined &&
+              props.longLat[1] !== undefined &&
+              props.longLat[0] !== 0 &&
+              props.longLat[1] !== 0 && (
+                <Map longLat={props.longLat} title={props.activity.name} />
+              )}
             {address !== undefined &&
               address !== '' &&
               props.longLat[0] === 0 &&
