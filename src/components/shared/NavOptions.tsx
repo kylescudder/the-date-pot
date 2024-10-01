@@ -9,10 +9,7 @@ export default function NavOptions(props: { position: string; pots: Pot[] }) {
   const pathname = usePathname()
   return (
     <div className='contents w-full'>
-      <a
-        href='/'
-        className={`${props.position}_link ${pathname === '/' && 'hover:bg-primary-hover text-emerald-500'}`}
-      >
+      <a href='/' className={`${props.position}_link ${pathname === '/'}`}>
         <Icon
           name={'IconHome'}
           stroke='2'

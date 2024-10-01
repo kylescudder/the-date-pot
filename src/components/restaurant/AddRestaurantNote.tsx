@@ -20,17 +20,14 @@ export default function AddRestaurantNote(props: {
     props.addNote(note)
   }
   return (
-    <div>
+    <div className='p-6'>
       <Label htmlFor='note'>Note</Label>
       <Textarea
         placeholder='Penny for your thoughts?'
         onChange={handleChange}
+        className='mt-2'
       />
-      <Button
-        className='hover:bg-primary-hover mt-3 bg-emerald-500 text-white'
-        type='button'
-        onClick={handleSubmit}
-      >
+      <Button type='button' onClick={handleSubmit} className='mt-4 w-full'>
         {props.restaurant.id === '' ? 'Add' : 'Update'} Note
       </Button>
     </div>

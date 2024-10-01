@@ -102,6 +102,7 @@ export default function AddRestaurant(props: {
     }
 
     const restaurant = await updateRestaurant(payload)
+    notes.forEach((element) => {})
     if (pathname.includes('/restaurant/')) {
       successToast(restaurant.name)
       setChangesMade(true)
@@ -302,10 +303,7 @@ export default function AddRestaurant(props: {
           {notes.map((note: string) => {
             return <NoteCard key={note} note={note} func={pullNote} />
           })}
-          <Button
-            className='hover:bg-primary-hover bg-emerald-500'
-            type='submit'
-          >
+          <Button type='submit'>
             {props.restaurant.id === '' ? 'Add' : 'Update'} Restaurant
           </Button>
         </form>
