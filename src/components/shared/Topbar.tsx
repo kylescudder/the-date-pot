@@ -2,47 +2,21 @@
 
 import Link from 'next/link'
 import { IconHomeHeart } from '@tabler/icons-react'
-import Logout from './Logout'
 import CustomThemeProvider from '@/components/shared/CustomThemeProvider'
-import { slide as Menu } from 'react-burger-menu'
-import NavOptions from './NavOptions'
-import { Pot } from '@/server/db/schema'
 import { ModeToggle } from '../ui/dark-mode-toggle'
+import { Sidebar, SidebarTrigger } from '../ui/sidebar'
 
-export default function Topbar(props: { pots: Pot[] }) {
+export default function Topbar() {
   return (
     <CustomThemeProvider>
-      <nav className='topbar'>
-        <Link href='/' className='flex items-center gap-4'>
-          <IconHomeHeart
-            stroke={2}
-            strokeLinejoin='miter'
-            height={28}
-            width={28}
-            className='max-sm:hidden'
-          />
-          <p className='text-2xl font-bold leading-6 max-sm:hidden'>
-            The Date Pot
-          </p>
-        </Link>
-        <Menu
-          customBurgerIcon={
-            <IconHomeHeart
-              stroke={2}
-              strokeLinejoin='miter'
-              height={28}
-              width={28}
-            />
-          }
-        >
-          <NavOptions position='leftsidebar' pots={props.pots} />
-        </Menu>
-        <div className='flex items-center gap-1'>
-          <ModeToggle />
-          <div className='block md:hidden'></div>
-        </div>
-        <Logout placement='top' />
-      </nav>
+      <div className='w-full'>
+        <nav className='fixed top-0 z-30 flex w-full items-center justify-between px-6 py-3'>
+          <SidebarTrigger className='max-md:hidden' />
+          <div className='items-center gap-1'>
+            <ModeToggle />
+          </div>
+        </nav>
+      </div>
     </CustomThemeProvider>
   )
 }

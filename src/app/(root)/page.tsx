@@ -1,7 +1,6 @@
 'use server'
 //app/page.tsx
 import { getUserInfo } from '@/lib/actions/user.actions'
-import { UserButton } from '@clerk/nextjs'
 import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
@@ -13,11 +12,7 @@ async function Page() {
 
   if (!userInfo?.onboarded) redirect('/onboarding')
 
-  return (
-    <div className='h-screen'>
-      <UserButton afterSignOutUrl='/sign-in' />
-    </div>
-  )
+  return <div className='h-screen'></div>
 }
 
 export default Page

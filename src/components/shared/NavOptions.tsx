@@ -4,6 +4,7 @@ import React from 'react'
 import { usePathname } from 'next/navigation'
 import Icon from './Icon'
 import { Pot } from '@/server/db/schema'
+import { SidebarMenuButton, SidebarMenuItem } from '../ui/sidebar'
 
 export default function NavOptions(props: { position: string; pots: Pot[] }) {
   const pathname = usePathname()
@@ -43,23 +44,27 @@ export default function NavOptions(props: { position: string; pots: Pot[] }) {
           pathname === potNameDepluralised
 
         return (
-          <a
-            href={`/${potNamePluralised}`}
-            key={pot.id}
-            className={`${props.position}_link ${isActive && 'hover:bg-primary-hover text-emerald-500'}`}
-          >
-            <Icon
-              name={pot.icon}
-              stroke='2'
-              strokeLinejoin='miter'
-              isActive={isActive}
-            />
-            <p
-              className={`${isActive && 'text-white'} relative flex font-black`}
-            >
-              {pot.potName}
-            </p>
-          </a>
+          <SidebarMenuItem key={pot.id}>
+            <SidebarMenuButton asChild>
+              <a
+                href={`/${potNamePluralised}`}
+                key={pot.id}
+                className={`${props.position}_link ${isActive && 'hover:bg-primary-hover text-emerald-500'}`}
+              >
+                <Icon
+                  name={pot.icon}
+                  stroke='2'
+                  strokeLinejoin='miter'
+                  isActive={isActive}
+                />
+                <p
+                  className={`${isActive && 'text-white'} relative flex font-black`}
+                >
+                  {pot.potName}
+                </p>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         )
       })}
     </div>

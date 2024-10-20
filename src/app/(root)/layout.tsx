@@ -13,6 +13,8 @@ import { getPots } from '@/lib/actions/pot.actions'
 import '@fontsource/ubuntu'
 import { Pot, User } from '@/server/db/schema'
 import { ThemeProvider } from '@/components/theme-provider'
+import { AppSidebar } from '@/components/shared/AppSidebar'
+import { SidebarProvider } from '@/components/ui/sidebar'
 
 export const viewport: Viewport = {
   themeColor: '#877EFF'
@@ -119,9 +121,11 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Topbar pots={pots} />
-            <MainContent pots={pots} children={children} />
-            <Toast />
+            <SidebarProvider>
+              <AppSidebar pots={pots} />
+              <MainContent pots={pots} children={children} />
+              <Toast />
+            </SidebarProvider>
           </ThemeProvider>
         </body>
       </html>

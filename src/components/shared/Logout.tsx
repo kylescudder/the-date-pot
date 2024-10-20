@@ -15,7 +15,7 @@ export default function Logout(props: { placement: string }) {
           }`}
         >
           <IconLogout size={24} stroke={2} strokeLinejoin='miter' />
-          <p className='font-black max-lg:hidden'>Logout</p>
+          <p>Logout</p>
         </div>
       </SignOutButton>
     </SignedIn>
