@@ -8,7 +8,7 @@ import { eq } from 'drizzle-orm/sql/expressions/conditions'
 
 export async function getPlatformList() {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -20,7 +20,7 @@ export async function getPlatformList() {
 
 export async function addPlatform(platformData: Platform) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 

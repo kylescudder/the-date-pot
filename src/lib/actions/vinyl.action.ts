@@ -9,7 +9,7 @@ import { uuidv4 } from '../utils'
 
 export async function getVinylList(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -27,7 +27,7 @@ export async function getVinylList(id: string) {
 }
 export async function getVinyl(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -50,7 +50,7 @@ export async function getVinyl(id: string) {
 }
 export async function updateVinyl(vinylData: Vinyl) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -92,7 +92,7 @@ export async function updateVinyl(vinylData: Vinyl) {
 }
 export async function archiveVinyl(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 

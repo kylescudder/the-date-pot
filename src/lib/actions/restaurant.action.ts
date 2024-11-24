@@ -15,7 +15,7 @@ import { Restaurants } from '../models/restaurants'
 
 export async function getRestaurantList(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -29,7 +29,7 @@ export async function getRestaurantList(id: string) {
 }
 export async function getRestaurant(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -85,7 +85,7 @@ export async function getRestaurant(id: string) {
 }
 export async function updateRestaurant(restaurantData: Restaurants) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -161,7 +161,7 @@ export async function updateRestaurant(restaurantData: Restaurants) {
 }
 export async function deleteRestaurantNote(note: string, id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -172,7 +172,7 @@ export async function deleteRestaurantNote(note: string, id: string) {
 }
 export async function archiveRestaurant(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 

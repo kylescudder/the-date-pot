@@ -17,7 +17,7 @@ import { CoffeeRatings } from '../models/coffeeRatings'
 
 export async function getCoffeeList(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -65,7 +65,7 @@ export async function getCoffeeList(id: string) {
 }
 export async function getCoffee(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -87,7 +87,7 @@ export async function getCoffee(id: string) {
 }
 export async function getCoffeeRatings(id: string) {
   try {
-    const authuser = auth()
+    const authuser = await auth()
 
     if (!authuser.userId) throw new Error('Unauthorized')
 
@@ -117,7 +117,7 @@ export async function getCoffeeRatings(id: string) {
 }
 export async function deleteCoffeeRating(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -128,7 +128,7 @@ export async function deleteCoffeeRating(id: string) {
 }
 export async function updateCoffeeRating(coffeeRatingData: CoffeeRating) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -163,7 +163,7 @@ export async function updateCoffeeRating(coffeeRatingData: CoffeeRating) {
 }
 export async function updateCoffee(coffeeData: Coffee) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -205,7 +205,7 @@ export async function updateCoffee(coffeeData: Coffee) {
 }
 export async function archiveCoffee(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 

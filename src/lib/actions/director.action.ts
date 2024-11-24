@@ -8,7 +8,7 @@ import { eq } from 'drizzle-orm/sql/expressions/conditions'
 
 export async function getDirectorList() {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -19,7 +19,7 @@ export async function getDirectorList() {
 }
 export async function addDirector(directorData: Director) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 

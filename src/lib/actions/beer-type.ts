@@ -8,7 +8,7 @@ import { uuidv4 } from '../utils'
 
 export async function getBeerTypeList() {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -20,7 +20,7 @@ export async function getBeerTypeList() {
 
 export async function addBeerType(BeerType: BeerType) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 

@@ -8,7 +8,7 @@ import { eq } from 'drizzle-orm/sql/expressions/conditions'
 
 export async function getCuisineList() {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -20,7 +20,7 @@ export async function getCuisineList() {
 
 export async function addCuisine(Cuisine: Cuisine) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 

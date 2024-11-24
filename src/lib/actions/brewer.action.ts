@@ -8,7 +8,7 @@ import { eq } from 'drizzle-orm/sql/expressions/conditions'
 
 export async function getBreweryList() {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -20,7 +20,7 @@ export async function getBreweryList() {
 
 export async function addBrewery(Brewery: Brewery) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 

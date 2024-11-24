@@ -18,7 +18,7 @@ import { BeerRatings } from '../models/beerRatings'
 
 export async function getBeerList(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -68,7 +68,7 @@ export async function getBeerList(id: string) {
 
 export async function getBeer(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -123,7 +123,7 @@ export async function getBeer(id: string) {
 }
 export async function getBeerRatings(id: string) {
   try {
-    const authuser = auth()
+    const authuser = await auth()
 
     if (!authuser.userId) throw new Error('Unauthorized')
 
@@ -151,7 +151,7 @@ export async function getBeerRatings(id: string) {
 }
 export async function deleteBeerRating(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -162,7 +162,7 @@ export async function deleteBeerRating(id: string) {
 }
 export async function updateBeerRating(beerRatingData: BeerRatings) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -197,7 +197,7 @@ export async function updateBeerRating(beerRatingData: BeerRatings) {
 }
 export async function updateBeer(beerData: Beers) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -272,7 +272,7 @@ export async function updateBeer(beerData: Beers) {
 }
 export async function archiveBeer(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 

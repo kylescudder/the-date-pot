@@ -9,7 +9,7 @@ import { uuidv4 } from '../utils'
 
 export async function getActivityList(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -28,7 +28,7 @@ export async function getActivityList(id: string) {
 
 export async function getActivity(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -50,7 +50,7 @@ export async function getActivity(id: string) {
 }
 export async function updateActivity(ActivityData: Activity) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -90,7 +90,7 @@ export async function updateActivity(ActivityData: Activity) {
 }
 export async function archiveActivity(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 

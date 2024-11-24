@@ -23,7 +23,7 @@ import { Films } from '../models/films'
 
 export async function getFilmList(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -80,7 +80,7 @@ export async function getFilmList(id: string) {
 }
 export async function getFilm(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -144,7 +144,7 @@ export async function getFilm(id: string) {
 }
 export async function updateFilm(filmData: Films) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -239,7 +239,7 @@ export async function updateFilm(filmData: Films) {
 }
 export async function archiveFilm(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 

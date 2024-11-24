@@ -10,7 +10,7 @@ import { Users } from '../models/users'
 
 export async function getUserInfo(id: string) {
   try {
-    const user = auth()
+    const user = await auth()
 
     if (!user.userId) throw new Error('Unauthorized')
 
@@ -25,7 +25,7 @@ export async function getUserInfo(id: string) {
 }
 export async function updateUser(userData: User, path: string) {
   try {
-    const users = auth()
+    const users = await auth()
 
     if (!users.userId) throw new Error('Unauthorized')
 
@@ -49,7 +49,7 @@ export async function updateUser(userData: User, path: string) {
 }
 export async function getUserGroup(id: string) {
   try {
-    const userAuth = auth()
+    const userAuth = await auth()
 
     if (!userAuth.userId) throw new Error('Unauthorized')
 
@@ -66,7 +66,7 @@ export async function getUserGroup(id: string) {
 }
 export async function getGroupUsers() {
   try {
-    const userAuth = auth()
+    const userAuth = await auth()
 
     if (!userAuth.userId) throw new Error('Unauthorized')
 

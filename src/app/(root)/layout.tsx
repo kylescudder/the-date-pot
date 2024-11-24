@@ -109,6 +109,7 @@ export default async function RootLayout({
   const pots: Pot[] = await getPots()
   return (
     <ClerkProvider
+      dynamic
       appearance={{
         baseTheme: dark
       }}
