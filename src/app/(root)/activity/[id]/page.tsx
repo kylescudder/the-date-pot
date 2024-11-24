@@ -6,7 +6,10 @@ import { getExpenseList } from '@/lib/actions/expense.action'
 import { getLongLat } from '@/lib/actions/map.action'
 import { Expense } from '@/server/db/schema'
 
-export default async function Activity({ params }: { params: { id: string } }) {
+export default async function Activity(props: {
+  params: Promise<{ id: string }>
+}) {
+  const params = await props.params
   const activity = await getActivity(params.id)
   const expenseList: Expense[] = await getExpenseList()
   let longLat: number[] = []

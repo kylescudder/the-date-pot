@@ -10,7 +10,8 @@ import { Beers } from '@/lib/models/beers'
 import { BeerType, Brewery } from '@/server/db/schema'
 import React from 'react'
 
-export default async function Beer({ params }: { params: { id: string } }) {
+export default async function Beer(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params
   const beer: Beers | null = await getBeer(params.id)
   if (!beer) return <div>Beer not found</div>
   const ratings: BeerRatings[] = await getBeerRatings(params.id)

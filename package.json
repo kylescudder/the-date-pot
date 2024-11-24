@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "bun run build && next start",
     "format": "prettier --write .",
@@ -43,8 +43,8 @@
     "@tabler/icons-react": "3.19.0",
     "@tanstack/react-table": "^8.20.5",
     "@types/node": "22.7.4",
-    "@types/react": "18.3.11",
-    "@types/react-dom": "18.3.1",
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
     "autoprefixer": "10.4.20",
     "class-variance-authority": "^0.7.0",
     "clsx": "2.1.1",
@@ -53,14 +53,14 @@
     "dayjs": "1.11.13",
     "dotenv": "16.4.5",
     "drizzle-orm": "^0.36.4",
-    "next": "14.2.15",
+    "next": "15.0.3",
     "next-themes": "0.3.0",
     "postcss": "8.4.49",
     "postgres": "^3.4.4",
     "prettier-plugin-tailwindcss": "0.6.9",
-    "react": "18.3.1",
+    "react": "19.0.0-rc-66855b96-20241106",
     "react-day-picker": "^9.1.4",
-    "react-dom": "18.3.1",
+    "react-dom": "19.0.0-rc-66855b96-20241106",
     "react-hook-form": "7.53.0",
     "react-toastify": "10.0.6",
     "serwist": "9.0.10",
@@ -80,5 +80,9 @@
     "drizzle-kit": "^0.24.2",
     "husky": "9.1.6",
     "prettier": "3.3.3"
+  },
+  "overrides": {
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
   }
 }

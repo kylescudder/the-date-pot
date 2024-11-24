@@ -8,11 +8,10 @@ import { getWhenList } from '@/lib/actions/when.action'
 import { Cuisine, When } from '@/server/db/schema'
 import React from 'react'
 
-export default async function Restaurant({
-  params
-}: {
-  params: { id: string }
+export default async function Restaurant(props: {
+  params: Promise<{ id: string }>
 }) {
+  const params = await props.params
   const restaurant = await getRestaurant(params.id)
   const cuisineList: Cuisine[] = await getCuisineList()
   const whenList: When[] = await getWhenList()

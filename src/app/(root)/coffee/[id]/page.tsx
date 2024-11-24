@@ -7,7 +7,10 @@ import { getGroupUsers } from '@/lib/actions/user.actions'
 import { CoffeeRatings } from '@/lib/models/coffeeRatings'
 import React from 'react'
 
-export default async function Coffee({ params }: { params: { id: string } }) {
+export default async function Coffee(props: {
+  params: Promise<{ id: string }>
+}) {
+  const params = await props.params
   const coffee = await getCoffee(params.id)
   const ratings: CoffeeRatings[] = await getCoffeeRatings(params.id)
   const users = (await getGroupUsers()) || []

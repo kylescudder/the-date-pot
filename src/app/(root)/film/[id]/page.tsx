@@ -8,7 +8,8 @@ import { getPlatformList } from '@/lib/actions/platform.action'
 import { getFilm } from '@/lib/actions/film.action'
 import { Director, Genre, Platform } from '@/server/db/schema'
 
-export default async function Film({ params }: { params: { id: string } }) {
+export default async function Film(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params
   const film = await getFilm(params.id)
   const directorList: Director[] = await getDirectorList()
   const genreList: Genre[] = await getGenreList()
