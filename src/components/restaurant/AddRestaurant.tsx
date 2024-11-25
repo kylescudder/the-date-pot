@@ -14,7 +14,6 @@ import {
 } from '@/lib/actions/toast.actions'
 import { IconTrash, IconCirclePlus } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
-import { MultiSelect } from '@mantine/core'
 import Map from '../shared/Map'
 import { option } from '@/lib/models/select-options'
 import NoteCard from './NoteCard'
@@ -29,6 +28,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form'
 import { FieldValues, useForm } from 'react-hook-form'
+import {
+  MultiSelector,
+  MultiSelectorContent,
+  MultiSelectorInput,
+  MultiSelectorItem,
+  MultiSelectorList,
+  MultiSelectorTrigger
+} from '../ui/multi-select'
 
 export default function AddRestaurant(props: {
   restaurant: Restaurants
@@ -157,7 +164,7 @@ export default function AddRestaurant(props: {
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className={`flex flex-col justify-start gap-4 pt-4 ${
-            props.restaurant.id === '' ? 'px-6' : ''
+            props.restaurant.id === '' ? 'p-4' : ''
           }`}
         >
           <FormField
@@ -201,72 +208,61 @@ export default function AddRestaurant(props: {
           <FormField
             control={form.control}
             name='cuisines'
-            render={({ field }: { field: FieldValues }) => (
+            render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor='cuisines'>Cuisines</FormLabel>
-                <FormControl>
-                  <div className='items-center gap-4'>
-                    <MultiSelect
-                      multiple={true}
-                      radius='md'
-                      size='md'
-                      clearable
-                      searchable
-                      creatable
-                      getCreateLabel={(query) => `+ Create ${query}`}
-                      onCreate={(query) => {
-                        const item = { value: query, label: query }
-                        const cuisine: Cuisine = { id: '', cuisine: query }
-                        setCuisines((current) => [...current, item])
-                        addCuisine(cuisine)
-                        return item
-                      }}
-                      transitionProps={{
-                        transition: 'pop-bottom-left',
-                        duration: 200
-                      }}
-                      placeholder='Pick some'
-                      data={cuisines}
-                      {...field}
-                    />
-                  </div>
-                </FormControl>
+                <FormLabel>Cuisines</FormLabel>
+                <MultiSelector
+                  onValuesChange={field.onChange}
+                  values={field.value}
+                  list={cuisines}
+                >
+                  <MultiSelectorTrigger>
+                    <MultiSelectorInput placeholder='Pick some' />
+                  </MultiSelectorTrigger>
+                  <MultiSelectorContent>
+                    <MultiSelectorList>
+                      {cuisines.map((cuisine) => (
+                        <MultiSelectorItem
+                          key={cuisine.value}
+                          value={cuisine.label}
+                        >
+                          <div className='flex items-center space-x-2'>
+                            <span>{cuisine.label}</span>
+                          </div>
+                        </MultiSelectorItem>
+                      ))}
+                    </MultiSelectorList>
+                  </MultiSelectorContent>
+                </MultiSelector>
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
             name='whens'
-            render={({ field }: { field: FieldValues }) => (
+            render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor='whens'>When</FormLabel>
-                <FormControl>
-                  <div className='items-center gap-4'>
-                    <MultiSelect
-                      multiple={true}
-                      radius='md'
-                      size='md'
-                      clearable
-                      searchable
-                      creatable
-                      getCreateLabel={(query) => `+ Create ${query}`}
-                      onCreate={(query) => {
-                        const item = { value: query, label: query }
-                        const when: When = { id: '', when: query }
-                        setWhens((current) => [...current, item])
-                        addWhen(when)
-                        return item
-                      }}
-                      transitionProps={{
-                        transition: 'pop-bottom-left',
-                        duration: 200
-                      }}
-                      placeholder='Pick some'
-                      data={whens}
-                      {...field}
-                    />
-                  </div>
-                </FormControl>
+                <FormLabel>When</FormLabel>
+                <MultiSelector
+                  onValuesChange={field.onChange}
+                  values={field.value}
+                  list={whens}
+                >
+                  <MultiSelectorTrigger>
+                    <MultiSelectorInput placeholder='Pick some' />
+                  </MultiSelectorTrigger>
+                  <MultiSelectorContent>
+                    <MultiSelectorList>
+                      {whens.map((when) => (
+                        <MultiSelectorItem key={when.value} value={when.label}>
+                          <div className='flex items-center space-x-2'>
+                            <span>{when.label}</span>
+                          </div>
+                        </MultiSelectorItem>
+                      ))}
+                    </MultiSelectorList>
+                  </MultiSelectorContent>
+                </MultiSelector>
               </FormItem>
             )}
           />
