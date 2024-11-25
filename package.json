@@ -58,7 +58,7 @@
     "react": "19.0.0-rc-66855b96-20241106",
     "react-day-picker": "8.10.1",
     "react-dom": "19.0.0-rc-66855b96-20241106",
-    "react-hook-form": "7.53.0",
+    "react-hook-form": "7.53.2",
     "react-toastify": "10.0.6",
     "serwist": "9.0.10",
     "styled-components": "6.1.13",
