@@ -10,8 +10,10 @@ export default function Topbar() {
   return (
     <CustomThemeProvider>
       <div className='w-full'>
-        <nav className='fixed top-0 z-30 flex w-full items-center justify-between px-6 py-3'>
-          <SidebarTrigger className='max-md:hidden' />
+        <nav className='sticky top-0 z-30 flex w-full items-center justify-between bg-background p-2 lg:px-6'>
+          <div className='gap-1 lg:py-4'>
+            <SidebarTrigger />
+          </div>
           <div className='items-center gap-1'>
             <ModeToggle />
           </div>
