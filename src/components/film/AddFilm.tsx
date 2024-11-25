@@ -192,7 +192,7 @@ export default function AddFilm(props: {
                       <Button
                         variant={'outline'}
                         className={cn(
-                          'w-[240px] pl-3 text-left font-normal',
+                          'w-full pl-3 text-left font-normal',
                           !field.value && 'text-muted-foreground'
                         )}
                       >
@@ -274,13 +274,13 @@ export default function AddFilm(props: {
                   </MultiSelectorTrigger>
                   <MultiSelectorContent>
                     <MultiSelectorList>
-                      {directors.map((expense) => (
+                      {directors.map((director) => (
                         <MultiSelectorItem
-                          key={expense.value}
-                          value={expense.value}
+                          key={director.value}
+                          value={director.value}
                         >
                           <div className='flex items-center space-x-2'>
-                            <span>{expense.label}</span>
+                            <span>{director.label}</span>
                           </div>
                         </MultiSelectorItem>
                       ))}
@@ -306,13 +306,13 @@ export default function AddFilm(props: {
                   </MultiSelectorTrigger>
                   <MultiSelectorContent>
                     <MultiSelectorList>
-                      {genres.map((expense) => (
+                      {genres.map((genre) => (
                         <MultiSelectorItem
-                          key={expense.value}
-                          value={expense.value}
+                          key={genre.value}
+                          value={genre.value}
                         >
                           <div className='flex items-center space-x-2'>
-                            <span>{expense.label}</span>
+                            <span>{genre.label}</span>
                           </div>
                         </MultiSelectorItem>
                       ))}
@@ -338,13 +338,13 @@ export default function AddFilm(props: {
                   </MultiSelectorTrigger>
                   <MultiSelectorContent>
                     <MultiSelectorList>
-                      {platforms.map((expense) => (
+                      {platforms.map((platform) => (
                         <MultiSelectorItem
-                          key={expense.value}
-                          value={expense.value}
+                          key={platform.value}
+                          value={platform.value}
                         >
                           <div className='flex items-center space-x-2'>
-                            <span>{expense.label}</span>
+                            <span>{platform.label}</span>
                           </div>
                         </MultiSelectorItem>
                       ))}
