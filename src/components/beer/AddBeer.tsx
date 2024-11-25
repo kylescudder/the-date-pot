@@ -119,6 +119,7 @@ export default function AddBeer(props: {
     }
     const rating = await beerRatings.filter((item) => item.id === id)
     deleteToast(`${rating[0]!.username}'s rating`)
+    setChangesMade(true)
   }
 
   const onSubmit = async (values: formBeer) => {
@@ -209,7 +210,7 @@ export default function AddBeer(props: {
           page='beers'
         />
         <Button
-          className={`{ props.beer.id === '' ? 'hidden' : '' }`}
+          className={`${props.beer.id === '' ? 'hidden' : ''}`}
           onClick={handleArchive}
           aria-label='archive'
           variant={'destructive'}
