@@ -1,12 +1,21 @@
 'use client'
 
 import { updateCoffeeRating } from '@/lib/actions/coffee.action'
-import { Rating, Select } from '@mantine/core'
-import { useForm } from '@mantine/form'
+import { Rating } from '@mantine/core'
 import { option } from '@/lib/models/select-options'
 import { Coffee, User } from '@/server/db/schema'
 import { CoffeeRatings } from '@/lib/models/coffeeRatings'
 import { Button } from '@/components/ui/button'
+import { FieldValues, useForm } from 'react-hook-form'
+import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form'
+import {
+  MultiSelector,
+  MultiSelectorContent,
+  MultiSelectorInput,
+  MultiSelectorItem,
+  MultiSelectorList,
+  MultiSelectorTrigger
+} from '../ui/multi-select'
 
 export default function AddCoffeeRating(props: {
   coffee: Coffee
@@ -30,7 +39,7 @@ export default function AddCoffeeRating(props: {
   }
 
   const form = useForm({
-    initialValues: {
+    defaultValues: {
       id: props.coffeeRating.id ? props.coffeeRating.id : '',
       coffeeId: props.coffee.id ? props.coffee.id : '',
       experience: props.coffeeRating.experience
@@ -69,50 +78,85 @@ export default function AddCoffeeRating(props: {
   }
 
   return (
-    <form
-      onSubmit={form.onSubmit((values) => onSubmit(values))}
-      className={`flex flex-col justify-start gap-4 pt-4 ${
-        props.coffee.id === '' ? 'px-6' : ''
-      }`}
-    >
-      <Select
-        radius='md'
-        size='md'
-        clearable
-        transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-        label='Who?'
-        placeholder='Pick one'
-        data={options}
-        {...form.getInputProps('userId')}
-      />
-      <div className='flex items-center pt-2 text-base'>
-        <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
-          Taste
-        </span>
-        <Rating
-          name='taste'
-          fractions={2}
-          size='xl'
-          {...form.getInputProps('taste')}
-        />
-      </div>
-      <div className='flex items-center pt-5 text-base'>
-        <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
-          Experience
-        </span>
-        <Rating
-          name='experience'
-          fractions={2}
-          size='xl'
-          {...form.getInputProps('experience')}
-        />
-      </div>
-      <Button
-        className='hover:bg-primary-hover bg-emerald-500 text-white'
-        type='submit'
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className='flex flex-col justify-start gap-4 p-4'
       >
-        {props.coffeeRating.id === '' ? 'Add' : 'Update'} Rating
-      </Button>
-    </form>
+        <FormField
+          control={form.control}
+          name='userId'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Who?</FormLabel>
+              <MultiSelector
+                onValuesChange={field.onChange}
+                values={field.value}
+                list={options}
+                single
+              >
+                <MultiSelectorTrigger>
+                  <MultiSelectorInput placeholder='Pick one' />
+                </MultiSelectorTrigger>
+                <MultiSelectorContent>
+                  <MultiSelectorList>
+                    {options.map((option) => (
+                      <MultiSelectorItem
+                        key={option.value}
+                        value={option.value}
+                      >
+                        <div className='flex items-center space-x-2'>
+                          <span>{option.label}</span>
+                        </div>
+                      </MultiSelectorItem>
+                    ))}
+                  </MultiSelectorList>
+                </MultiSelectorContent>
+              </MultiSelector>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='taste'
+          render={({ field }: { field: FieldValues }) => (
+            <FormItem>
+              <div className='flex items-center pt-2 text-base'>
+                <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
+                  Taste
+                </span>
+                <FormControl>
+                  <Rating {...field} name='taste' fractions={2} size='xl' />
+                </FormControl>
+              </div>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='experience'
+          render={({ field }: { field: FieldValues }) => (
+            <FormItem>
+              <div className='flex items-center pt-2 text-base'>
+                <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
+                  Experience
+                </span>
+                <FormControl>
+                  <Rating
+                    {...field}
+                    name='experience'
+                    fractions={2}
+                    size='xl'
+                  />
+                </FormControl>
+              </div>
+            </FormItem>
+          )}
+        />
+        <Button type='submit'>
+          {props.coffeeRating.id === '' ? 'Add' : 'Update'} Rating
+        </Button>
+      </form>
+    </Form>
   )
 }

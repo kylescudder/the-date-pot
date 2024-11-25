@@ -14,7 +14,7 @@ import {
   updateCoffee,
   updateCoffeeRating
 } from '@/lib/actions/coffee.action'
-import { useForm } from '@mantine/form'
+import { FieldValues, useForm } from 'react-hook-form'
 import { Rating } from '@mantine/core'
 import BackButton from '../shared/BackButton'
 import Map from '@/components/shared/Map'
@@ -25,7 +25,7 @@ import { Coffee, User } from '@/server/db/schema'
 import { CoffeeRatings } from '@/lib/models/coffeeRatings'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form'
 
 export default function AddCoffee(props: {
   coffee: Coffee
@@ -40,7 +40,6 @@ export default function AddCoffee(props: {
     props.ratings
   )
   const [address, setAddress] = useState<string>(props.coffee.address)
-
   const [open, setOpen] = useState<boolean>(false)
 
   interface formCoffee {
@@ -65,7 +64,7 @@ export default function AddCoffee(props: {
   }
 
   const form = useForm({
-    initialValues: {
+    defaultValues: {
       id: props.coffee.id ? props.coffee.id : '',
       archive: props.coffee.archive ? props.coffee.archive : false,
       name: props.coffee.name ? props.coffee.name : '',
@@ -175,109 +174,142 @@ export default function AddCoffee(props: {
           <IconTrash className='text-white' />
         </Button>
       </div>
-      <form
-        onSubmit={form.onSubmit((values) => onSubmit(values))}
-        className={`flex flex-col justify-start gap-4 pt-4 ${
-          props.coffee.id === '' ? 'px-6' : ''
-        }`}
-      >
-        <Label htmlFor='name'>Name</Label>
-        <Input
-          placeholder='The best coffee shop in the world'
-          {...form.getInputProps('name')}
-        />
-        <div className='flex justify-between'>
-          <div className='flex-grow pr-2'>
-            <p className='inline-block pt-3 text-base font-black'>Ratings</p>
-          </div>
-          <FullScreenModal
-            button={
-              <Button className='r-0 bg-success' aria-label='add'>
-                <IconCirclePlus />
-              </Button>
-            }
-            form={
-              <AddCoffeeRating
-                coffee={props.coffee}
-                coffeeRating={coffeeRating}
-                func={pullData}
-                addRating={pullRating}
-                users={props.users}
-              />
-            }
-            title='Add Rating'
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className={`flex flex-col justify-start gap-4 pt-4 ${
+            props.coffee.id === '' ? 'p-4' : ''
+          }`}
+        >
+          <FormField
+            control={form.control}
+            name='name'
+            render={({ field }: { field: FieldValues }) => (
+              <FormItem>
+                <FormLabel htmlFor='name'>Name</FormLabel>
+                <FormControl>
+                  <div className='items-center gap-4'>
+                    <Input
+                      {...field}
+                      id='name'
+                      className='text-base'
+                      placeholder='The best coffee shop in the world'
+                    />
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
           />
-        </div>
-        {coffeeRatings.length !== 0 ? (
-          coffeeRatings.map((rating: CoffeeRatings, i: number) => {
-            return (
-              <div
-                key={rating.userId}
-                className='w-full overflow-hidden rounded-md shadow-lg'
-              >
-                <div className='px-6 py-4'>
-                  <div className='mb-2 contents w-1/2 text-xl font-black'>
-                    {rating.username}
-                  </div>
-                  <div className='contents w-1/2'>
-                    <IconCircleMinus
-                      onClick={() => handleRemoveRecord(rating.id, i)}
-                      className='float-right text-destructive'
-                    />
-                  </div>
-                  <div className='flex items-center pt-2 text-base'>
-                    <span className='mr-2 inline-block w-32 rounded-full px-3 py-1 text-center text-sm font-black'>
-                      Taste
-                    </span>
-                    <Rating
-                      name='taste'
-                      value={rating.taste}
-                      onChange={(value) => handleTasteChange(value, i)}
-                      fractions={2}
-                      size='xl'
-                    />
-                  </div>
-                  <div className='flex items-center pt-5 text-base'>
-                    <span className='mr-2 inline-block w-32 rounded-full px-3 py-1 text-center text-sm font-black'>
-                      Experience
-                    </span>
-                    <Rating
-                      name='experience'
-                      value={rating.experience}
-                      onChange={(value) => handleExperienceChange(value, i)}
-                      fractions={2}
-                      size='xl'
-                    />
+          <div className='flex justify-between'>
+            <div className='flex-grow pr-2'>
+              <p className='inline-block pt-3 text-base font-black'>Ratings</p>
+            </div>
+            <FullScreenModal
+              button={
+                <Button className='r-0 bg-success' aria-label='add'>
+                  <IconCirclePlus />
+                </Button>
+              }
+              form={
+                <AddCoffeeRating
+                  coffee={props.coffee}
+                  coffeeRating={coffeeRating}
+                  func={pullData}
+                  addRating={pullRating}
+                  users={props.users}
+                />
+              }
+              title='Add Rating'
+            />
+          </div>
+          {coffeeRatings.length !== 0 ? (
+            coffeeRatings.map((rating: CoffeeRatings, i: number) => {
+              return (
+                <div
+                  key={rating.userId}
+                  className='w-full overflow-hidden rounded-md shadow-lg'
+                >
+                  <div className='px-6 py-4'>
+                    <div className='mb-2 contents w-1/2 text-xl font-black'>
+                      {rating.username}
+                    </div>
+                    <div className='contents w-1/2'>
+                      <IconCircleMinus
+                        onClick={() => handleRemoveRecord(rating.id, i)}
+                        className='float-right text-destructive'
+                      />
+                    </div>
+                    <div className='flex items-center pt-2 text-base'>
+                      <span className='mr-2 inline-block w-32 rounded-full px-3 py-1 text-center text-sm font-black'>
+                        Taste
+                      </span>
+                      <Rating
+                        name='taste'
+                        value={rating.taste}
+                        onChange={(value) => handleTasteChange(value, i)}
+                        fractions={2}
+                        size='xl'
+                      />
+                    </div>
+                    <div className='flex items-center pt-5 text-base'>
+                      <span className='mr-2 inline-block w-32 rounded-full px-3 py-1 text-center text-sm font-black'>
+                        Experience
+                      </span>
+                      <Rating
+                        name='experience'
+                        value={rating.experience}
+                        onChange={(value) => handleExperienceChange(value, i)}
+                        fractions={2}
+                        size='xl'
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            )
-          })
-        ) : (
-          <div className='w-full overflow-hidden rounded-md shadow-lg'>
-            <div className='px-6 py-4'>
-              <div className='mb-2 contents w-1/2 text-xl font-bold'>
-                Please add a rating!
+              )
+            })
+          ) : (
+            <div className='w-full overflow-hidden rounded-md shadow-lg'>
+              <div className='px-6 py-4'>
+                <div className='mb-2 contents w-1/2 text-xl font-bold'>
+                  Please add a rating!
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        <Label htmlFor='address'>Address</Label>
-        <Input placeholder='Where it at?' {...form.getInputProps('address')} />
-        {props.longLat[0] !== undefined &&
-          props.longLat[1] !== undefined &&
-          props.longLat[0] !== 0 &&
-          props.longLat[1] !== 0 && (
-            <Map longLat={props.longLat} title={props.coffee.name} />
           )}
-        {address !== undefined &&
-          address !== '' &&
-          props.longLat[0] === undefined &&
-          props.longLat[1] === undefined && <ReloadMapPlaceholder />}
-        <Button className='hover:bg-primary-hover bg-emerald-500' type='submit'>
-          {props.coffee.id === '' ? 'Add' : 'Update'} Coffee
-        </Button>
-      </form>
+          <FormField
+            control={form.control}
+            name='address'
+            render={({ field }: { field: FieldValues }) => (
+              <FormItem>
+                <FormLabel htmlFor='name'>Address</FormLabel>
+                <FormControl>
+                  <div className='items-center gap-4'>
+                    <Input
+                      {...field}
+                      id='address'
+                      className='text-base'
+                      placeholder='Where it at?'
+                    />
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          {props.longLat[0] !== undefined &&
+            props.longLat[1] !== undefined &&
+            props.longLat[0] !== 0 &&
+            props.longLat[1] !== 0 && (
+              <Map longLat={props.longLat} title={props.coffee.name} />
+            )}
+          {address !== undefined &&
+            address !== '' &&
+            props.longLat[0] === undefined &&
+            props.longLat[1] === undefined && <ReloadMapPlaceholder />}
+          <Button type='submit'>
+            {props.coffee.id === '' ? 'Add' : 'Update'} Coffee
+          </Button>
+        </form>
+      </Form>
     </div>
   )
 }
