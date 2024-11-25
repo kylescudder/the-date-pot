@@ -1,6 +1,6 @@
 'usea   client'
 
-import { Rating, Select } from '@mantine/core'
+import { Rating } from '@mantine/core'
 import { option } from '@/lib/models/select-options'
 import { Beer, User } from '@/server/db/schema'
 import { BeerRatings } from '@/lib/models/beerRatings'
