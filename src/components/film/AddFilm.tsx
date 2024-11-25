@@ -1,14 +1,11 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useForm } from '@mantine/form'
 import { usePathname, useRouter } from 'next/navigation'
 import { archiveFilm, updateFilm } from '@/lib/actions/film.action'
 import { archiveToast, successToast } from '@/lib/actions/toast.actions'
-import { IconTrash } from '@tabler/icons-react'
+import { IconCalendar, IconTrash } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
-import { Checkbox, MultiSelect, NumberInput } from '@mantine/core'
-import { DatePickerInput } from '@mantine/dates'
 import { option } from '@/lib/models/select-options'
 import { addDirector } from '@/lib/actions/director.action'
 import { addGenre } from '@/lib/actions/genre.action'
@@ -18,6 +15,28 @@ import { Director, Genre, Platform } from '@/server/db/schema'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { FieldValues, useForm } from 'react-hook-form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '../ui/form'
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
+import { cn } from '@/lib/utils'
+import { format } from 'date-fns'
+import { Calendar } from '../ui/calendar'
+import { Checkbox } from '../ui/checkbox'
+import {
+  MultiSelector,
+  MultiSelectorContent,
+  MultiSelectorInput,
+  MultiSelectorItem,
+  MultiSelectorList,
+  MultiSelectorTrigger
+} from '../ui/multi-select'
 
 export default function AddFilm(props: {
   film: Films
@@ -68,7 +87,7 @@ export default function AddFilm(props: {
   }
 
   const form = useForm({
-    initialValues: {
+    defaultValues: {
       id: props.film.id ? props.film.id : '',
       addedById: props.film.addedById ? props.film.addedById : '',
       addedDate: props.film.addedDate ? props.film.addedDate : new Date(),
@@ -135,107 +154,211 @@ export default function AddFilm(props: {
           <IconTrash className='text-white' />
         </Button>
       </div>
-      <form
-        onSubmit={form.onSubmit((values) => onSubmit(values))}
-        className={`flex flex-col justify-start gap-4 pt-4 ${
-          props.film.id === '' ? 'px-6' : ''
-        }`}
-      >
-        <Label htmlFor='name'>Name</Label>
-        <Input
-          placeholder='Which cinematic masterpiece is it today?'
-          {...form.getInputProps('name')}
-        />
-        <DatePickerInput
-          label='Release Date'
-          radius='md'
-          valueFormat='DD/MM/YYYY'
-          size='md'
-          {...form.getInputProps('releaseDate')}
-        />
-        <Label htmlFor='runTime'>Run time</Label>
-        <Input
-          type='number'
-          step={1}
-          placeholder='It is over 90 minutes?'
-          {...form.getInputProps('abv')}
-        />
-        <Checkbox
-          label='Watched'
-          radius='md'
-          size='md'
-          {...form.getInputProps('watched')}
-        />
-        <MultiSelect
-          multiple={true}
-          radius='md'
-          size='md'
-          clearable
-          searchable
-          creatable
-          getCreateLabel={(query) => `+ Create ${query}`}
-          onCreate={(query) => {
-            const item = { value: query, label: query }
-            const director: Director = { id: '', directorName: query }
-            setDirectors((current) => [...current, item])
-            addDirector(director)
-            return item
-          }}
-          transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-          label='Directors'
-          placeholder='Pick some'
-          data={directors}
-          {...form.getInputProps('directors')}
-        />
-        <MultiSelect
-          multiple={true}
-          radius='md'
-          size='md'
-          clearable
-          searchable
-          creatable
-          getCreateLabel={(query) => `+ Create ${query}`}
-          onCreate={(query) => {
-            const item = { value: query, label: query }
-            const genre: Genre = { id: '', genreText: query }
-            setGenres((current) => [...current, item])
-            addGenre(genre)
-            return item
-          }}
-          transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-          label='Genres'
-          placeholder='Pick some'
-          data={genres}
-          {...form.getInputProps('genres')}
-        />
-        <MultiSelect
-          multiple={true}
-          radius='md'
-          size='md'
-          clearable
-          searchable
-          creatable
-          getCreateLabel={(query) => `+ Create ${query}`}
-          onCreate={(query) => {
-            const item = { value: query, label: query }
-            const platform: Platform = { id: '', platformName: query }
-            setPlatforms((current) => [...current, item])
-            addPlatform(platform)
-            return item
-          }}
-          transitionProps={{ transition: 'pop-bottom-left', duration: 200 }}
-          label='Platforms'
-          placeholder='Pick some'
-          data={platforms}
-          {...form.getInputProps('platforms')}
-        />
-        <Button
-          className='hover:bg-primary-hover bg-emerald-500 text-white'
-          type='submit'
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className={`flex flex-col justify-start gap-4 pt-4 ${
+            props.film.id === '' ? 'p-4' : ''
+          }`}
         >
-          {props.film.id === '' ? 'Add' : 'Update'} Film
-        </Button>
-      </form>
+          <FormField
+            control={form.control}
+            name='name'
+            render={({ field }: { field: FieldValues }) => (
+              <FormItem>
+                <FormLabel htmlFor='name'>Name</FormLabel>
+                <FormControl>
+                  <div className='items-center gap-4'>
+                    <Input
+                      {...field}
+                      id='name'
+                      className='text-base'
+                      placeholder='Which cinematic masterpiece is it today?'
+                    />
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='releaseDate'
+            render={({ field }) => (
+              <FormItem className='flex flex-col'>
+                <FormLabel>Release Date</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={'outline'}
+                        className={cn(
+                          'w-[240px] pl-3 text-left font-normal',
+                          !field.value && 'text-muted-foreground'
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, 'PPP')
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                        <IconCalendar className='ml-auto h-4 w-4 opacity-50' />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-auto p-0' align='start'>
+                    <Calendar
+                      mode='single'
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date('1900-01-01')
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='runTime'
+            render={({ field }: { field: FieldValues }) => (
+              <FormItem>
+                <FormLabel htmlFor='name'>Run time</FormLabel>
+                <FormControl>
+                  <div className='items-center gap-4'>
+                    <Input
+                      {...field}
+                      id='runTime'
+                      type='number'
+                      className='text-base'
+                      placeholder='Is it over 90 minutes?'
+                    />
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='watched'
+            render={({ field }) => (
+              <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4'>
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className='space-y-1 leading-none'>
+                  <FormLabel>Watched</FormLabel>
+                </div>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='directors'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Directors</FormLabel>
+                <MultiSelector
+                  onValuesChange={field.onChange}
+                  values={field.value}
+                  list={directors}
+                >
+                  <MultiSelectorTrigger>
+                    <MultiSelectorInput placeholder='Pick some...?' />
+                  </MultiSelectorTrigger>
+                  <MultiSelectorContent>
+                    <MultiSelectorList>
+                      {directors.map((expense) => (
+                        <MultiSelectorItem
+                          key={expense.value}
+                          value={expense.value}
+                        >
+                          <div className='flex items-center space-x-2'>
+                            <span>{expense.label}</span>
+                          </div>
+                        </MultiSelectorItem>
+                      ))}
+                    </MultiSelectorList>
+                  </MultiSelectorContent>
+                </MultiSelector>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='genres'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Genres</FormLabel>
+                <MultiSelector
+                  onValuesChange={field.onChange}
+                  values={field.value}
+                  list={genres}
+                >
+                  <MultiSelectorTrigger>
+                    <MultiSelectorInput placeholder='Pick some...?' />
+                  </MultiSelectorTrigger>
+                  <MultiSelectorContent>
+                    <MultiSelectorList>
+                      {genres.map((expense) => (
+                        <MultiSelectorItem
+                          key={expense.value}
+                          value={expense.value}
+                        >
+                          <div className='flex items-center space-x-2'>
+                            <span>{expense.label}</span>
+                          </div>
+                        </MultiSelectorItem>
+                      ))}
+                    </MultiSelectorList>
+                  </MultiSelectorContent>
+                </MultiSelector>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='platforms'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Platforms</FormLabel>
+                <MultiSelector
+                  onValuesChange={field.onChange}
+                  values={field.value}
+                  list={platforms}
+                >
+                  <MultiSelectorTrigger>
+                    <MultiSelectorInput placeholder='Pick some...?' />
+                  </MultiSelectorTrigger>
+                  <MultiSelectorContent>
+                    <MultiSelectorList>
+                      {platforms.map((expense) => (
+                        <MultiSelectorItem
+                          key={expense.value}
+                          value={expense.value}
+                        >
+                          <div className='flex items-center space-x-2'>
+                            <span>{expense.label}</span>
+                          </div>
+                        </MultiSelectorItem>
+                      ))}
+                    </MultiSelectorList>
+                  </MultiSelectorContent>
+                </MultiSelector>
+              </FormItem>
+            )}
+          />
+          <Button type='submit'>
+            {props.film.id === '' ? 'Add' : 'Update'} Film
+          </Button>
+        </form>
+      </Form>
     </div>
   )
 }

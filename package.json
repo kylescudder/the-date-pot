@@ -59,7 +59,7 @@
     "postgres": "^3.4.4",
     "prettier-plugin-tailwindcss": "0.6.9",
     "react": "19.0.0-rc-66855b96-20241106",
-    "react-day-picker": "^9.1.4",
+    "react-day-picker": "8.10.1",
     "react-dom": "19.0.0-rc-66855b96-20241106",
     "react-hook-form": "7.53.0",
     "react-toastify": "10.0.6",
