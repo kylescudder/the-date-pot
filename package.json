@@ -16,7 +16,7 @@
     "@clerk/nextjs": "6.5.0",
     "@clerk/themes": "2.1.48",
     "@emotion/cache": "11.13.5",
-    "@emotion/react": "11.13.3",
+    "@emotion/react": "11.13.5",
     "@emotion/server": "11.11.0",
     "@emotion/styled": "11.13.5",
     "@fontsource/ubuntu": "5.1.0",
