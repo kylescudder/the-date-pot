@@ -12,7 +12,7 @@ import {
   deleteToast,
   successToast
 } from '@/lib/actions/toast.actions'
-import { IconTrash, IconCirclePlus } from '@tabler/icons-react'
+import { IconCirclePlus, IconTrash } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
 import Map from '../shared/Map'
 import { option } from '@/lib/models/select-options'
@@ -282,7 +282,7 @@ export default function AddRestaurant(props: {
             </div>
             <FullScreenModal
               button={
-                <Button className='r-0 bg-success' aria-label='add'>
+                <Button aria-label='add'>
                   <IconCirclePlus />
                 </Button>
               }

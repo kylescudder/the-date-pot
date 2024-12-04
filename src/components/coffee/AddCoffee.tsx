@@ -7,7 +7,7 @@ import {
   deleteToast,
   successToast
 } from '@/lib/actions/toast.actions'
-import { IconTrash, IconCirclePlus, IconCircleMinus } from '@tabler/icons-react'
+import { IconTrash, IconCircleMinus, IconCirclePlus } from '@tabler/icons-react'
 import {
   archiveCoffee,
   deleteCoffeeRating,
@@ -206,7 +206,7 @@ export default function AddCoffee(props: {
             </div>
             <FullScreenModal
               button={
-                <Button className='r-0 bg-success' aria-label='add'>
+                <Button aria-label='add'>
                   <IconCirclePlus />
                 </Button>
               }
