@@ -4,11 +4,11 @@ import React from 'react'
 import AddCoffee from './AddCoffee'
 import Loading from '../shared/Loading'
 import List from '../shared/List'
-import { Rating } from '@mantine/core'
 import { Coffee, User } from '@/server/db/schema'
 import { CoffeeRatings } from '@/lib/models/coffeeRatings'
 import { ColumnDef } from '@tanstack/react-table'
 import { DataTableColumnHeader } from '../ui/data-table-header'
+import { StarRating } from '../ui/star-rating'
 
 export default function CoffeeList(props: {
   coffees: Coffee[]
@@ -46,12 +46,12 @@ export default function CoffeeList(props: {
       cell: ({ row }) => {
         return (
           <div className='justify-center'>
-            <Rating
+            <StarRating
               name='average'
-              fractions={2}
-              size='lg'
-              readOnly
+              max={5}
               value={row.getValue('avgRating')}
+              increment={0.5}
+              readOnly
             />
           </div>
         )
@@ -65,12 +65,12 @@ export default function CoffeeList(props: {
       cell: ({ row }) => {
         return (
           <div className='justify-center'>
-            <Rating
+            <StarRating
               name='experience'
-              fractions={2}
-              size='lg'
-              readOnly
+              max={5}
               value={row.getValue('avgExperience')}
+              increment={0.5}
+              readOnly
             />
           </div>
         )
@@ -84,12 +84,12 @@ export default function CoffeeList(props: {
       cell: ({ row }) => {
         return (
           <div className='justify-center'>
-            <Rating
+            <StarRating
               name='taste'
-              fractions={2}
-              size='lg'
-              readOnly
+              max={5}
               value={row.getValue('avgTaste')}
+              increment={0.5}
+              readOnly
             />
           </div>
         )

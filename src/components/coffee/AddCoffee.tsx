@@ -15,7 +15,6 @@ import {
   updateCoffeeRating
 } from '@/lib/actions/coffee.action'
 import { FieldValues, useForm } from 'react-hook-form'
-import { Rating } from '@mantine/core'
 import BackButton from '../shared/BackButton'
 import Map from '@/components/shared/Map'
 import AddCoffeeRating from './AddCoffeeRating'
@@ -26,6 +25,7 @@ import { CoffeeRatings } from '@/lib/models/coffeeRatings'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form'
+import { StarRating } from '../ui/star-rating'
 
 export default function AddCoffee(props: {
   coffee: Coffee
@@ -243,24 +243,24 @@ export default function AddCoffee(props: {
                       <span className='mr-2 inline-block w-32 rounded-full px-3 py-1 text-center text-sm font-black'>
                         Taste
                       </span>
-                      <Rating
+                      <StarRating
+                        max={5}
+                        increment={0.5}
                         name='taste'
                         value={rating.taste}
                         onChange={(value) => handleTasteChange(value, i)}
-                        fractions={2}
-                        size='xl'
                       />
                     </div>
                     <div className='flex items-center pt-5 text-base'>
                       <span className='mr-2 inline-block w-32 rounded-full px-3 py-1 text-center text-sm font-black'>
                         Experience
                       </span>
-                      <Rating
+                      <StarRating
+                        max={5}
+                        increment={0.5}
                         name='experience'
                         value={rating.experience}
                         onChange={(value) => handleExperienceChange(value, i)}
-                        fractions={2}
-                        size='xl'
                       />
                     </div>
                   </div>

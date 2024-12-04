@@ -4,11 +4,11 @@ import React from 'react'
 import AddBeer from './AddBeer'
 import Loading from '../shared/Loading'
 import List from '../shared/List'
-import { Rating } from '@mantine/core'
 import { Beer, BeerType, Brewery, User } from '@/server/db/schema'
 import { BeerRatings } from '@/lib/models/beerRatings'
 import { ColumnDef } from '@tanstack/react-table'
 import { DataTableColumnHeader } from '../ui/data-table-header'
+import { StarRating } from '../ui/star-rating'
 
 export default function BeerList(props: {
   beers: Beer[]
@@ -49,12 +49,12 @@ export default function BeerList(props: {
       cell: ({ row }) => {
         return (
           <div className='justify-center'>
-            <Rating
+            <StarRating
+              max={5}
               name='average'
-              fractions={2}
-              size='lg'
-              readOnly
               value={row.getValue('avgRating')}
+              increment={0.5}
+              readOnly
             />
           </div>
         )
@@ -68,12 +68,12 @@ export default function BeerList(props: {
       cell: ({ row }) => {
         return (
           <div className='justify-center'>
-            <Rating
+            <StarRating
+              max={5}
               name='wankyness'
-              fractions={2}
-              size='lg'
-              readOnly
               value={row.getValue('avgWankyness')}
+              increment={0.5}
+              readOnly
             />
           </div>
         )
@@ -87,12 +87,12 @@ export default function BeerList(props: {
       cell: ({ row }) => {
         return (
           <div className='justify-center'>
-            <Rating
+            <StarRating
+              max={5}
               name='taste'
-              fractions={2}
-              size='lg'
-              readOnly
               value={row.getValue('avgTaste')}
+              increment={0.5}
+              readOnly
             />
           </div>
         )

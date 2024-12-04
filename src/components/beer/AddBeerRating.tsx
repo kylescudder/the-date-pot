@@ -1,12 +1,11 @@
 'usea   client'
 
-import { Rating } from '@mantine/core'
 import { option } from '@/lib/models/select-options'
 import { Beer, User } from '@/server/db/schema'
 import { BeerRatings } from '@/lib/models/beerRatings'
 import { updateBeerRating } from '@/lib/actions/beer.action'
 import { Button } from '@/components/ui/button'
-import { useForm, type FieldValues } from 'react-hook-form'
+import { Controller, useForm, type FieldValues } from 'react-hook-form'
 import {
   Form,
   FormControl,
@@ -23,6 +22,7 @@ import {
   MultiSelectorList,
   MultiSelectorTrigger
 } from '@/components/ui/multi-select'
+import { StarRating } from '../ui/star-rating'
 
 export default function AddBeerRating(props: {
   beer: Beer
@@ -124,36 +124,55 @@ export default function AddBeerRating(props: {
         <FormField
           control={form.control}
           name='taste'
-          render={({ field }: { field: FieldValues }) => (
+          render={({ field }) => (
             <FormItem>
-              <div className='flex items-center pt-2 text-base'>
-                <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
-                  Taste
-                </span>
-                <FormControl>
-                  <Rating {...field} name='taste' fractions={2} size='xl' />
-                </FormControl>
-              </div>
+              <FormLabel>Taste</FormLabel>
+              <FormControl>
+                <Controller
+                  name='taste'
+                  control={form.control}
+                  render={({ field: { onChange, value } }) => (
+                    <StarRating
+                      max={5}
+                      value={value}
+                      onChange={(newValue) => {
+                        onChange(newValue)
+                      }}
+                      increment={0.5}
+                    />
+                  )}
+                />
+              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
         <FormField
           control={form.control}
           name='wankyness'
-          render={({ field }: { field: FieldValues }) => (
+          render={({ field }) => (
             <FormItem>
-              <div className='flex items-center pt-2 text-base'>
-                <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
-                  Wankyness
-                </span>
-                <FormControl>
-                  <Rating {...field} name='wankyness' fractions={2} size='xl' />
-                </FormControl>
-              </div>
+              <FormLabel>Wankyness</FormLabel>
+              <FormControl>
+                <Controller
+                  name='wankyness'
+                  control={form.control}
+                  render={({ field: { onChange, value } }) => (
+                    <StarRating
+                      max={5}
+                      value={value}
+                      onChange={(newValue) => {
+                        onChange(newValue)
+                      }}
+                      increment={0.5}
+                    />
+                  )}
+                />
+              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
-
         <Button
           className='hover:bg-primary-hover bg-emerald-500 text-white'
           type='submit'

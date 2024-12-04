@@ -15,7 +15,6 @@ import {
   updateBeerRating
 } from '@/lib/actions/beer.action'
 import { option } from '@/lib/models/select-options'
-import { Rating } from '@mantine/core'
 import BackButton from '../shared/BackButton'
 import AddBeerRating from './AddBeerRating'
 import FullScreenModal from '../shared/FullScreenModal'
@@ -43,6 +42,7 @@ import {
   MultiSelectorList,
   MultiSelectorTrigger
 } from '@/components/ui/multi-select'
+import { StarRating } from '../ui/star-rating'
 
 export default function AddBeer(props: {
   beer: Beers
@@ -373,24 +373,24 @@ export default function AddBeer(props: {
                       <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
                         Taste
                       </span>
-                      <Rating
+                      <StarRating
+                        max={5}
+                        increment={0.5}
                         name='taste'
                         value={rating.taste}
                         onChange={(value) => handleTasteChange(value, i)}
-                        fractions={2}
-                        size='xl'
                       />
                     </div>
                     <div className='flex items-center pt-5 text-base'>
                       <span className='mr-2 inline-block w-32 rounded-full bg-gray-200 px-3 py-1 text-center text-sm font-black text-gray-700'>
                         Wankyness
                       </span>
-                      <Rating
+                      <StarRating
+                        max={5}
+                        increment={0.5}
                         name='wankyness'
                         value={rating.wankyness}
                         onChange={(value) => handleWankynessChange(value, i)}
-                        fractions={2}
-                        size='xl'
                       />
                     </div>
                   </div>
