@@ -53,7 +53,7 @@ export function AppSidebar(props: { pots: Pot[] }) {
                 align='start'
               >
                 <DropdownMenuItem>
-                  <Logout placement='top' />
+                  <Logout />
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
