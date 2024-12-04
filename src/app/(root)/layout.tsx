@@ -4,7 +4,6 @@ import { ClerkProvider } from '@clerk/nextjs'
 import { currentUser } from '@clerk/nextjs/server'
 import { dark } from '@clerk/themes'
 import '@/styles/globals.css'
-import Topbar from '@/components/shared/Topbar'
 import { MainContent } from '@/components/shared/MainContent'
 import { getUserInfo } from '@/lib/actions/user.actions'
 import { redirect } from 'next/navigation'
@@ -15,6 +14,7 @@ import { Pot, User } from '@/server/db/schema'
 import { ThemeProvider } from '@/components/theme-provider'
 import { AppSidebar } from '@/components/shared/AppSidebar'
 import { SidebarProvider } from '@/components/ui/sidebar'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 export const viewport: Viewport = {
   themeColor: '#877EFF'
@@ -116,6 +116,7 @@ export default async function RootLayout({
     >
       <html lang='en'>
         <body>
+          <SpeedInsights />
           <ThemeProvider
             attribute='class'
             defaultTheme='system'
