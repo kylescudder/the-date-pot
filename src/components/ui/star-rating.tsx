@@ -2,10 +2,7 @@ import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
 
 interface StarRatingProps
-  extends Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    'onChange' | 'value'
-  > {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   max?: number
   value?: number
   onChange?: (value: number) => void
