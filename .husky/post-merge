@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Check if there were changes to package.json or bun.lockb
+if git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep --quiet "^package.json\|^bun.lockb"; then
+    echo "Changes to dependencies detected. Running bun i..."
+    bun i
+else
+    echo "No dependency changes detected."
+fi
