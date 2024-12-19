@@ -57,7 +57,7 @@
     "react-day-picker": "9.4.4",
     "react-dom": "19.0.0",
     "react-hook-form": "7.54.1",
-    "react-toastify": "10.0.6",
+    "react-toastify": "11.0.2",
     "serwist": "9.0.11",
     "styled-components": "6.1.13",
     "tailwind-merge": "2.5.5",
