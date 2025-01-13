@@ -1,5 +1,4 @@
 'use client'
-
 import React from 'react'
 import { usePathname } from 'next/navigation'
 import Icon from './Icon'
@@ -10,20 +9,23 @@ export default function NavOptions(props: { position: string; pots: Pot[] }) {
   const pathname = usePathname()
   return (
     <div className='contents w-full'>
-      <a href='/' className={`${props.position}_link ${pathname === '/'}`}>
-        <Icon
-          name={'IconHome'}
-          stroke='2'
-          strokeLinejoin='miter'
-          isActive={false}
-        />
-        <p className='relative flex font-black'>Home</p>
-      </a>
+      <SidebarMenuItem>
+        <SidebarMenuButton asChild>
+          <a href='/' className='mb-3 flex items-center gap-2 text-xl'>
+            <Icon
+              name={'IconHome'}
+              stroke='2'
+              strokeLinejoin='miter'
+              isActive={false}
+            />
+            <p className='relative font-black'>Home</p>
+          </a>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
       {props.pots.map((pot) => {
         const potNameDepluralised = pot.potName.endsWith('s')
           ? pot.potName.substring(0, pot.potName.length - 1).toLowerCase()
           : pot.potName.toLowerCase()
-
         let potNamePluralised = ''
         if (pot.potName.endsWith('y')) {
           // Pluralisation of names that end in y
@@ -37,19 +39,17 @@ export default function NavOptions(props: { position: string; pots: Pot[] }) {
         } else {
           potNamePluralised = pot.potName.toLowerCase()
         }
-
         const isActive =
           (pathname.includes(potNameDepluralised) &&
             potNameDepluralised.length > 1) ||
           pathname === potNameDepluralised
-
         return (
           <SidebarMenuItem key={pot.id}>
             <SidebarMenuButton asChild>
               <a
                 href={`/${potNamePluralised}`}
                 key={pot.id}
-                className={`${props.position}_link ${isActive && 'hover:bg-primary-hover text-emerald-500'}`}
+                className='my-3 flex items-center gap-2 text-xl'
               >
                 <Icon
                   name={pot.icon}
@@ -58,7 +58,7 @@ export default function NavOptions(props: { position: string; pots: Pot[] }) {
                   isActive={isActive}
                 />
                 <p
-                  className={`${isActive && 'text-white'} relative flex font-black`}
+                  className={`${isActive && 'text-primary'} relative font-black`}
                 >
                   {pot.potName}
                 </p>

@@ -7,7 +7,8 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem
+  SidebarMenuItem,
+  SidebarTrigger
 } from '@/components/ui/sidebar'
 import NavOptions from './NavOptions'
 import { Pot } from '@/server/db/schema'
@@ -19,11 +20,18 @@ import {
   DropdownMenuTrigger
 } from '../ui/dropdown-menu'
 import { UserButton } from '@clerk/nextjs'
-import { IconCaretUpDown } from '@tabler/icons-react'
+import { IconCaretUpDown, IconHomeHeart, IconX } from '@tabler/icons-react'
 
 export function AppSidebar(props: { pots: Pot[] }) {
   return (
     <Sidebar variant='inset'>
+      <div className='flex items-center justify-between p-4 md:hidden'>
+        <div className='flex items-center gap-2'>
+          <span className='text-lg font-semibold'>The Date Pot</span>
+          <IconHomeHeart className='h-6 w-6' />
+        </div>
+        <SidebarTrigger />
+      </div>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
