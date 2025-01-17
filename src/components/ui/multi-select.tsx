@@ -19,6 +19,7 @@ import React, {
   useState
 } from 'react'
 import { option } from '@/lib/models/select-options'
+import { log } from '@logtail/next'
 
 type MultiSelectorProps = {
   values: string | string[]
@@ -45,7 +46,8 @@ const MultiSelectContext = createContext<MultiSelectContextProps | null>(null)
 const useMultiSelect = () => {
   const context = useContext(MultiSelectContext)
   if (!context) {
-    throw new Error('useMultiSelect must be used within MultiSelectProvider')
+    log.error('useMultiSelect must be used within MultiSelectProvider')
+    throw new Error()
   }
   return context
 }

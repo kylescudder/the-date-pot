@@ -14,12 +14,16 @@ import { getUserGroup, getUserInfo } from './user.actions'
 import { uuidv4 } from '../utils'
 import { Coffees } from '../models/coffees'
 import { CoffeeRatings } from '../models/coffeeRatings'
+import { log } from '@logtail/next'
 
 export async function getCoffeeList(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const coffees = await db
       .select()
@@ -60,19 +64,29 @@ export async function getCoffeeList(id: string) {
     )
     return coffeesWithRating
   } catch (error: any) {
-    throw new Error(`Failed to find coffees: ${error.message}`)
+    log.error(`Failed to find coffees: ${error.message}`)
+    throw new Error()
   }
 }
 export async function getCoffee(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const userInfo = await getUserInfo(user?.userId ?? '')
-    if (!userInfo) throw new Error('User info not found')
+    if (!userInfo) {
+      log.error('User info not found')
+      throw new Error()
+    }
     const userGroup = await getUserGroup(userInfo.id)
-    if (!userGroup) throw new Error('User group info not found')
+    if (!userGroup) {
+      log.error('User group info not found')
+      throw new Error()
+    }
 
     const records = await db
       .select()
@@ -82,14 +96,18 @@ export async function getCoffee(id: string) {
 
     return records[0]
   } catch (error: any) {
-    throw new Error(`Failed to find coffee: ${error.message}`)
+    log.error(`Failed to find coffee: ${error.message}`)
+    throw new Error()
   }
 }
 export async function getCoffeeRatings(id: string) {
   try {
-    const authuser = await auth()
+    const user = await auth()
 
-    if (!authuser.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const extenededCoffeeRating = await db
       .select()
@@ -112,25 +130,33 @@ export async function getCoffeeRatings(id: string) {
 
     return coffeeRatings
   } catch (error: any) {
-    throw new Error(`Failed to find coffee ratings: ${error.message}`)
+    log.error(`Failed to find coffee ratings: ${error.message}`)
+    throw new Error()
   }
 }
 export async function deleteCoffeeRating(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     await db.delete(coffeeRating).where(eq(coffeeRating.id, id))
   } catch (error: any) {
-    throw new Error(`Failed to find coffee ratings: ${error.message}`)
+    log.error(`Failed to find coffee ratings: ${error.message}`)
+    throw new Error()
   }
 }
 export async function updateCoffeeRating(coffeeRatingData: CoffeeRating) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     if (coffeeRatingData.id === '') {
       coffeeRatingData.id = uuidv4().toString()
@@ -158,19 +184,29 @@ export async function updateCoffeeRating(coffeeRatingData: CoffeeRating) {
 
     return records[0]
   } catch (error: any) {
-    throw new Error(`Failed to create/update coffee ratings: ${error.message}`)
+    log.error(`Failed to create/update coffee ratings: ${error.message}`)
+    throw new Error()
   }
 }
 export async function updateCoffee(coffeeData: Coffee) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const userInfo = await getUserInfo(user?.userId ?? '')
-    if (!userInfo) throw new Error('User info not found')
+    if (!userInfo) {
+      log.error('User info not found')
+      throw new Error()
+    }
     const userGroup = await getUserGroup(userInfo.id)
-    if (!userGroup) throw new Error('User group info not found')
+    if (!userGroup) {
+      log.error('User group info not found')
+      throw new Error()
+    }
 
     if (coffeeData.id === '') {
       coffeeData.id = uuidv4().toString()
@@ -200,14 +236,18 @@ export async function updateCoffee(coffeeData: Coffee) {
 
     return records[0]
   } catch (error: any) {
-    throw new Error(`Failed to create/update coffee: ${error.message}`)
+    log.error(`Failed to create/update coffee: ${error.message}`)
+    throw new Error()
   }
 }
 export async function archiveCoffee(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     return await db
       .update(coffee)
@@ -216,6 +256,7 @@ export async function archiveCoffee(id: string) {
       })
       .where(eq(coffee.id, id))
   } catch (error: any) {
-    throw new Error(`Failed to archive coffee: ${error.message}`)
+    log.error(`Failed to archive coffee: ${error.message}`)
+    throw new Error()
   }
 }

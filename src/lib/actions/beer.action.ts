@@ -15,12 +15,16 @@ import { getUserGroup, getUserInfo } from './user.actions'
 import { uuidv4 } from '../utils'
 import { Beers } from '../models/beers'
 import { BeerRatings } from '../models/beerRatings'
+import { log } from '@logtail/next'
 
 export async function getBeerList(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const beers = await db
       .select()
@@ -62,7 +66,8 @@ export async function getBeerList(id: string) {
     )
     return beersWithRating
   } catch (error: any) {
-    throw new Error(`Failed to find beers: ${error.message}`)
+    log.error(`Failed to find beers: ${error.message}`)
+    throw new Error()
   }
 }
 
@@ -70,13 +75,21 @@ export async function getBeer(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
-    if (!user) return null
     const userInfo = await getUserInfo(user?.userId ?? '')
-    if (!userInfo) throw new Error('User info not found')
+    if (!userInfo) {
+      log.error('User info not found')
+      throw new Error()
+    }
     const userGroup = await getUserGroup(userInfo.id)
-    if (!userGroup) throw new Error('User group info not found')
+    if (!userGroup) {
+      log.error('User group info not found')
+      throw new Error()
+    }
 
     const beers = await db.select().from(beer).where(eq(beer.id, id)).limit(1)
 
@@ -118,14 +131,18 @@ export async function getBeer(id: string) {
 
     return beerDetails
   } catch (error: any) {
-    throw new Error(`Failed to find beer: ${error.message}`)
+    log.error(`Failed to find beer: ${error.message}`)
+    throw new Error()
   }
 }
 export async function getBeerRatings(id: string) {
   try {
-    const authuser = await auth()
+    const user = await auth()
 
-    if (!authuser.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const extenededBeerRating = await db
       .select()
@@ -146,25 +163,33 @@ export async function getBeerRatings(id: string) {
 
     return beerRatings
   } catch (error: any) {
-    throw new Error(`Failed to find beer ratings: ${error.message}`)
+    log.error(`Failed to find beer ratings: ${error.message}`)
+    throw new Error()
   }
 }
 export async function deleteBeerRating(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     await db.delete(beerRating).where(eq(beerRating.id, id))
   } catch (error: any) {
-    throw new Error(`Failed to delete beer ratings: ${error.message}`)
+    log.error(`Failed to delete beer ratings: ${error.message}`)
+    throw new Error()
   }
 }
 export async function updateBeerRating(beerRatingData: BeerRatings) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     if (beerRatingData.id === '') {
       beerRatingData.id = uuidv4().toString()
@@ -192,19 +217,29 @@ export async function updateBeerRating(beerRatingData: BeerRatings) {
 
     return records[0]
   } catch (error: any) {
-    throw new Error(`Failed to create/update beer ratings: ${error.message}`)
+    log.error(`Failed to create/update beer ratings: ${error.message}`)
+    throw new Error()
   }
 }
 export async function updateBeer(beerData: Beers) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const userInfo = await getUserInfo(user?.userId ?? '')
-    if (!userInfo) throw new Error('User info not found')
+    if (!userInfo) {
+      log.error('User info not found')
+      throw new Error()
+    }
     const userGroup = await getUserGroup(userInfo.id)
-    if (!userGroup) throw new Error('User group info not found')
+    if (!userGroup) {
+      log.error('User group info not found')
+      throw new Error()
+    }
 
     if (beerData.id === '') {
       beerData.id = uuidv4().toString()
@@ -267,14 +302,18 @@ export async function updateBeer(beerData: Beers) {
 
     return record[0]
   } catch (error: any) {
-    throw new Error(`Failed to create/update beer: ${error.message}`)
+    log.error(`Failed to create/update beer: ${error.message}`)
+    throw new Error()
   }
 }
 export async function archiveBeer(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     await db
       .update(beer)
@@ -283,6 +322,7 @@ export async function archiveBeer(id: string) {
       })
       .where(eq(beer.id, id))
   } catch (error: any) {
-    throw new Error(`Failed to archive beer: ${error.message}`)
+    log.error(`Failed to archive beer: ${error.message}`)
+    throw new Error()
   }
 }

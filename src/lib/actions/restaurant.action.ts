@@ -12,31 +12,45 @@ import {
   restaurantWhens
 } from '@/server/db/schema'
 import { Restaurants } from '../models/restaurants'
+import { log } from '@logtail/next'
 
 export async function getRestaurantList(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     return await db
       .select()
       .from(restaurant)
       .where(and(eq(restaurant.userGroupId, id), eq(restaurant.archive, false)))
   } catch (error: any) {
-    throw new Error(`Failed to find restaurants: ${error.message}`)
+    log.error(`Failed to find restaurants: ${error.message}`)
+    throw new Error()
   }
 }
 export async function getRestaurant(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const userInfo = await getUserInfo(user?.userId ?? '')
-    if (!userInfo) throw new Error('User info not found')
+    if (!userInfo) {
+      log.error('User info not found')
+      throw new Error()
+    }
     const userGroup = await getUserGroup(userInfo.id)
-    if (!userGroup) throw new Error('User group info not found')
+    if (!userGroup) {
+      log.error('User group info not found')
+      throw new Error()
+    }
 
     const restaurants = await db
       .select()
@@ -80,19 +94,29 @@ export async function getRestaurant(id: string) {
 
     return restaurantDetails
   } catch (error: any) {
-    throw new Error(`Failed to find restaurant: ${error.message}`)
+    log.error(`Failed to find restaurant: ${error.message}`)
+    throw new Error()
   }
 }
 export async function updateRestaurant(restaurantData: Restaurants) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const userInfo = await getUserInfo(user?.userId ?? '')
-    if (!userInfo) throw new Error('User info not found')
+    if (!userInfo) {
+      log.error('User info not found')
+      throw new Error()
+    }
     const userGroup = await getUserGroup(userInfo.id)
-    if (!userGroup) throw new Error('User group info not found')
+    if (!userGroup) {
+      log.error('User group info not found')
+      throw new Error()
+    }
 
     if (restaurantData.id === '') {
       restaurantData.id = uuidv4().toString()
@@ -156,25 +180,33 @@ export async function updateRestaurant(restaurantData: Restaurants) {
 
     return record[0]
   } catch (error: any) {
-    throw new Error(`Failed to create/update restaurant: ${error.message}`)
+    log.error(`Failed to create/update restaurant: ${error.message}`)
+    throw new Error()
   }
 }
 export async function deleteRestaurantNote(note: string, id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     return await db.delete(restaurantNote).where(eq(restaurantNote.id, id))
   } catch (error: any) {
-    throw new Error(`Failed to delete note: ${error.message}`)
+    log.error(`Failed to delete note: ${error.message}`)
+    throw new Error()
   }
 }
 export async function archiveRestaurant(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     return await db
       .update(restaurant)
@@ -183,6 +215,7 @@ export async function archiveRestaurant(id: string) {
       })
       .where(eq(restaurant.id, id))
   } catch (error: any) {
-    throw new Error(`Failed to archive restaurant: ${error.message}`)
+    log.error(`Failed to archive restaurant: ${error.message}`)
+    throw new Error()
   }
 }

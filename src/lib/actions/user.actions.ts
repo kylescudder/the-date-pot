@@ -7,12 +7,16 @@ import { revalidatePath } from 'next/cache'
 import { sql } from 'drizzle-orm/sql/sql'
 import { group, user, userGroups, type User } from '@/server/db/schema'
 import { Users } from '../models/users'
+import { log } from '@logtail/next'
 
 export async function getUserInfo(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     return await db.query.user.findFirst({
       where(fields, operators) {
@@ -20,14 +24,18 @@ export async function getUserInfo(id: string) {
       }
     })
   } catch (error: any) {
-    throw new Error(`Failed to get user info: ${error.message}`)
+    log.error(`Failed to get user info: ${error.message}`)
+    throw new Error()
   }
 }
 export async function updateUser(userData: User, path: string) {
   try {
-    const users = await auth()
+    const user = await auth()
 
-    if (!users.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     await db
       .update(user)
@@ -44,14 +52,18 @@ export async function updateUser(userData: User, path: string) {
       revalidatePath(path)
     }
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`)
+    log.error(`Failed to create/update user: ${error.message}`)
+    throw new Error()
   }
 }
 export async function getUserGroup(id: string) {
   try {
-    const userAuth = await auth()
+    const user = await auth()
 
-    if (!userAuth.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const userGroupRecords = await db
       .select()
@@ -61,19 +73,29 @@ export async function getUserGroup(id: string) {
 
     return userGroupRecords[0].group
   } catch (error: any) {
-    throw new Error(`Failed to get user groups: ${error.message}`)
+    log.error(`Failed to get user groups: ${error.message}`)
+    throw new Error()
   }
 }
 export async function getGroupUsers() {
   try {
-    const userAuth = await auth()
+    const user = await auth()
 
-    if (!userAuth.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
-    const userInfo = await getUserInfo(userAuth?.userId ?? '')
-    if (!userInfo) throw new Error('User info not found')
-    const groupUsers = await getUserGroup(userInfo.id)
-    if (!groupUsers) throw new Error('User group info not found')
+    const userInfo = await getUserInfo(user?.userId ?? '')
+    if (!userInfo) {
+      log.error('User info not found')
+      throw new Error()
+    }
+    const userGroup = await getUserGroup(userInfo.id)
+    if (!userGroup) {
+      log.error('User group info not found')
+      throw new Error()
+    }
 
     const records = await db
       .select()
@@ -92,6 +114,7 @@ export async function getGroupUsers() {
 
     return users
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`)
+    log.error(`Failed to create/update user: ${error.message}`)
+    throw new Error()
   }
 }
