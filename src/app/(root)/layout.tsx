@@ -7,7 +7,6 @@ import '@/styles/globals.css'
 import { MainContent } from '@/components/shared/MainContent'
 import { getUserInfo } from '@/lib/actions/user.actions'
 import { redirect } from 'next/navigation'
-import { Toast } from '@/components/shared/Toast'
 import { getPots } from '@/lib/actions/pot.actions'
 import { Source_Code_Pro } from 'next/font/google'
 import { Pot, User } from '@/server/db/schema'
@@ -128,7 +127,6 @@ export default async function RootLayout({
             <SidebarProvider>
               <AppSidebar pots={pots} />
               <MainContent pots={pots} children={children} />
-              <Toast />
             </SidebarProvider>
           </ThemeProvider>
         </body>

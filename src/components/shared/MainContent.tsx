@@ -4,6 +4,7 @@ import CustomThemeProvider from '@/components/shared/CustomThemeProvider'
 import { Pot } from '@/server/db/schema'
 import Topbar from './Topbar'
 import { SidebarInset } from '../ui/sidebar'
+import { Toaster } from '@/components/ui/sonner'
 
 export const MainContent = (props: {
   pots: Pot[]
@@ -19,6 +20,7 @@ export const MainContent = (props: {
           </div>
         </section>
       </main>
+      <Toaster />
     </CustomThemeProvider>
   )
 }
