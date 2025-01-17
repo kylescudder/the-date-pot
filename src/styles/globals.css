@@ -83,9 +83,6 @@
   }
 }
 
-body {
-  font-family: 'Ubuntu', sans-serif;
-}
 .bottombar_link {
   @apply relative flex flex-col items-center gap-2 rounded-lg p-2 sm:flex-1 sm:px-2 sm:py-2.5;
 }
