@@ -70,6 +70,8 @@ export default function List(props: {
           }
           form={props.addRecordComp}
           title={`Add ${props.potName}`}
+          open={open}
+          onOpenChange={setOpen}
         />
         <div
           className={`relative ${
