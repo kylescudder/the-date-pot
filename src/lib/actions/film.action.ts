@@ -20,12 +20,16 @@ import {
 } from '@/server/db/schema'
 import { uuidv4 } from '../utils'
 import { Films } from '../models/films'
+import { log } from '@logtail/next'
 
 export async function getFilmList(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const films = await db
       .select()
@@ -75,19 +79,29 @@ export async function getFilmList(id: string) {
 
     return filmDetails
   } catch (error: any) {
-    throw new Error(`Failed to find films: ${error.message}`)
+    log.error(`Failed to find films: ${error.message}`)
+    throw new Error()
   }
 }
 export async function getFilm(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const userInfo = await getUserInfo(user?.userId ?? '')
-    if (!userInfo) throw new Error('User info not found')
+    if (!userInfo) {
+      log.error('User info not found')
+      throw new Error()
+    }
     const userGroup = await getUserGroup(userInfo.id)
-    if (!userGroup) throw new Error('User group info not found')
+    if (!userGroup) {
+      log.error('User group info not found')
+      throw new Error()
+    }
 
     const films = await db.select().from(film).where(eq(film.id, id)).limit(1)
 
@@ -139,19 +153,29 @@ export async function getFilm(id: string) {
 
     return filmDetails
   } catch (error: any) {
-    throw new Error(`Failed to find film: ${error.message}`)
+    log.error(`Failed to find film: ${error.message}`)
+    throw new Error()
   }
 }
 export async function updateFilm(filmData: Films) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const userInfo = await getUserInfo(user?.userId ?? '')
-    if (!userInfo) throw new Error('User info not found')
+    if (!userInfo) {
+      log.error('User info not found')
+      throw new Error()
+    }
     const userGroup = await getUserGroup(userInfo.id)
-    if (!userGroup) throw new Error('User group info not found')
+    if (!userGroup) {
+      log.error('User group info not found')
+      throw new Error()
+    }
 
     if (filmData.id === '') {
       filmData.id = uuidv4().toString()
@@ -234,14 +258,18 @@ export async function updateFilm(filmData: Films) {
 
     return record[0]
   } catch (error: any) {
-    throw new Error(`Failed to create/update film: ${error.message}`)
+    log.error(`Failed to create/update film: ${error.message}`)
+    throw new Error()
   }
 }
 export async function archiveFilm(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     return await db
       .update(film)
@@ -250,6 +278,7 @@ export async function archiveFilm(id: string) {
       })
       .where(eq(film.id, id))
   } catch (error: any) {
-    throw new Error(`Failed to archive film: ${error.message}`)
+    log.error(`Failed to archive film: ${error.message}`)
+    throw new Error()
   }
 }

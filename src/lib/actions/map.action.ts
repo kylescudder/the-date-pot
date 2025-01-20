@@ -1,3 +1,5 @@
+import { log } from '@logtail/next'
+
 export const getLongLat = async (address: string) => {
   try {
     const response = await fetch(
@@ -5,7 +7,8 @@ export const getLongLat = async (address: string) => {
     )
 
     if (!response.ok) {
-      throw new Error('Failed to fetch data from the API')
+      log.error('Failed to fetch data from the API')
+      throw new Error()
     }
 
     const data = await response.json()
@@ -15,6 +18,7 @@ export const getLongLat = async (address: string) => {
 
     return [lng, lat]
   } catch (error: any) {
-    throw new Error(`Failed to create long/lat: ${error.message}`)
+    log.error(`Failed to create long/lat: ${error.message}`)
+    throw new Error()
   }
 }

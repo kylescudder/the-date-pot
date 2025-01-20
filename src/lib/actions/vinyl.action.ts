@@ -6,12 +6,16 @@ import { eq } from 'drizzle-orm/sql/expressions/conditions'
 import { getUserGroup, getUserInfo } from './user.actions'
 import { Vinyl, vinyl } from '@/server/db/schema'
 import { uuidv4 } from '../utils'
+import { log } from '@logtail/next'
 
 export async function getVinylList(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     return await db.query.vinyl.findMany({
       where(fields, operators) {
@@ -22,19 +26,29 @@ export async function getVinylList(id: string) {
       }
     })
   } catch (error: any) {
-    throw new Error(`Failed to find vinyls: ${error.message}`)
+    log.error(`Failed to find vinyls: ${error.message}`)
+    throw new Error()
   }
 }
 export async function getVinyl(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const userInfo = await getUserInfo(user?.userId ?? '')
-    if (!userInfo) throw new Error('User info not found')
+    if (!userInfo) {
+      log.error('User info not found')
+      throw new Error()
+    }
     const userGroup = await getUserGroup(userInfo.id)
-    if (!userGroup) throw new Error('User group info not found')
+    if (!userGroup) {
+      log.error('User group info not found')
+      throw new Error()
+    }
 
     return await db.query.vinyl.findFirst({
       where(fields, operators) {
@@ -45,19 +59,29 @@ export async function getVinyl(id: string) {
       }
     })
   } catch (error: any) {
-    throw new Error(`Failed to find vinyl: ${error.message}`)
+    log.error(`Failed to find vinyl: ${error.message}`)
+    throw new Error()
   }
 }
 export async function updateVinyl(vinylData: Vinyl) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const userInfo = await getUserInfo(user?.userId ?? '')
-    if (!userInfo) throw new Error('User info not found')
+    if (!userInfo) {
+      log.error('User info not found')
+      throw new Error()
+    }
     const userGroup = await getUserGroup(userInfo.id)
-    if (!userGroup) throw new Error('User group info not found')
+    if (!userGroup) {
+      log.error('User group info not found')
+      throw new Error()
+    }
 
     if (vinylData.id === '') {
       vinylData.id = uuidv4().toString()
@@ -87,14 +111,18 @@ export async function updateVinyl(vinylData: Vinyl) {
       })
       .returning()
   } catch (error: any) {
-    throw new Error(`Failed to create/update vinyl: ${error.message}`)
+    log.error(`Failed to create/update vinyl: ${error.message}`)
+    throw new Error()
   }
 }
 export async function archiveVinyl(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     return await db
       .update(vinyl)
@@ -103,6 +131,7 @@ export async function archiveVinyl(id: string) {
       })
       .where(eq(vinyl.id, id))
   } catch (error: any) {
-    throw new Error(`Failed to archive vinyl: ${error.message}`)
+    log.error(`Failed to archive vinyl: ${error.message}`)
+    throw new Error()
   }
 }
