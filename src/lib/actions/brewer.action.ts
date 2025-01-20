@@ -5,16 +5,21 @@ import { Brewery, brewery } from '@/server/db/schema'
 import { auth } from '@clerk/nextjs/server'
 import { uuidv4 } from '../utils'
 import { eq } from 'drizzle-orm/sql/expressions/conditions'
+import { log } from '@logtail/next'
 
 export async function getBreweryList() {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     return await db.query.brewery.findMany({})
   } catch (error: any) {
-    throw new Error(`Failed to find breweries: ${error.message}`)
+    log.error(`Failed to find breweries: ${error.message}`)
+    throw new Error()
   }
 }
 
@@ -22,7 +27,10 @@ export async function addBrewery(Brewery: Brewery) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     if (Brewery.id === '') {
       Brewery.id = uuidv4().toString()
@@ -36,6 +44,7 @@ export async function addBrewery(Brewery: Brewery) {
       })
       .where(eq(brewery.id, Brewery.id))
   } catch (error: any) {
-    throw new Error(`Failed to add brewery: ${error.message}`)
+    log.error(`Failed to add brewery: ${error.message}`)
+    throw new Error()
   }
 }

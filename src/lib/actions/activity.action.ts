@@ -6,12 +6,16 @@ import { db } from '@/server/db'
 import { eq } from 'drizzle-orm/sql/expressions/conditions'
 import { Activity, activity } from '@/server/db/schema'
 import { uuidv4 } from '../utils'
+import { log } from '@logtail/next'
 
 export async function getActivityList(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     return await db.query.activity.findMany({
       where(fields, operators) {
@@ -22,7 +26,8 @@ export async function getActivityList(id: string) {
       }
     })
   } catch (error: any) {
-    throw new Error(`Failed to find activities: ${error.message}`)
+    log.error(`Failed to find activities: ${error.message}`)
+    throw new Error()
   }
 }
 
@@ -30,12 +35,21 @@ export async function getActivity(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const userInfo = await getUserInfo(user?.userId ?? '')
-    if (!userInfo) throw new Error('User info not found')
+    if (!userInfo) {
+      log.error('User info not found')
+      throw new Error()
+    }
     const userGroup = await getUserGroup(userInfo.id)
-    if (!userGroup) throw new Error('User group info not found')
+    if (!userGroup) {
+      log.error('User group info not found')
+      throw new Error()
+    }
 
     const activities = await db
       .select()
@@ -45,19 +59,29 @@ export async function getActivity(id: string) {
 
     return activities[0]
   } catch (error: any) {
-    throw new Error(`Failed to find activity: ${error.message}`)
+    log.error(`Failed to find activity: ${error.message}`)
+    throw new Error()
   }
 }
 export async function updateActivity(ActivityData: Activity) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     const userInfo = await getUserInfo(user?.userId ?? '')
-    if (!userInfo) throw new Error('User info not found')
+    if (!userInfo) {
+      log.error('User info not found')
+      throw new Error()
+    }
     const userGroup = await getUserGroup(userInfo.id)
-    if (!userGroup) throw new Error('User group info not found')
+    if (!userGroup) {
+      log.error('User group info not found')
+      throw new Error()
+    }
 
     if (ActivityData.id === '') {
       ActivityData.id = uuidv4().toString()
@@ -85,14 +109,18 @@ export async function updateActivity(ActivityData: Activity) {
       })
       .returning()
   } catch (error: any) {
-    throw new Error(`Failed to create/update activity: ${error.message}`)
+    log.error(`Failed to create/update activity: ${error.message}`)
+    throw new Error()
   }
 }
 export async function archiveActivity(id: string) {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     await db
       .update(activity)
@@ -101,6 +129,7 @@ export async function archiveActivity(id: string) {
       })
       .where(eq(activity.id, id))
   } catch (error: any) {
-    throw new Error(`Failed to archive activity: ${error.message}`)
+    log.error(`Failed to archive activity: ${error.message}`)
+    throw new Error()
   }
 }

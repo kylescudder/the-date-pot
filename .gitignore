@@ -40,9 +40,6 @@ public/sw.js
 public/sw.js.*
 public/workbox-*
 
-# Sentry Auth Token
-.sentryclirc
-
 .env*
 .flaskenv*
 !.env.project
@@ -53,6 +50,3 @@ public/workbox-*
 /playwright/.cache/
 
 playwright/.auth
-
-# Sentry Config File
-.env.sentry-build-plugin

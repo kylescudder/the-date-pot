@@ -2,16 +2,21 @@
 
 import { db } from '@/server/db'
 import { auth } from '@clerk/nextjs/server'
+import { log } from '@logtail/next'
 
 export async function getPots() {
   try {
     const user = await auth()
 
-    if (!user.userId) throw new Error('Unauthorized')
+    if (!user.userId) {
+      log.error('Unauthorised')
+      throw new Error()
+    }
 
     return await db.query.pot.findMany({})
   } catch (error: any) {
-    throw new Error(`Failed to get pots: ${error.message}`)
+    log.error(`Failed to get pots: ${error.message}`)
+    throw new Error()
   }
 }
 //export async function updateUser(userData: IUser, path: string) {
@@ -35,6 +40,7 @@ export async function getPots() {
 //      revalidatePath(path);
 //    }
 //  } catch (error: any) {
-//    throw new Error(`Failed to create/update user: ${error.message}`);
+//    log.error(`Failed to create/update user: ${error.message}`)
+//    throw new Error();
 //  }
 //}

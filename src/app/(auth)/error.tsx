@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { log } from '@logtail/next'
 
 export default function Error({
   error,
@@ -9,6 +10,8 @@ export default function Error({
   error: Error
   reset: () => void
 }) {
+  log.error('Exception: ', error)
+
   return (
     <div className='flex min-h-full items-center justify-center'>
       <div className='rounded-lg p-6 shadow-md'>
