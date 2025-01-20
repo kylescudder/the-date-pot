@@ -55,7 +55,7 @@ export default function AddCoffeeRating(props: {
     const values = form.getValues()
 
     const filteredUsers = props.users.filter(
-      (user) => user.id === values.userId
+      (user) => user.id === values.userId[0]
     )
     const username = filteredUsers.length > 0 ? filteredUsers[0]!.name : ''
     const payload: CoffeeRatings = {
