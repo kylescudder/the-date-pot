@@ -35,15 +35,6 @@ export default function AddCoffeeRating(props: {
     label: user.name
   }))
 
-  interface formRating {
-    id: string
-    coffeeId: string
-    experience: number
-    taste: number
-    userId: string
-    username: string
-  }
-
   const form = useForm({
     defaultValues: {
       id: props.coffeeRating.id ? props.coffeeRating.id : '',
@@ -57,7 +48,12 @@ export default function AddCoffeeRating(props: {
     }
   })
 
-  const onSubmit = async (values: formRating) => {
+  const handleRatingSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const values = form.getValues()
+
     const filteredUsers = props.users.filter(
       (user) => user.id === values.userId
     )
@@ -85,7 +81,7 @@ export default function AddCoffeeRating(props: {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={handleRatingSubmit}
         className='flex flex-col justify-start gap-4 p-4'
       >
         <FormField

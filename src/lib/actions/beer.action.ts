@@ -167,7 +167,7 @@ export async function getBeerRatings(id: string) {
     throw new Error()
   }
 }
-export async function deleteBeerRating(id: string) {
+export async function deleteBeerRating(rating: BeerRating) {
   try {
     const user = await auth()
 
@@ -176,7 +176,7 @@ export async function deleteBeerRating(id: string) {
       throw new Error()
     }
 
-    await db.delete(beerRating).where(eq(beerRating.id, id))
+    await db.delete(beerRating).where(eq(beerRating, rating))
   } catch (error: any) {
     log.error(`Failed to delete beer ratings: ${error.message}`)
     throw new Error()

@@ -134,7 +134,7 @@ export async function getCoffeeRatings(id: string) {
     throw new Error()
   }
 }
-export async function deleteCoffeeRating(id: string) {
+export async function deleteCoffeeRating(rating: CoffeeRating) {
   try {
     const user = await auth()
 
@@ -143,7 +143,7 @@ export async function deleteCoffeeRating(id: string) {
       throw new Error()
     }
 
-    await db.delete(coffeeRating).where(eq(coffeeRating.id, id))
+    await db.delete(coffeeRating).where(eq(coffeeRating, rating))
   } catch (error: any) {
     log.error(`Failed to find coffee ratings: ${error.message}`)
     throw new Error()

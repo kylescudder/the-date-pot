@@ -77,15 +77,14 @@ export default function AddCoffee(props: {
     }
   })
 
-  const handleRemoveRecord = async (id: string, index: number) => {
-    const updatedArray = await coffeeRatings.filter((item, i) => item.id !== id)
-    setCoffeeRatings(updatedArray)
-    if (id !== '') {
-      await deleteCoffeeRating(id)
+  const handleRemoveRecord = async (rating: CoffeeRatings) => {
+    if (rating !== null) {
+      const updatedArray = coffeeRatings.filter((item) => item !== rating)
+      setCoffeeRatings(updatedArray)
+      if (rating.id !== '') await deleteCoffeeRating(rating)
+      deleteToast(`${rating!.username}'s rating`)
+      setChangesMade(true)
     }
-    const rating = await coffeeRatings.filter((item) => item.id === id)
-    deleteToast(`${rating[0]!.username}'s rating`)
-    setChangesMade(true)
   }
 
   const onSubmit = async (values: formCoffee) => {
@@ -97,14 +96,16 @@ export default function AddCoffee(props: {
 
     const coffee = await updateCoffee(payload)
 
-    coffeeRatings.map(async (rating: CoffeeRatings) => {
-      const updatedRating = {
-        ...rating,
-        coffeeId: coffee.id
-      }
+    await Promise.all(
+      coffeeRatings.map(async (rating: CoffeeRatings) => {
+        const updatedRating = {
+          ...rating,
+          coffeeId: coffee.id
+        }
 
-      await updateCoffeeRating(updatedRating)
-    })
+        await updateCoffeeRating(updatedRating)
+      })
+    )
     if (pathname.includes('/coffee/')) {
       successToast(coffee.name)
       setChangesMade(true)
@@ -233,7 +234,7 @@ export default function AddCoffee(props: {
                     </div>
                     <div className='contents w-1/2'>
                       <IconCircleMinus
-                        onClick={() => handleRemoveRecord(rating.id, i)}
+                        onClick={() => handleRemoveRecord(rating)}
                         className='float-right text-destructive'
                       />
                     </div>

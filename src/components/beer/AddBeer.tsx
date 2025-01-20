@@ -111,15 +111,14 @@ export default function AddBeer(props: {
     }
   })
 
-  const handleRemoveRecord = async (id: string, index: number) => {
-    const updatedArray = await beerRatings.filter((item, i) => item.id !== id)
-    setBeerRatings(updatedArray)
-    if (id !== '') {
-      await deleteBeerRating(id)
+  const handleRemoveRecord = async (rating: BeerRatings) => {
+    if (rating !== null) {
+      const updatedArray = beerRatings.filter((item) => item !== rating)
+      setBeerRatings(updatedArray)
+      if (rating.id !== '') await deleteBeerRating(rating)
+      deleteToast(`${rating!.username}'s rating`)
+      setChangesMade(true)
     }
-    const rating = await beerRatings.filter((item) => item.id === id)
-    deleteToast(`${rating[0]!.username}'s rating`)
-    setChangesMade(true)
   }
 
   const onSubmit = async (values: formBeer) => {
@@ -145,14 +144,16 @@ export default function AddBeer(props: {
 
     const beer = await updateBeer(payload)
 
-    beerRatings.map(async (rating: BeerRatings) => {
-      const updatedRating = {
-        ...rating,
-        beerId: beer.id
-      }
+    await Promise.all(
+      beerRatings.map(async (rating: BeerRatings) => {
+        const updatedRating = {
+          ...rating,
+          beerId: beer.id
+        }
 
-      await updateBeerRating(updatedRating)
-    })
+        await updateBeerRating(updatedRating)
+      })
+    )
     if (pathname.includes('/beer/')) {
       successToast(beer.name)
       setChangesMade(true)
@@ -363,7 +364,7 @@ export default function AddBeer(props: {
                     </div>
                     <div className='contents w-1/2'>
                       <IconCircleMinus
-                        onClick={() => handleRemoveRecord(rating.id, i)}
+                        onClick={() => handleRemoveRecord(rating)}
                         className='float-right text-destructive'
                       />
                     </div>
