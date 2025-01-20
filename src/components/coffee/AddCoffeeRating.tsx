@@ -29,7 +29,6 @@ export default function AddCoffeeRating(props: {
   coffeeRating: CoffeeRatings
   users: User[]
   addRating: (data: CoffeeRatings) => void
-  func: (data: boolean) => void
 }) {
   const options: option[] = props.users.map((user: User) => ({
     value: user.id,
@@ -81,7 +80,6 @@ export default function AddCoffeeRating(props: {
     } else {
       props.addRating(payload)
     }
-    props.func(false)
   }
 
   return (

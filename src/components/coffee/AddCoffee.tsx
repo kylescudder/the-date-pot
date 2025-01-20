@@ -117,13 +117,10 @@ export default function AddCoffee(props: {
     }
   }
 
-  const pullData = (data: boolean) => {
-    setOpen(data)
-  }
-
   const pullRating = async (data: CoffeeRatings) => {
     const newRatingList = [...coffeeRatings, data]
     setCoffeeRatings(newRatingList)
+    setOpen(false)
   }
 
   const handleArchive = async () => {
@@ -214,12 +211,13 @@ export default function AddCoffee(props: {
                 <AddCoffeeRating
                   coffee={props.coffee}
                   coffeeRating={coffeeRating}
-                  func={pullData}
                   addRating={pullRating}
                   users={props.users}
                 />
               }
               title='Add Rating'
+              open={open}
+              onOpenChange={setOpen}
             />
           </div>
           {coffeeRatings.length !== 0 ? (

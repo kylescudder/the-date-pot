@@ -48,6 +48,7 @@ export default function AddRestaurant(props: {
   const [notes, setNotes] = useState(props.restaurant.notes || [])
   const [changesMade, setChangesMade] = useState<boolean>(false)
   const [address, setAddress] = useState<string>(props.restaurant.address)
+  const [open, setOpen] = useState<boolean>(false)
 
   useEffect(() => {
     setChangesMade(true)
@@ -141,6 +142,7 @@ export default function AddRestaurant(props: {
   const pullAddNote = async (note: string) => {
     const newNoteList = [...notes, note]
     setNotes(newNoteList)
+    setOpen(false)
   }
 
   return (
@@ -294,6 +296,8 @@ export default function AddRestaurant(props: {
                 />
               }
               title='Add Note'
+              open={open}
+              onOpenChange={setOpen}
             />
           </div>
           {notes.map((note: string) => {

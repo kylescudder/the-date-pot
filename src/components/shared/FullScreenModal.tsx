@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { Button } from '@/components/ui/button'
 import {
@@ -22,13 +22,14 @@ export default function FullScreenModal(props: {
   button: React.ReactElement
   form: React.ReactElement
   title: string
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }) {
-  const [open, setOpen] = useState(false)
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
   if (isDesktop) {
     return (
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={props.open} onOpenChange={props.onOpenChange}>
         <DialogTrigger asChild>{props.button}</DialogTrigger>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
@@ -41,7 +42,7 @@ export default function FullScreenModal(props: {
   }
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer open={props.open} onOpenChange={props.onOpenChange}>
       <DrawerTrigger asChild>{props.button}</DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className='text-left'>

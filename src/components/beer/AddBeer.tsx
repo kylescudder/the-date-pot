@@ -161,13 +161,10 @@ export default function AddBeer(props: {
     }
   }
 
-  const pullData = (data: boolean) => {
-    setOpen(data)
-  }
-
   const pullRating = async (data: BeerRatings) => {
     const newRatingList = [...beerRatings, data]
     setBeerRatings(newRatingList)
+    setOpen(false)
   }
 
   const handleArchive = async () => {
@@ -344,12 +341,13 @@ export default function AddBeer(props: {
                 <AddBeerRating
                   beer={props.beer}
                   beerRating={beerRating}
-                  func={pullData}
                   addRating={pullRating}
                   users={props.users}
                 />
               }
               title='Add Rating'
+              open={open}
+              onOpenChange={setOpen}
             />
           </div>
           {beerRatings.length !== 0 ? (
