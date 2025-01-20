@@ -30,9 +30,9 @@ export async function getUserInfo(id: string) {
 }
 export async function updateUser(userData: User, path: string) {
   try {
-    const user = await auth()
+    const authUser = await auth()
 
-    if (!user.userId) {
+    if (!authUser.userId) {
       log.error('Unauthorised')
       throw new Error()
     }
@@ -79,14 +79,14 @@ export async function getUserGroup(id: string) {
 }
 export async function getGroupUsers() {
   try {
-    const user = await auth()
+    const authUser = await auth()
 
-    if (!user.userId) {
+    if (!authUser.userId) {
       log.error('Unauthorised')
       throw new Error()
     }
 
-    const userInfo = await getUserInfo(user?.userId ?? '')
+    const userInfo = await getUserInfo(authUser?.userId ?? '')
     if (!userInfo) {
       log.error('User info not found')
       throw new Error()
@@ -101,7 +101,7 @@ export async function getGroupUsers() {
       .select()
       .from(user)
       .innerJoin(userGroups, eq(user.id, userGroups.userId))
-      .where(sql`${userGroups.groupId} = ${groupUsers.id}`)
+      .where(sql`${userGroups.groupId} = ${userGroup.id}`)
 
     let users: Users[] = []
     records.forEach(async (user) => {

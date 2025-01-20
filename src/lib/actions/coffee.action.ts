@@ -102,9 +102,9 @@ export async function getCoffee(id: string) {
 }
 export async function getCoffeeRatings(id: string) {
   try {
-    const user = await auth()
+    const authUser = await auth()
 
-    if (!user.userId) {
+    if (!authUser.userId) {
       log.error('Unauthorised')
       throw new Error()
     }
