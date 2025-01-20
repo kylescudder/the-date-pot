@@ -25,46 +25,75 @@ const StarRating = React.forwardRef<HTMLInputElement, StarRatingProps>(
   ) => {
     const [hoverValue, setHoverValue] = useState<number | null>(null)
 
-    const handleMouseMove = (
-      event: React.MouseEvent<HTMLDivElement>,
+    const calculateRating = (
+      element: HTMLDivElement,
+      clientX: number,
+      index: number
+    ) => {
+      if (readOnly) return null
+
+      const rect = element.getBoundingClientRect()
+      const width = rect.width
+      const x = clientX - rect.left
+      const fraction = Math.ceil(x / width / increment) * increment
+      return Math.min(Math.max(index + fraction, 0), max)
+    }
+
+    const handleMove = (
+      event:
+        | React.MouseEvent<HTMLDivElement>
+        | React.TouchEvent<HTMLDivElement>,
       index: number
     ) => {
       if (readOnly) return
-      const star = event.currentTarget
-      const rect = star.getBoundingClientRect()
-      const width = rect.width
-      const x = event.clientX - rect.left
-      const fraction = Math.ceil(x / width / increment) * increment
-      setHoverValue(index + fraction)
+
+      const element = event.currentTarget
+      const clientX =
+        'touches' in event ? event.touches[0].clientX : event.clientX
+
+      const newValue = calculateRating(element, clientX, index)
+      if (newValue !== null) {
+        setHoverValue(newValue)
+      }
     }
 
-    const handleMouseLeave = () => {
+    const handleMoveEnd = (
+      event:
+        | React.MouseEvent<HTMLDivElement>
+        | React.TouchEvent<HTMLDivElement>,
+      index: number
+    ) => {
+      if (readOnly || !onChange) return
+
+      const element = event.currentTarget
+      const clientX =
+        'changedTouches' in event
+          ? event.changedTouches[0].clientX
+          : event.clientX
+
+      const newValue = calculateRating(element, clientX, index)
+      if (newValue !== null) {
+        onChange(newValue)
+        setHoverValue(null)
+      }
+    }
+
+    const handleLeave = () => {
       if (readOnly) return
       setHoverValue(null)
     }
 
-    const handleClick = () => {
-      if (readOnly) return
-      if (hoverValue !== null && onChange) {
-        onChange(Math.min(Math.max(hoverValue, 0), max))
-      }
-    }
-
-    const displayValue = readOnly
-      ? value
-      : hoverValue !== null
-        ? hoverValue
-        : value
+    const displayValue = hoverValue !== null ? hoverValue : value
 
     return (
       <div
         className={cn(
-          'flex items-center',
+          'flex touch-none items-center',
           className,
           readOnly ? 'pointer-events-none' : ''
         )}
-        onMouseLeave={handleMouseLeave}
-        onClick={handleClick}
+        onMouseLeave={handleLeave}
+        onTouchCancel={handleLeave}
         role='group'
         aria-label={`Rating: ${displayValue.toFixed(2)} out of ${max} stars`}
       >
@@ -72,7 +101,8 @@ const StarRating = React.forwardRef<HTMLInputElement, StarRatingProps>(
           <Star
             key={index}
             filled={Math.min(Math.max(displayValue - index, 0), 1)}
-            onMouseMove={(e) => handleMouseMove(e, index)}
+            onMove={(e) => handleMove(e, index)}
+            onMoveEnd={(e) => handleMoveEnd(e, index)}
             readOnly={readOnly}
           />
         ))}
@@ -88,19 +118,31 @@ const StarRating = React.forwardRef<HTMLInputElement, StarRatingProps>(
     )
   }
 )
+
 StarRating.displayName = 'StarRating'
 
 interface StarProps {
   filled: number
-  onMouseMove: (event: React.MouseEvent<HTMLDivElement>) => void
+  onMove: (
+    event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => void
+  onMoveEnd: (
+    event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => void
   readOnly: boolean
 }
 
-const Star: React.FC<StarProps> = ({ filled, onMouseMove, readOnly }) => {
+const Star: React.FC<StarProps> = ({ filled, onMove, onMoveEnd, readOnly }) => {
   return (
     <div
-      className={`relative h-10 w-10 ${readOnly ? 'cursor-default' : 'cursor-pointer'}`}
-      onMouseMove={onMouseMove}
+      className={cn(
+        'relative h-10 w-10',
+        readOnly ? 'cursor-default' : 'cursor-pointer'
+      )}
+      onMouseMove={onMove}
+      onMouseUp={onMoveEnd}
+      onTouchMove={onMove}
+      onTouchEnd={onMoveEnd}
     >
       <svg
         className='absolute h-10 w-10'
@@ -130,9 +172,9 @@ const Star: React.FC<StarProps> = ({ filled, onMouseMove, readOnly }) => {
             strokeLinecap='round'
             strokeLinejoin='round'
             strokeWidth={2}
-            stroke='#fab387' // Catppuccin Mocha yellow (Peach)
+            stroke='#fab387'
             d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'
-            fill='#fab387' // Catppuccin Mocha yellow (Peach)
+            fill='#fab387'
           />
         </svg>
       </div>

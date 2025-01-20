@@ -12,7 +12,7 @@ export const MainContent = (props: {
 }) => {
   return (
     <CustomThemeProvider>
-      <main className='flex flex-row'>
+      <main className='flex w-full flex-row'>
         <section className='flex min-h-screen flex-1 flex-col items-center p-4 lg:p-2'>
           <div className='min-h-full w-full max-w-4xl'>
             <Topbar />

@@ -36,15 +36,6 @@ export default function AddBeerRating(props: {
     label: user.name
   }))
 
-  interface formRating {
-    id: string
-    beerId: string
-    wankyness: number
-    taste: number
-    userId: string
-    username: string
-  }
-
   const form = useForm({
     defaultValues: {
       id: props.beerRating.id ? props.beerRating.id : '',
@@ -56,11 +47,17 @@ export default function AddBeerRating(props: {
     }
   })
 
-  const onSubmit = async (values: formRating) => {
+  const handleRatingSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const values = form.getValues()
+
     const filteredUsers = props.users.filter(
-      (user) => user.id === values.userId
+      (user) => user.id === values.userId[0]
     )
     const username = filteredUsers.length > 0 ? filteredUsers[0]!.name : ''
+
     const payload: BeerRatings = {
       id: values.id,
       beerId: props.beer.id,
@@ -69,6 +66,7 @@ export default function AddBeerRating(props: {
       userId: values.userId,
       username: username
     }
+
     if (payload.beerId !== '') {
       const rating = await updateBeerRating(payload)
       const ratingWithUsername: BeerRatings = {
@@ -85,7 +83,7 @@ export default function AddBeerRating(props: {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={handleRatingSubmit}
         className='flex flex-col justify-start gap-4 p-4'
       >
         <FormField
