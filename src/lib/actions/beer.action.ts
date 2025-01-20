@@ -176,7 +176,7 @@ export async function deleteBeerRating(rating: BeerRating) {
       throw new Error()
     }
 
-    await db.delete(beerRating).where(eq(beerRating, rating))
+    await db.delete(beerRating).where(eq(beerRating.id, rating.id))
   } catch (error: any) {
     log.error(`Failed to delete beer ratings: ${error.message}`)
     throw new Error()
