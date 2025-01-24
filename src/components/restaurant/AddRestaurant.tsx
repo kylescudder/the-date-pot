@@ -226,7 +226,7 @@ export default function AddRestaurant(props: {
                       {cuisines.map((cuisine) => (
                         <MultiSelectorItem
                           key={cuisine.value}
-                          value={cuisine.label}
+                          value={cuisine.value}
                         >
                           <div className='flex items-center space-x-2'>
                             <span>{cuisine.label}</span>
@@ -256,7 +256,7 @@ export default function AddRestaurant(props: {
                   <MultiSelectorContent>
                     <MultiSelectorList>
                       {whens.map((when) => (
-                        <MultiSelectorItem key={when.value} value={when.label}>
+                        <MultiSelectorItem key={when.value} value={when.value}>
                           <div className='flex items-center space-x-2'>
                             <span>{when.label}</span>
                           </div>

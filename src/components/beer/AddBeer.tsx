@@ -261,7 +261,7 @@ export default function AddBeer(props: {
                       {breweries.map((brewery) => (
                         <MultiSelectorItem
                           key={brewery.value}
-                          value={brewery.label}
+                          value={brewery.value}
                         >
                           <div className='flex items-center space-x-2'>
                             <span>{brewery.label}</span>
@@ -293,7 +293,7 @@ export default function AddBeer(props: {
                       {beerTypes.map((beerType) => (
                         <MultiSelectorItem
                           key={beerType.value}
-                          value={beerType.label}
+                          value={beerType.value}
                         >
                           <div className='flex items-center space-x-2'>
                             <span>{beerType.label}</span>
