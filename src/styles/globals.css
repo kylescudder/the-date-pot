@@ -1,6 +1,97 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+  @media (width >= --theme(--breakpoint-sm)) {
+    max-width: none;
+  }
+  @media (width >= 1400px) {
+    max-width: 1400px;
+  }
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
 
 @layer base {
   :root {
@@ -83,136 +174,138 @@
   }
 }
 
-.bottombar_link {
-  @apply relative flex flex-col items-center gap-2 rounded-lg p-2 sm:flex-1 sm:px-2 sm:py-2.5;
-}
-.leftsidebar_link {
-  @apply relative flex justify-start gap-4 rounded-lg p-4;
-}
-.listPage {
-  max-width: calc(100vw - 3rem);
-  min-height: calc(100vw - 3rem);
-}
-
-button[data-outside] {
-  @apply text-zinc-700 !important;
-}
-button[data-weekend] {
-  @apply text-red-500 !important;
-}
-@media screen and (min-width: 768px) {
-  .header {
-    margin: 56px auto 0;
+@layer utilities {
+  .bottombar_link {
+    @apply relative flex flex-col items-center gap-2 rounded-lg p-2 sm:flex-1 sm:px-2 sm:py-2.5;
   }
-}
-.animated {
-  width: 24px;
-  height: 24px;
-  background-color: #1a1a1a;
-  background: linear-gradient(to right, #1a1a1a 10%, #111 40%, #1a1a1a 70%);
-  animation: placeholderShimmer 20s linear 0s infinite normal forwards;
-  border-radius: 5px;
-}
-.avatar {
-  position: relative;
-  display: flex;
-  justify-content: flex-end;
-}
-.avatar:before {
-  position: absolute;
-  left: 0;
-  content: '';
-  background: #fff;
-  height: 40px;
-}
-
-.avatar-image {
-  width: 40px;
-  height: 40px;
-}
-
-@keyframes placeholderShimmer {
-  0% {
-    background-position: -500px 0;
+  .leftsidebar_link {
+    @apply relative flex justify-start gap-4 rounded-lg p-4;
   }
-  100% {
-    background-position: 500px 0;
+  .listPage {
+    max-width: calc(100vw - 3rem);
+    min-height: calc(100vw - 3rem);
   }
-}
 
-/*Slide menu*/
+  button[data-outside] {
+    @apply text-zinc-700!;
+  }
+  button[data-weekend] {
+    @apply text-red-500!;
+  }
+  @media screen and (min-width: 768px) {
+    .header {
+      margin: 56px auto 0;
+    }
+  }
+  .animated {
+    width: 24px;
+    height: 24px;
+    background-color: #1a1a1a;
+    background: linear-gradient(to right, #1a1a1a 10%, #111 40%, #1a1a1a 70%);
+    animation: placeholderShimmer 20s linear 0s infinite normal forwards;
+    border-radius: 5px;
+  }
+  .avatar {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .avatar:before {
+    position: absolute;
+    left: 0;
+    content: '';
+    background: #fff;
+    height: 40px;
+  }
 
-/* Position and sizing of burger button */
-.bm-burger-button {
-  @apply hidden max-sm:block;
-  position: fixed;
-  width: 36px;
-  height: 30px;
-  left: 10px;
-  top: 10px;
-}
+  .avatar-image {
+    width: 40px;
+    height: 40px;
+  }
 
-/* Color/shape of burger icon bars */
-.bm-burger-bars {
-  background: #373a47;
-}
+  @keyframes placeholderShimmer {
+    0% {
+      background-position: -500px 0;
+    }
+    100% {
+      background-position: 500px 0;
+    }
+  }
 
-/* Color/shape of burger icon bars on hover*/
-.bm-burger-bars-hover {
-  background: #a90000;
-}
+  /*Slide menu*/
 
-/* Position and sizing of clickable cross button */
-.bm-cross-button {
-  height: 24px;
-  width: 24px;
-}
+  /* Position and sizing of burger button */
+  .bm-burger-button {
+    @apply hidden max-sm:block;
+    position: fixed;
+    width: 36px;
+    height: 30px;
+    left: 10px;
+    top: 10px;
+  }
 
-/* Color/shape of close button cross */
-.bm-cross {
-  background: hsl(var(--primary));
-}
+  /* Color/shape of burger icon bars */
+  .bm-burger-bars {
+    background: #373a47;
+  }
 
-/*
+  /* Color/shape of burger icon bars on hover*/
+  .bm-burger-bars-hover {
+    background: #a90000;
+  }
+
+  /* Position and sizing of clickable cross button */
+  .bm-cross-button {
+    height: 24px;
+    width: 24px;
+  }
+
+  /* Color/shape of close button cross */
+  .bm-cross {
+    background: hsl(var(--primary));
+  }
+
+  /*
 Sidebar wrapper styles
 Note: Beware of modifying this element as it can break the animations - you should not need to touch it in most cases
 */
-.bm-menu-wrap {
-  position: fixed;
-  height: 100%;
-  width: 100% !important;
-  left: 0px;
-  top: 0px;
-}
+  .bm-menu-wrap {
+    position: fixed;
+    height: 100%;
+    width: 100% !important;
+    left: 0px;
+    top: 0px;
+  }
 
-/* General sidebar styles */
-.bm-menu {
-  background: hsl(var(--background));
-  padding: 2.5em 1.5em 0;
-  font-size: 1.15em;
-}
+  /* General sidebar styles */
+  .bm-menu {
+    background: hsl(var(--background));
+    padding: 2.5em 1.5em 0;
+    font-size: 1.15em;
+  }
 
-/* Morph shape necessary with bubble or elastic */
-.bm-morph-shape {
-  fill: #373a47;
-}
+  /* Morph shape necessary with bubble or elastic */
+  .bm-morph-shape {
+    fill: #373a47;
+  }
 
-/* Wrapper for item list */
-.bm-item-list {
-  padding: 0.8em;
-}
+  /* Wrapper for item list */
+  .bm-item-list {
+    padding: 0.8em;
+  }
 
-/* Individual item */
-.bm-item {
-  display: inline-block;
-}
+  /* Individual item */
+  .bm-item {
+    display: inline-block;
+  }
 
-/* Styling of overlay */
-.bm-overlay {
-  background: rgba(0, 0, 0, 0.3);
-}
+  /* Styling of overlay */
+  .bm-overlay {
+    background: rgba(0, 0, 0, 0.3);
+  }
 
-/*END Slide menu*/
+  /*END Slide menu*/
+}
 
 @layer base {
   * {

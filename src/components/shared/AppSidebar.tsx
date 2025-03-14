@@ -50,14 +50,14 @@ export function AppSidebar(props: { pots: Pot[] }) {
                   size='lg'
                   className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
                 >
-                  <div className='flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground'>
+                  <div className='text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
                     <UserButton />
                   </div>
                   <IconCaretUpDown className='ml-auto' />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className='w-[--radix-dropdown-menu-trigger-width]'
+                className='w-(--radix-dropdown-menu-trigger-width)'
                 align='start'
               >
                 <DropdownMenuItem>

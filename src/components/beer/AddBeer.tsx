@@ -329,7 +329,7 @@ export default function AddBeer(props: {
             )}
           />
           <div className='flex justify-between'>
-            <div className='flex-grow pr-2'>
+            <div className='grow pr-2'>
               <p className='inline-block pt-3 text-base font-black'>Ratings</p>
             </div>
             <FullScreenModal
@@ -365,7 +365,7 @@ export default function AddBeer(props: {
                     <div className='contents w-1/2'>
                       <IconCircleMinus
                         onClick={() => handleRemoveRecord(rating)}
-                        className='float-right text-destructive'
+                        className='text-destructive float-right'
                       />
                     </div>
                     <div className='flex items-center pt-2 text-base'>

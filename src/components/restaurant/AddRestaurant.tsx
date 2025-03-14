@@ -279,7 +279,7 @@ export default function AddRestaurant(props: {
             props.longLat[0] === undefined &&
             props.longLat[1] === undefined && <ReloadMapPlaceholder />}
           <div className='flex justify-between'>
-            <div className='flex-grow pr-2'>
+            <div className='grow pr-2'>
               <p className='inline-block pt-3 text-base font-black'>Notes</p>
             </div>
             <FullScreenModal

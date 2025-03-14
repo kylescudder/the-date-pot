@@ -191,7 +191,7 @@ const MultiSelectorTrigger = forwardRef<
     <div
       ref={ref}
       className={cn(
-        'flex flex-wrap gap-1 rounded-lg border border-muted bg-background p-1 py-2',
+        'border-muted bg-background flex flex-wrap gap-1 rounded-lg border p-1 py-2',
         className
       )}
       {...props}
@@ -201,7 +201,7 @@ const MultiSelectorTrigger = forwardRef<
           key={item.value}
           className={cn(
             'flex items-center gap-1 rounded-xl px-1',
-            activeIndex === index && 'ring-2 ring-muted-foreground'
+            activeIndex === index && 'ring-muted-foreground ring-2'
           )}
           variant={'secondary'}
         >
@@ -214,7 +214,7 @@ const MultiSelectorTrigger = forwardRef<
             onClick={() => onValueChange(item.value)}
           >
             <span className='sr-only'>Remove {item.label} option</span>
-            <IconX className='h-4 w-4 hover:stroke-destructive' />
+            <IconX className='hover:stroke-destructive h-4 w-4' />
           </button>
         </Badge>
       ))}
@@ -241,7 +241,7 @@ const MultiSelectorInput = forwardRef<
       onFocus={() => setOpen(true)}
       onClick={() => setActiveIndex(-1)}
       className={cn(
-        'ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground',
+        'placeholder:text-muted-foreground ml-2 flex-1 bg-transparent outline-hidden',
         className,
         activeIndex !== -1 && 'caret-transparent'
       )}
@@ -273,7 +273,7 @@ const MultiSelectorList = forwardRef<
     <CommandList
       ref={ref}
       className={cn(
-        'scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted-foreground dark:scrollbar-thumb-muted scrollbar-thumb-rounded-lg absolute top-0 z-10 flex w-full flex-col gap-2 rounded-md border border-muted bg-background p-2 shadow-md transition-colors',
+        'scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted-foreground dark:scrollbar-thumb-muted scrollbar-thumb-rounded-lg border-muted bg-background absolute top-0 z-10 flex w-full flex-col gap-2 rounded-md border p-2 shadow-md transition-colors',
         className
       )}
     >

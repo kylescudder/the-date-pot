@@ -39,7 +39,7 @@ export default function Icon(props: IconProps) {
 
   return (
     <IconComponent
-      className={`${props.isActive && 'text-primary'} !h-[24px] !w-[24px]`}
+      className={`${props.isActive && 'text-primary'} h-[24px]! w-[24px]!`}
       {...(props.stroke && { stroke: props.stroke })}
       {...(props.strokeLinejoin && { strokeLinejoin: props.strokeLinejoin })}
     />
