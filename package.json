@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "6.12.10",
-    "@clerk/themes": "2.2.23",
+    "@clerk/themes": "2.2.25",
     "@emotion/cache": "11.14.0",
     "@emotion/react": "11.14.0",
     "@emotion/server": "11.11.0",
