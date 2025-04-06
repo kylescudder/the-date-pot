@@ -31,7 +31,7 @@
     "@radix-ui/react-slot": "1.1.2",
     "@radix-ui/react-tooltip": "1.1.8",
     "@react-google-maps/api": "2.20.6",
-    "@serwist/next": "9.0.12",
+    "@serwist/next": "9.0.13",
     "@t3-oss/env-nextjs": "0.12.0",
     "@tabler/icons-react": "3.31.0",
     "@tailwindcss/postcss": "4.1.3",
