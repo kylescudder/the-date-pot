@@ -67,7 +67,7 @@
     "zod": "3.24.2"
   },
   "devDependencies": {
-    "@clerk/testing": "1.4.34",
+    "@clerk/testing": "1.4.38",
     "@playwright/test": "1.51.1",
     "@types/google.maps": "3.58.1",
     "drizzle-kit": "0.30.6",
