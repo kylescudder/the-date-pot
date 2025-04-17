@@ -13,7 +13,7 @@
     "test:report": "playwright show-report"
   },
   "dependencies": {
-    "@clerk/nextjs": "6.14.3",
+    "@clerk/nextjs": "6.15.1",
     "@clerk/themes": "2.2.31",
     "@emotion/cache": "11.14.0",
     "@emotion/react": "11.14.0",
