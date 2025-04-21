@@ -70,7 +70,7 @@
     "@clerk/testing": "1.4.38",
     "@playwright/test": "1.52.0",
     "@types/google.maps": "3.58.1",
-    "drizzle-kit": "0.30.6",
+    "drizzle-kit": "0.31.0",
     "husky": "9.1.7",
     "prettier": "3.5.3"
   },
