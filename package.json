@@ -33,7 +33,7 @@
     "@react-google-maps/api": "2.20.6",
     "@serwist/next": "9.0.14",
     "@t3-oss/env-nextjs": "0.13.4",
-    "@tabler/icons-react": "3.33.0",
+    "@tabler/icons-react": "3.34.0",
     "@tailwindcss/postcss": "4.1.7",
     "@tanstack/react-table": "8.21.3",
     "@types/node": "22.15.30",
