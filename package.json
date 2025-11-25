@@ -68,7 +68,7 @@
   },
   "devDependencies": {
     "@clerk/testing": "1.13.1",
-    "@playwright/test": "1.53.0",
+    "@playwright/test": "1.57.0",
     "@types/google.maps": "3.58.1",
     "drizzle-kit": "0.31.4",
     "husky": "9.1.7",
