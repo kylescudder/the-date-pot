@@ -4,13 +4,22 @@
   "prHourlyLimit": 5,
   "packageRules": [
     {
-      "matchManagers": ["npm", "bun"],
+      "matchManagers": ["npm"],
       "rangeStrategy": "update-lockfile"
+    },
+    {
+      "matchManagers": ["bun"],
+      "rangeStrategy": "replace"
     },
     {
       "matchManagers": ["npm", "bun"],
       "matchUpdateTypes": ["pin"],
       "enabled": false
     }
-  ]
+  ],
+  "bun": {
+    "lockFileMaintenance": {
+      "enabled": true
+    }
+  }
 }
