@@ -321,8 +321,7 @@ export const user = createTable('user', {
   name: varchar('name').notNull(),
   username: varchar('username').notNull(),
   clerkId: varchar('clerkId').notNull(),
-  bio: varchar('bio'),
-  onboarded: boolean('onboarded')
+  bio: varchar('bio')
 })
 
 export type User = typeof user.$inferSelect
