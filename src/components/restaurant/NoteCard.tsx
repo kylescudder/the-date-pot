@@ -12,7 +12,7 @@ export default function NoteCard(props: {
           <p>{props.note}</p>
           <IconCircleXFilled
             onClick={() => props.func(props.note)}
-            className='text-destructive min-w-6'
+            className='min-w-6 text-destructive'
           />
         </div>
       </CardContent>

@@ -16,8 +16,10 @@ import {
   IconEyeOff
 } from '@tabler/icons-react'
 
-interface DataTableColumnHeaderProps<TData, TValue>
-  extends React.HTMLAttributes<HTMLDivElement> {
+interface DataTableColumnHeaderProps<
+  TData,
+  TValue
+> extends React.HTMLAttributes<HTMLDivElement> {
   column: Column<TData, TValue>
   title: string
 }
@@ -38,7 +40,7 @@ export function DataTableColumnHeader<TData, TValue>({
           <Button
             variant='ghost'
             size='sm'
-            className='data-[state=open]:bg-accent -ml-3 h-8'
+            className='-ml-3 h-8 data-[state=open]:bg-accent'
           >
             <span>{title}</span>
             {column.getIsSorted() === 'desc' ? (
@@ -52,16 +54,16 @@ export function DataTableColumnHeader<TData, TValue>({
         </DropdownMenuTrigger>
         <DropdownMenuContent align='start'>
           <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
-            <IconCaretUp className='text-muted-foreground/70 mr-2 h-3.5 w-3.5' />
+            <IconCaretUp className='mr-2 h-3.5 w-3.5 text-muted-foreground/70' />
             Asc
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
-            <IconCaretDown className='text-muted-foreground/70 mr-2 h-3.5 w-3.5' />
+            <IconCaretDown className='mr-2 h-3.5 w-3.5 text-muted-foreground/70' />
             Desc
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
-            <IconEyeOff className='text-muted-foreground/70 mr-2 h-3.5 w-3.5' />
+            <IconEyeOff className='mr-2 h-3.5 w-3.5 text-muted-foreground/70' />
             Hide
           </DropdownMenuItem>
         </DropdownMenuContent>

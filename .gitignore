@@ -1,52 +1,15 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
-.env*.local
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-
-# PWA files
-public/sw.js
-public/sw.js.*
-public/workbox-*
-
+node_modules/
+dist/
+coverage/
 .env*
-.flaskenv*
-!.env.project
-!.env.vault
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-
-playwright/.auth
+!.env.example
+secrets/
+state/
+backups/
+deploy-spool/
+*.tsbuildinfo
+.DS_Store
+__pycache__/
+.tanstack/
+playwright-report/
+test-results/

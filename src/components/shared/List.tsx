@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/lib/navigation'
 import { ColumnDef } from '@tanstack/react-table'
 import { IconFilePlus, IconSearch } from '@tabler/icons-react'
 import FullScreenModal from './FullScreenModal'

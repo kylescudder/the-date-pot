@@ -1,0 +1,10 @@
+.git
+node_modules
+dist
+.env*
+!.env.example
+secrets
+state
+backups
+deploy-spool
+*.tsbuildinfo

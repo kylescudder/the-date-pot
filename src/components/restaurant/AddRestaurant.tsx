@@ -1,17 +1,13 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter } from '@/lib/navigation'
 import {
   archiveRestaurant,
   deleteRestaurantNote,
   updateRestaurant
-} from '@/lib/actions/restaurant.action'
-import {
-  archiveToast,
-  deleteToast,
-  successToast
-} from '@/lib/actions/toast.actions'
+} from '@/lib/api'
+import { archiveToast, deleteToast, successToast } from '@/lib/toast'
 import { IconCirclePlus, IconTrash } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
 import Map from '../shared/Map'
@@ -20,8 +16,6 @@ import NoteCard from './NoteCard'
 import FullScreenModal from '../shared/FullScreenModal'
 import AddRestaurantNote from './AddRestaurantNote'
 import ReloadMapPlaceholder from '../shared/ReloadMapPlaceholder'
-import { addCuisine } from '@/lib/actions/cuisine.action'
-import { addWhen } from '@/lib/actions/when.action'
 import { Cuisine, When } from '@/server/db/schema'
 import { Restaurants } from '@/lib/models/restaurants'
 import { Button } from '@/components/ui/button'

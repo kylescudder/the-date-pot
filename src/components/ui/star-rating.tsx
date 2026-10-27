@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
 
-interface StarRatingProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+interface StarRatingProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'onChange'
+> {
   max?: number
   value?: number
   onChange?: (value: number) => void
@@ -41,8 +43,7 @@ const StarRating = React.forwardRef<HTMLInputElement, StarRatingProps>(
 
     const handleMove = (
       event:
-        | React.MouseEvent<HTMLDivElement>
-        | React.TouchEvent<HTMLDivElement>,
+        React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
       index: number
     ) => {
       if (readOnly) return
@@ -59,8 +60,7 @@ const StarRating = React.forwardRef<HTMLInputElement, StarRatingProps>(
 
     const handleMoveEnd = (
       event:
-        | React.MouseEvent<HTMLDivElement>
-        | React.TouchEvent<HTMLDivElement>,
+        React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
       index: number
     ) => {
       if (readOnly || !onChange) return

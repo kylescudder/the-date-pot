@@ -3,7 +3,7 @@
 import { option } from '@/lib/models/select-options'
 import { Beer, User } from '@/server/db/schema'
 import { BeerRatings } from '@/lib/models/beerRatings'
-import { updateBeerRating } from '@/lib/actions/beer.action'
+import { updateBeerRating } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { Controller, useForm, type FieldValues } from 'react-hook-form'
 import {

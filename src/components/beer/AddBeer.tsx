@@ -1,25 +1,19 @@
 'use client'
 
 import React, { useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
-import {
-  archiveToast,
-  deleteToast,
-  successToast
-} from '@/lib/actions/toast.actions'
+import { usePathname, useRouter } from '@/lib/navigation'
+import { archiveToast, deleteToast, successToast } from '@/lib/toast'
 import { IconTrash, IconCircleMinus, IconCirclePlus } from '@tabler/icons-react'
 import {
   archiveBeer,
   deleteBeerRating,
   updateBeer,
   updateBeerRating
-} from '@/lib/actions/beer.action'
+} from '@/lib/api'
 import { option } from '@/lib/models/select-options'
 import BackButton from '../shared/BackButton'
 import AddBeerRating from './AddBeerRating'
 import FullScreenModal from '../shared/FullScreenModal'
-import { addBrewery } from '@/lib/actions/brewer.action'
-import { addBeerType } from '@/lib/actions/beer-type'
 import { BeerType, Brewery, User } from '@/server/db/schema'
 import { BeerRatings } from '@/lib/models/beerRatings'
 import { Beers } from '@/lib/models/beers'
@@ -365,7 +359,7 @@ export default function AddBeer(props: {
                     <div className='contents w-1/2'>
                       <IconCircleMinus
                         onClick={() => handleRemoveRecord(rating)}
-                        className='text-destructive float-right'
+                        className='float-right text-destructive'
                       />
                     </div>
                     <div className='flex items-center pt-2 text-base'>

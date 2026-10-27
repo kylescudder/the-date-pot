@@ -1,0 +1,57 @@
+# Deploy webhook receiver for the host. Run from the repository root:
+#   docker compose -f deploy/compose.deploy-hook.yaml --env-file .env.deploy-hook up -d
+# It has no Docker socket and no database access; it only writes signed
+# requests into the spool directory consumed by the host's event-driven service,
+# and reads the host's completed-release acknowledgement from a read-only mount.
+name: the-date-pot-deploy-hook
+
+services:
+  deploy-hook:
+    image: node:24-alpine@sha256:06d7adf3e0ef61a13f1d28682726366f97a15aa1888c934d3ecec86c33918b53
+    command: ['node', '/app/server.mjs']
+    restart: unless-stopped
+    user: '${DEPLOY_HOOK_USER:?set DEPLOY_HOOK_USER to the queue owner uid:gid}'
+    environment:
+      PORT: '9000'
+      SPOOL_DIR: /spool
+      WEBHOOK_SECRET_FILE: /run/secrets/deploy_webhook_secret
+      DEPLOYED_STATE_FILE: /release-state/deployment.json
+    volumes:
+      - ./receiver/server.mjs:/app/server.mjs:ro
+      - ${DEPLOY_SPOOL_DIR:-../deploy-spool}/requests:/spool/requests
+      - ../state/public:/release-state:ro
+    secrets:
+      - deploy_webhook_secret
+    networks:
+      web:
+        aliases: [the-date-pot-deploy-hook]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 64m
+    pids_limit: 32
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:9000/healthz').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: '1m'
+        max-file: '2'
+
+secrets:
+  deploy_webhook_secret:
+    file: ${DEPLOY_WEBHOOK_SECRET_FILE:-../secrets/deploy-webhook-secret}
+
+networks:
+  web:
+    external: true
+    name: ${PLATFORM_WEB_NETWORK:-platform-web}
