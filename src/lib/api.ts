@@ -17,7 +17,7 @@ export const updateBeer = (beer: Beers) =>
     api().beer.save.mutate({
       id: beer.id,
       name: beer.name,
-      abv: Number(beer.abv),
+      abv: beer.abv === null ? null : Number(beer.abv),
       archive: beer.archive,
       breweries: beer.breweries,
       beerTypes: beer.beerTypes

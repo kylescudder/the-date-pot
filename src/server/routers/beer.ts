@@ -10,7 +10,7 @@ import { averageRating, groupMemberIds } from './helpers'
 const beerInput = z.object({
   id: optionalId,
   name: nameInput,
-  abv: z.coerce.number().min(0).max(100),
+  abv: z.coerce.number().min(0).max(100).nullable(),
   archive: z.boolean().nullable().default(false),
   breweries: ids,
   beerTypes: ids

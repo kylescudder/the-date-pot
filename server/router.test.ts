@@ -79,7 +79,7 @@ test('the baseline leaves a database created by drizzle-kit push untouched', asy
   expect(tables.map((row) => row.tablename)).toEqual(['user'])
   const journal =
     await pushed`SELECT count(*)::int AS n FROM drizzle.__drizzle_migrations`
-  expect(journal[0].n).toBe(1)
+  expect(journal[0].n).toBe(2)
 })
 
 test('signed-out requests are rejected', async () => {
@@ -187,10 +187,32 @@ test('ratings must come from group members and use half-star steps', async () =>
     id: '',
     beerId: faith,
     userId: partnerId,
-    wankyness: 1,
-    taste: 2
+    wankyness: 1.5,
+    taste: 2.5
   })
-  expect(rating).toMatchObject({ beerId: faith, userId: partnerId })
+  expect(rating).toMatchObject({
+    beerId: faith,
+    userId: partnerId,
+    wankyness: 1.5,
+    taste: 2.5
+  })
+  expect(
+    (await me.beer.ratings(faith)).find((row) => row.id === rating.id)
+  ).toMatchObject({ wankyness: 1.5, taste: 2.5 })
+  const coffeeId = '55555555-5555-4555-8555-555555555561'
+  const coffeeRating = await me.coffee.saveRating({
+    id: '',
+    coffeeId,
+    userId: partnerId,
+    experience: 3.5,
+    taste: 4.5
+  })
+  expect(
+    (await me.coffee.ratings(coffeeId)).find(
+      (row) => row.id === coffeeRating.id
+    )
+  ).toMatchObject({ experience: 3.5, taste: 4.5 })
+  await me.coffee.deleteRating(coffeeRating.id)
   await expect(
     me.beer.saveRating({
       id: '',
@@ -213,6 +235,27 @@ test('ratings must come from group members and use half-star steps', async () =>
   expect(
     (await me.beer.ratings(faith)).some((row) => row.id === rating.id)
   ).toBe(false)
+})
+
+test('unknown legacy ABV and unvisited holiday dates stay unknown', async () => {
+  const me = caller(kyle)
+  const beer = await me.beer.save({
+    id: '',
+    name: 'Unknown ABV',
+    abv: null,
+    archive: false,
+    breweries: [],
+    beerTypes: []
+  })
+  expect((await me.beer.get(beer.id)).abv).toBeNull()
+  await me.beer.archive(beer.id)
+  const holidayId = randomUUID()
+  await sql`INSERT INTO holiday (id, city, country, "dateBeen")
+    VALUES (${holidayId}, 'Unvisited', 'Unknown', NULL)`
+  const [holiday] =
+    await sql`SELECT "dateBeen" FROM holiday WHERE id = ${holidayId}`
+  expect(holiday.dateBeen).toBeNull()
+  await sql`DELETE FROM holiday WHERE id = ${holidayId}`
 })
 
 test('films keep their dates and list the names it searches on', async () => {

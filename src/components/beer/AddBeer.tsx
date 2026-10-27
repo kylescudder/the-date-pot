@@ -70,7 +70,7 @@ export default function AddBeer(props: {
     id: string
     archive: boolean
     name: string
-    abv: number
+    abv: number | string
     breweries: string[]
     beerTypes: string[]
     addedById: string
@@ -94,7 +94,7 @@ export default function AddBeer(props: {
       id: props.beer.id ? props.beer.id : '',
       archive: props.beer.archive ? props.beer.archive : false,
       name: props.beer.name ? props.beer.name : '',
-      abv: props.beer.abv ? props.beer.abv : 0,
+      abv: props.beer.abv ?? '',
       breweries: props.beer.breweries ? props.beer.breweries : [],
       beerTypes: props.beer.beerTypes ? props.beer.beerTypes : [],
       addedById: props.beer.addedById ? props.beer.addedById : '',
@@ -119,7 +119,7 @@ export default function AddBeer(props: {
     const payload: Beers = {
       ...props.beer,
       name: values.name,
-      abv: values.abv,
+      abv: values.abv === '' ? null : Number(values.abv),
       breweries: breweries
         .filter((brewery) =>
           values.breweries.some(
