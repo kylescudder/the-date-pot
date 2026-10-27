@@ -35,4 +35,4 @@ def after_success(record):
     # Public release record read by the app's own status checks.
     core.save_json(core.APP / 'deployment.json', {'released_at':record['deployed_at'], 'image':record['image'],
                    'revision':record['revision'], 'previous_image':record['previous_image'],
-                   'previous_revision':record['previous_revision'], 'hostname':'datepot.kylescudder.co.uk'})
+                   'previous_revision':record['previous_revision'], 'hostname':'thedatepot.co.uk'})

@@ -24,7 +24,7 @@ commit and image digest after completed acceptance checks.
 
 ## Services and trust boundaries
 
-- Public app: https://datepot.kylescudder.co.uk, upstream `the-date-pot:3000`.
+- Public app: https://thedatepot.co.uk, upstream `the-date-pot:3000`.
 - Deploy hook: https://deploy-the-date-pot.kylescudder.co.uk/hooks/the-date-pot.
 - Checkout: `/Users/kyle/platform/apps/the-date-pot`.
 - LaunchAgent: `com.kylescudder.deploy-core`, running as Colima's owner.
@@ -39,7 +39,7 @@ Postgres connections.
 
 All RPCs require a verified Clerk session and are scoped to the member’s group. The app uses the
 production instance of the The Date Pot Clerk application, served from
-`clerk.datepot.kylescudder.co.uk`. Do not substitute another app's Clerk instance.
+`clerk.thedatepot.co.uk`. Do not substitute another app's Clerk instance.
 
 The receiver joins only `platform-web`, has no Docker socket, host shell
 credentials or database access, and can write only its queue. It reads only the
@@ -104,7 +104,7 @@ stores the owning group's id in each `userGroupId` column, exactly as before.
 GitHub's `production` environment permits `main` only. Its secrets are
 `DEPLOY_WEBHOOK_SECRET`, `CF_ACCESS_CLIENT_ID` and `CF_ACCESS_CLIENT_SECRET`; no
 database or Clerk secret goes to GitHub. Repository variables are
-`DEPLOY_ENABLED=true` and `DATE_POT_BASE_URL=https://datepot.kylescudder.co.uk`.
+`DEPLOY_ENABLED=true` and `DATE_POT_BASE_URL=https://thedatepot.co.uk`.
 The Clerk publishable key is read at runtime from the host's `.env`, so the image
 has no build-time configuration.
 
@@ -145,7 +145,7 @@ Access must exist before registering the exact hook route. From the platform:
 
 ```sh
 python3 scripts/hostname.py add the-date-pot-deploy deploy-the-date-pot.kylescudder.co.uk --upstream the-date-pot-deploy-hook:9000 --path /hooks/the-date-pot --dry-run
-python3 scripts/hostname.py add the-date-pot datepot.kylescudder.co.uk --upstream the-date-pot:3000 --dry-run
+python3 scripts/hostname.py add the-date-pot thedatepot.co.uk --upstream the-date-pot:3000 --dry-run
 ```
 
 App secrets, hooks, Compose and state follow the shared encrypted NAS backup
