@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
-import { archiveActivity, updateActivity } from '@/lib/actions/activity.action'
-import { archiveToast, successToast } from '@/lib/actions/toast.actions'
+import { usePathname, useRouter } from '@/lib/navigation'
+import { archiveActivity, updateActivity } from '@/lib/api'
+import { archiveToast, successToast } from '@/lib/toast'
 import { IconTrash, IconCaretUpDown, IconCheck } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
 import Map from '../shared/Map'
@@ -76,7 +76,7 @@ export default function AddActivity(props: {
       expenseId: values.expenseId
     }
 
-    const [activity] = await updateActivity(payload)
+    const activity = await updateActivity(payload)
     if (pathname.includes('/activity/')) {
       successToast(activity.name)
       setChangesMade(true)

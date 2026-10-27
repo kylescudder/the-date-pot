@@ -1,19 +1,15 @@
 'use client'
 
 import React, { useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
-import {
-  archiveToast,
-  deleteToast,
-  successToast
-} from '@/lib/actions/toast.actions'
+import { usePathname, useRouter } from '@/lib/navigation'
+import { archiveToast, deleteToast, successToast } from '@/lib/toast'
 import { IconTrash, IconCircleMinus, IconCirclePlus } from '@tabler/icons-react'
 import {
   archiveCoffee,
   deleteCoffeeRating,
   updateCoffee,
   updateCoffeeRating
-} from '@/lib/actions/coffee.action'
+} from '@/lib/api'
 import { FieldValues, useForm } from 'react-hook-form'
 import BackButton from '../shared/BackButton'
 import Map from '@/components/shared/Map'
@@ -235,7 +231,7 @@ export default function AddCoffee(props: {
                     <div className='contents w-1/2'>
                       <IconCircleMinus
                         onClick={() => handleRemoveRecord(rating)}
-                        className='text-destructive float-right'
+                        className='float-right text-destructive'
                       />
                     </div>
                     <div className='flex items-center pt-2 text-base'>

@@ -1,0 +1,31 @@
+name: the-date-pot
+services:
+  the-date-pot:
+    image: ${DATE_POT_IMAGE:?Set an attested image digest}
+    restart: unless-stopped
+    env_file: .env
+    networks:
+      web:
+        aliases: [the-date-pot]
+      database:
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    mem_limit: 256m
+    cpus: 1
+    pids_limit: 128
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+networks:
+  web:
+    external: true
+    name: platform-web
+  database:
+    external: true
+    name: platform-db

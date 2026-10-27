@@ -1,6 +1,6 @@
 'use client'
 
-import { updateCoffeeRating } from '@/lib/actions/coffee.action'
+import { updateCoffeeRating } from '@/lib/api'
 import { option } from '@/lib/models/select-options'
 import { Coffee, User } from '@/server/db/schema'
 import { CoffeeRatings } from '@/lib/models/coffeeRatings'

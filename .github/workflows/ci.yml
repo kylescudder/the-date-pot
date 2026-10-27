@@ -1,0 +1,42 @@
+name: CI
+on:
+  pull_request:
+  workflow_call:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:18.6-alpine
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U postgres -d postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Typecheck and build
+        run: docker build --target build -t the-date-pot:checks .
+      - name: Check dependency advisories
+        run: docker run --rm the-date-pot:checks bun audit --audit-level high
+      - name: Check formatting
+        run: docker run --rm the-date-pot:checks bun run format:check
+      - name: Test
+        run: docker run --rm --network host -e TEST_DATABASE_URL=postgres://postgres@127.0.0.1:5432/postgres the-date-pot:checks sh -c 'bun run test && bun run test:connections'
+      - name: Test deployment hooks
+        run: python3 -B -m unittest discover -s deploy -p 'test_*.py' -v
+      - name: Test webhook receiver
+        run: docker run --rm -v "$PWD/deploy/receiver:/app:ro" -w /app node:24-alpine@sha256:06d7adf3e0ef61a13f1d28682726366f97a15aa1888c934d3ecec86c33918b53 node --test server.test.mjs
+      - name: Build production image
+        run: docker build --build-arg DATE_POT_REVISION="$GITHUB_SHA" -t the-date-pot:ci .

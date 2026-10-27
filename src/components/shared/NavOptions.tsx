@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname } from '@/lib/navigation'
 import Icon from './Icon'
 import { Pot } from '@/server/db/schema'
 import { SidebarMenuButton, SidebarMenuItem } from '../ui/sidebar'

@@ -1,0 +1,45 @@
+[
+  [
+    "compose",
+    ["exec", "-T", "the-date-pot", "bun", "deploy/verify.ts"],
+    "ghcr.io/kylescudder/the-date-pot@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ],
+  ["backup_database", "the_date_pot"],
+  [
+    "run",
+    [
+      "docker",
+      "run",
+      "--rm",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges:true",
+      "--network",
+      "platform-db",
+      "--memory",
+      "128m",
+      "--cpus",
+      "0.5",
+      "--env-file",
+      "{MIGRATION_ENV}",
+      "ghcr.io/kylescudder/the-date-pot@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "bun",
+      "server/migrate.ts"
+    ],
+    null
+  ],
+  [
+    "save_json",
+    "{APP}/deployment.json",
+    {
+      "released_at": "test-time",
+      "image": "ghcr.io/kylescudder/the-date-pot@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "previous_image": "previous",
+      "previous_revision": "cccccccccccccccccccccccccccccccccccccccc",
+      "hostname": "thedatepot.co.uk"
+    }
+  ]
+]
