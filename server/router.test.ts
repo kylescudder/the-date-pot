@@ -208,7 +208,9 @@ test('ratings must come from group members and use half-star steps', async () =>
     taste: 4.5
   })
   expect(
-    (await me.coffee.ratings(coffeeId)).find((row) => row.id === coffeeRating.id)
+    (await me.coffee.ratings(coffeeId)).find(
+      (row) => row.id === coffeeRating.id
+    )
   ).toMatchObject({ experience: 3.5, taste: 4.5 })
   await me.coffee.deleteRating(coffeeRating.id)
   await expect(
@@ -250,7 +252,8 @@ test('unknown legacy ABV and unvisited holiday dates stay unknown', async () => 
   const holidayId = randomUUID()
   await sql`INSERT INTO holiday (id, city, country, "dateBeen")
     VALUES (${holidayId}, 'Unvisited', 'Unknown', NULL)`
-  const [holiday] = await sql`SELECT "dateBeen" FROM holiday WHERE id = ${holidayId}`
+  const [holiday] =
+    await sql`SELECT "dateBeen" FROM holiday WHERE id = ${holidayId}`
   expect(holiday.dateBeen).toBeNull()
   await sql`DELETE FROM holiday WHERE id = ${holidayId}`
 })
