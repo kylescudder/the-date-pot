@@ -55,8 +55,8 @@ export const beerRating = createTable('beerRating', {
     .$defaultFn(() => randomUUID()),
   beerId: uuid('beerId').references(() => beer.id),
   userId: uuid('userId').references(() => user.id),
-  wankyness: integer('wankyness').notNull(),
-  taste: integer('taste').notNull()
+  wankyness: doublePrecision('wankyness').notNull(),
+  taste: doublePrecision('taste').notNull()
 })
 
 export type BeerRating = typeof beerRating.$inferSelect
@@ -119,8 +119,8 @@ export const coffeeRating = createTable('coffeeRating', {
     .$defaultFn(() => randomUUID()),
   userId: uuid('userId').references(() => user.id),
   coffeeId: uuid('coffeeId').references(() => coffee.id),
-  experience: integer('experience').notNull(),
-  taste: integer('taste').notNull()
+  experience: doublePrecision('experience').notNull(),
+  taste: doublePrecision('taste').notNull()
 })
 
 export type CoffeeRating = typeof coffeeRating.$inferSelect

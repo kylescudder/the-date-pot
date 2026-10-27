@@ -1,0 +1,1643 @@
+{
+  "id": "c05bca12-0885-4b82-8fc5-f6e1486aac09",
+  "prevId": "21cd86bb-351f-4a2d-9e9b-c164ce9edcee",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.activity": {
+      "name": "activity",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "archive": {
+          "name": "archive",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userGroupId": {
+          "name": "userGroupId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "address": {
+          "name": "address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expenseId": {
+          "name": "expenseId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "activity_userGroupId_group_id_fk": {
+          "name": "activity_userGroupId_group_id_fk",
+          "tableFrom": "activity",
+          "tableTo": "group",
+          "columnsFrom": [
+            "userGroupId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "activity_expenseId_expense_id_fk": {
+          "name": "activity_expenseId_expense_id_fk",
+          "tableFrom": "activity",
+          "tableTo": "expense",
+          "columnsFrom": [
+            "expenseId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.activityType": {
+      "name": "activityType",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "activityType": {
+          "name": "activityType",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.activityTypes": {
+      "name": "activityTypes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "activityId": {
+          "name": "activityId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "activityType": {
+          "name": "activityType",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "activityTypeId": {
+          "name": "activityTypeId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "activityTypes_activityId_activity_id_fk": {
+          "name": "activityTypes_activityId_activity_id_fk",
+          "tableFrom": "activityTypes",
+          "tableTo": "activity",
+          "columnsFrom": [
+            "activityId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "activityTypes_activityTypeId_activityType_id_fk": {
+          "name": "activityTypes_activityTypeId_activityType_id_fk",
+          "tableFrom": "activityTypes",
+          "tableTo": "activityType",
+          "columnsFrom": [
+            "activityTypeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.beer": {
+      "name": "beer",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "abv": {
+          "name": "abv",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "addedById": {
+          "name": "addedById",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "archive": {
+          "name": "archive",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userGroupId": {
+          "name": "userGroupId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "beer_addedById_user_id_fk": {
+          "name": "beer_addedById_user_id_fk",
+          "tableFrom": "beer",
+          "tableTo": "user",
+          "columnsFrom": [
+            "addedById"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "beer_userGroupId_group_id_fk": {
+          "name": "beer_userGroupId_group_id_fk",
+          "tableFrom": "beer",
+          "tableTo": "group",
+          "columnsFrom": [
+            "userGroupId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.beerBreweries": {
+      "name": "beerBreweries",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "beerId": {
+          "name": "beerId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "breweryId": {
+          "name": "breweryId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "beerBreweries_beerId_beer_id_fk": {
+          "name": "beerBreweries_beerId_beer_id_fk",
+          "tableFrom": "beerBreweries",
+          "tableTo": "beer",
+          "columnsFrom": [
+            "beerId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "beerBreweries_breweryId_brewery_id_fk": {
+          "name": "beerBreweries_breweryId_brewery_id_fk",
+          "tableFrom": "beerBreweries",
+          "tableTo": "brewery",
+          "columnsFrom": [
+            "breweryId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.beerRating": {
+      "name": "beerRating",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "beerId": {
+          "name": "beerId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "wankyness": {
+          "name": "wankyness",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "taste": {
+          "name": "taste",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "beerRating_beerId_beer_id_fk": {
+          "name": "beerRating_beerId_beer_id_fk",
+          "tableFrom": "beerRating",
+          "tableTo": "beer",
+          "columnsFrom": [
+            "beerId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "beerRating_userId_user_id_fk": {
+          "name": "beerRating_userId_user_id_fk",
+          "tableFrom": "beerRating",
+          "tableTo": "user",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.beerType": {
+      "name": "beerType",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "beerType": {
+          "name": "beerType",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.beerTypes": {
+      "name": "beerTypes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "beerId": {
+          "name": "beerId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "beerTypeId": {
+          "name": "beerTypeId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "beerTypes_beerId_beer_id_fk": {
+          "name": "beerTypes_beerId_beer_id_fk",
+          "tableFrom": "beerTypes",
+          "tableTo": "beer",
+          "columnsFrom": [
+            "beerId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "beerTypes_beerTypeId_beerType_id_fk": {
+          "name": "beerTypes_beerTypeId_beerType_id_fk",
+          "tableFrom": "beerTypes",
+          "tableTo": "beerType",
+          "columnsFrom": [
+            "beerTypeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.brewery": {
+      "name": "brewery",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "breweryName": {
+          "name": "breweryName",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.coffee": {
+      "name": "coffee",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "archive": {
+          "name": "archive",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userGroupId": {
+          "name": "userGroupId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "addedById": {
+          "name": "addedById",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "address": {
+          "name": "address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "coffee_userGroupId_group_id_fk": {
+          "name": "coffee_userGroupId_group_id_fk",
+          "tableFrom": "coffee",
+          "tableTo": "group",
+          "columnsFrom": [
+            "userGroupId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "coffee_addedById_user_id_fk": {
+          "name": "coffee_addedById_user_id_fk",
+          "tableFrom": "coffee",
+          "tableTo": "user",
+          "columnsFrom": [
+            "addedById"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.coffeeRating": {
+      "name": "coffeeRating",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "coffeeId": {
+          "name": "coffeeId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "experience": {
+          "name": "experience",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "taste": {
+          "name": "taste",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "coffeeRating_userId_user_id_fk": {
+          "name": "coffeeRating_userId_user_id_fk",
+          "tableFrom": "coffeeRating",
+          "tableTo": "user",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "coffeeRating_coffeeId_coffee_id_fk": {
+          "name": "coffeeRating_coffeeId_coffee_id_fk",
+          "tableFrom": "coffeeRating",
+          "tableTo": "coffee",
+          "columnsFrom": [
+            "coffeeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.cuisine": {
+      "name": "cuisine",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "cuisine": {
+          "name": "cuisine",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.director": {
+      "name": "director",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "directorName": {
+          "name": "directorName",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.expense": {
+      "name": "expense",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "expense": {
+          "name": "expense",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.film": {
+      "name": "film",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "archive": {
+          "name": "archive",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userGroupId": {
+          "name": "userGroupId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "addedById": {
+          "name": "addedById",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "addedDate": {
+          "name": "addedDate",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "releaseDate": {
+          "name": "releaseDate",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "runTime": {
+          "name": "runTime",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "watched": {
+          "name": "watched",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "film_userGroupId_group_id_fk": {
+          "name": "film_userGroupId_group_id_fk",
+          "tableFrom": "film",
+          "tableTo": "group",
+          "columnsFrom": [
+            "userGroupId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "film_addedById_user_id_fk": {
+          "name": "film_addedById_user_id_fk",
+          "tableFrom": "film",
+          "tableTo": "user",
+          "columnsFrom": [
+            "addedById"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.filmDirectors": {
+      "name": "filmDirectors",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "filmId": {
+          "name": "filmId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "directorId": {
+          "name": "directorId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "filmDirectors_filmId_film_id_fk": {
+          "name": "filmDirectors_filmId_film_id_fk",
+          "tableFrom": "filmDirectors",
+          "tableTo": "film",
+          "columnsFrom": [
+            "filmId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "filmDirectors_directorId_director_id_fk": {
+          "name": "filmDirectors_directorId_director_id_fk",
+          "tableFrom": "filmDirectors",
+          "tableTo": "director",
+          "columnsFrom": [
+            "directorId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.filmGenres": {
+      "name": "filmGenres",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "filmId": {
+          "name": "filmId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "genreId": {
+          "name": "genreId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "filmGenres_filmId_film_id_fk": {
+          "name": "filmGenres_filmId_film_id_fk",
+          "tableFrom": "filmGenres",
+          "tableTo": "film",
+          "columnsFrom": [
+            "filmId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "filmGenres_genreId_genre_id_fk": {
+          "name": "filmGenres_genreId_genre_id_fk",
+          "tableFrom": "filmGenres",
+          "tableTo": "genre",
+          "columnsFrom": [
+            "genreId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.filmPlatforms": {
+      "name": "filmPlatforms",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "filmId": {
+          "name": "filmId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "platformId": {
+          "name": "platformId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "filmPlatforms_filmId_film_id_fk": {
+          "name": "filmPlatforms_filmId_film_id_fk",
+          "tableFrom": "filmPlatforms",
+          "tableTo": "film",
+          "columnsFrom": [
+            "filmId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "filmPlatforms_platformId_platform_id_fk": {
+          "name": "filmPlatforms_platformId_platform_id_fk",
+          "tableFrom": "filmPlatforms",
+          "tableTo": "platform",
+          "columnsFrom": [
+            "platformId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.genre": {
+      "name": "genre",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "genreText": {
+          "name": "genreText",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.group": {
+      "name": "group",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.holiday": {
+      "name": "holiday",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "country": {
+          "name": "country",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "city": {
+          "name": "city",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "been": {
+          "name": "been",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "archive": {
+          "name": "archive",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userGroupId": {
+          "name": "userGroupId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dateBeen": {
+          "name": "dateBeen",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "holiday_userGroupId_group_id_fk": {
+          "name": "holiday_userGroupId_group_id_fk",
+          "tableFrom": "holiday",
+          "tableTo": "group",
+          "columnsFrom": [
+            "userGroupId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.platform": {
+      "name": "platform",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "platformName": {
+          "name": "platformName",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.pot": {
+      "name": "pot",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "potName": {
+          "name": "potName",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "icon": {
+          "name": "icon",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.restaurant": {
+      "name": "restaurant",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "archive": {
+          "name": "archive",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userGroupId": {
+          "name": "userGroupId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "address": {
+          "name": "address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "restaurant_userGroupId_group_id_fk": {
+          "name": "restaurant_userGroupId_group_id_fk",
+          "tableFrom": "restaurant",
+          "tableTo": "group",
+          "columnsFrom": [
+            "userGroupId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.restaurantCuisines": {
+      "name": "restaurantCuisines",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "cuisineId": {
+          "name": "cuisineId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "restaurantId": {
+          "name": "restaurantId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "restaurantCuisines_cuisineId_cuisine_id_fk": {
+          "name": "restaurantCuisines_cuisineId_cuisine_id_fk",
+          "tableFrom": "restaurantCuisines",
+          "tableTo": "cuisine",
+          "columnsFrom": [
+            "cuisineId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "restaurantCuisines_restaurantId_restaurant_id_fk": {
+          "name": "restaurantCuisines_restaurantId_restaurant_id_fk",
+          "tableFrom": "restaurantCuisines",
+          "tableTo": "restaurant",
+          "columnsFrom": [
+            "restaurantId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.restaurantNote": {
+      "name": "restaurantNote",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "note": {
+          "name": "note",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.restaurantWhens": {
+      "name": "restaurantWhens",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "whenId": {
+          "name": "whenId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "restaurantId": {
+          "name": "restaurantId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "restaurantWhens_whenId_when_id_fk": {
+          "name": "restaurantWhens_whenId_when_id_fk",
+          "tableFrom": "restaurantWhens",
+          "tableTo": "when",
+          "columnsFrom": [
+            "whenId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "restaurantWhens_restaurantId_restaurant_id_fk": {
+          "name": "restaurantWhens_restaurantId_restaurant_id_fk",
+          "tableFrom": "restaurantWhens",
+          "tableTo": "restaurant",
+          "columnsFrom": [
+            "restaurantId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.user": {
+      "name": "user",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "username": {
+          "name": "username",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "clerkId": {
+          "name": "clerkId",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bio": {
+          "name": "bio",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.userGroupPots": {
+      "name": "userGroupPots",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userGroup": {
+          "name": "userGroup",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "potId": {
+          "name": "potId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accepted": {
+          "name": "accepted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "userGroupPots_userId_user_id_fk": {
+          "name": "userGroupPots_userId_user_id_fk",
+          "tableFrom": "userGroupPots",
+          "tableTo": "user",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "userGroupPots_userGroup_userGroups_id_fk": {
+          "name": "userGroupPots_userGroup_userGroups_id_fk",
+          "tableFrom": "userGroupPots",
+          "tableTo": "userGroups",
+          "columnsFrom": [
+            "userGroup"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "userGroupPots_potId_pot_id_fk": {
+          "name": "userGroupPots_potId_pot_id_fk",
+          "tableFrom": "userGroupPots",
+          "tableTo": "pot",
+          "columnsFrom": [
+            "potId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.userGroups": {
+      "name": "userGroups",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "groupId": {
+          "name": "groupId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "userGroups_userId_user_id_fk": {
+          "name": "userGroups_userId_user_id_fk",
+          "tableFrom": "userGroups",
+          "tableTo": "user",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "userGroups_groupId_group_id_fk": {
+          "name": "userGroups_groupId_group_id_fk",
+          "tableFrom": "userGroups",
+          "tableTo": "group",
+          "columnsFrom": [
+            "groupId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.vinyl": {
+      "name": "vinyl",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "artist": {
+          "name": "artist",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "archive": {
+          "name": "archive",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userGroupId": {
+          "name": "userGroupId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "addedById": {
+          "name": "addedById",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "purchased": {
+          "name": "purchased",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "vinyl_userGroupId_group_id_fk": {
+          "name": "vinyl_userGroupId_group_id_fk",
+          "tableFrom": "vinyl",
+          "tableTo": "group",
+          "columnsFrom": [
+            "userGroupId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "vinyl_addedById_user_id_fk": {
+          "name": "vinyl_addedById_user_id_fk",
+          "tableFrom": "vinyl",
+          "tableTo": "user",
+          "columnsFrom": [
+            "addedById"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.when": {
+      "name": "when",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "when": {
+          "name": "when",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
