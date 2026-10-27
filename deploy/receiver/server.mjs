@@ -1,4 +1,4 @@
-// Recipe Saver deploy webhook receiver. Internet-facing via Cloudflare Tunnel and
+// The Date Pot deploy webhook receiver. Internet-facing via Cloudflare Tunnel and
 // Caddy, so it has no Docker access: it verifies a signed request and drops it
 // into a spool directory. An event-driven host service picks it up and runs
 // deploy/host-deploy.sh, which verifies the image attestation itself.
@@ -32,7 +32,7 @@ const reply = (response, status, message) => {
   response.writeHead(status, {
     'Content-Type': 'text/plain; charset=utf-8',
     'Cache-Control': 'no-store',
-    'X-Recipe-Saver-Deploy-Hook': '1'
+    'X-Date-Pot-Deploy-Hook': '1'
   })
   response.end(`${message}\n`)
 }
@@ -74,13 +74,13 @@ function parseRequest(body) {
 createServer((request, response) => {
   if (request.method === 'GET' && request.url === '/healthz')
     return reply(response, 200, 'ok')
-  if (request.method === 'GET' && request.url === '/hooks/recipe-saver') {
+  if (request.method === 'GET' && request.url === '/hooks/the-date-pot') {
     let status = { status: 'pending' }
     try {
       const value = JSON.parse(readFileSync(deployedStateFile, 'utf8'))
       if (
         /^[0-9a-f]{40}$/.test(value.revision) &&
-        /^ghcr\.io\/kylescudder\/recipe-saver@sha256:[0-9a-f]{64}$/.test(
+        /^ghcr\.io\/kylescudder\/the-date-pot@sha256:[0-9a-f]{64}$/.test(
           value.image
         )
       )
@@ -93,11 +93,11 @@ createServer((request, response) => {
     response.writeHead(200, {
       'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'no-store',
-      'X-Recipe-Saver-Deploy-Hook': '1'
+      'X-Date-Pot-Deploy-Hook': '1'
     })
     return response.end(JSON.stringify(status))
   }
-  if (request.method !== 'POST' || request.url !== '/hooks/recipe-saver')
+  if (request.method !== 'POST' || request.url !== '/hooks/the-date-pot')
     return reply(response, 404, 'not found')
   const chunks = []
   let size = 0
@@ -111,7 +111,7 @@ createServer((request, response) => {
   request.on('end', () => {
     if (response.writableEnded) return
     const body = Buffer.concat(chunks)
-    if (!validSignature(body, request.headers['x-recipe-saver-signature'])) {
+    if (!validSignature(body, request.headers['x-date-pot-signature'])) {
       log('rejected request with invalid signature')
       return reply(response, 401, 'invalid signature')
     }
