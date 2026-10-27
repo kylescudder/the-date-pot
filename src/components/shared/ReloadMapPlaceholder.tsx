@@ -1,6 +1,6 @@
 import React from 'react'
 import { IconRefresh } from '@tabler/icons-react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/lib/navigation'
 
 const ReloadMapPlaceholder = () => {
   const router = useRouter()

@@ -1,55 +1,26 @@
-import { defineConfig, devices } from '@playwright/test'
-import path from 'path'
+import { defineConfig } from '@playwright/test'
 
-// Use process.env.PORT by default and fallback to port 3000
-const PORT = process.env.PORT || 3000
-
-// Set webServer.url and use.baseURL with the location of the WebServer respecting the correct set port
-const baseURL = `http://localhost:${PORT}`
-
-// Reference: https://playwright.dev/docs/test-configuration
+// Runs against a local server whose database was seeded from
+// tests/fixtures/seed.sql, signed in as the Clerk DEV test user.
 export default defineConfig({
-  timeout: 30 * 1000,
-  testDir: path.join(__dirname, 'e2e'),
-  retries: 1,
-  outputDir: 'test-results/',
-  webServer: {
-    command: 'bun dev',
-    url: baseURL,
-    timeout: 120 * 1000,
-    reuseExistingServer: !process.env.CI
-  },
-
+  testDir: './e2e',
+  fullyParallel: false,
+  workers: 1,
+  timeout: 45000,
+  expect: { timeout: 10000 },
+  outputDir: 'state/e2e/test-results',
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: 'state/e2e/playwright-report', open: 'never' }]
+  ],
+  globalSetup: './e2e/setup.ts',
   use: {
-    baseURL,
-    trace: 'retry-with-trace'
-  },
-
-  projects: [
-    {
-      name: 'global setup',
-      testMatch: /global\.setup\.ts/
-    },
-    {
-      name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome']
-      },
-      dependencies: ['global setup']
-    },
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox']
-      },
-      dependencies: ['global setup']
-    },
-    {
-      name: 'webkit',
-      use: {
-        ...devices['Desktop Safari']
-      },
-      dependencies: ['global setup']
-    }
-  ]
+    baseURL: process.env.E2E_BASE_URL ?? 'http://localhost:3472',
+    storageState: 'state/e2e/auth.json',
+    viewport: { width: 1280, height: 800 },
+    colorScheme: 'dark',
+    screenshot: 'only-on-failure',
+    // Authenticated network traces can contain session credentials.
+    trace: 'off'
+  }
 })

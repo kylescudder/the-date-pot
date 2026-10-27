@@ -1,3 +1,15 @@
-# Ignore artifacts:
-build
+node_modules
+dist
 coverage
+bun.lock
+secrets
+state
+backups
+deploy-spool
+# Vendored into deploy-core, which pins this file by hash
+deploy/receiver
+# Generated
+drizzle/meta
+src/routeTree.gen.ts
+.tanstack
+.env.vault

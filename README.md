@@ -1,34 +1,53 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# The Date Pot
 
-## Getting Started
+A collection of films to watch, places to eat, things to do, coffee shops to rate
+and vinyls to buy with your loved one.
 
-First, run the development server:
+TanStack Start (React, Router, Query) with tRPC, Drizzle on PostgreSQL and Clerk,
+served by a small Bun server. Every record belongs to a group; the server takes
+the member and group from the Clerk session and scopes every query to that group.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+## Development
+
+Use Bun 1.4.4, matching `.bun-version` and the Dockerfile.
+
+```sh
+bun install --frozen-lockfile
+cp .env.example .env   # DATABASE_URL, APP_ORIGIN, Clerk DEV keys
+bun run db:migrate
+bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+A signed-in Clerk user needs a `user` row with their `clerkId` and a
+`userGroups` row linking it to a `group`; otherwise the app says the account
+isn't part of a date pot yet. `tests/fixtures/seed.sql` sets up a local group.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Script                     | Purpose                                                                                         |
+| -------------------------- | ----------------------------------------------------------------------------------------------- |
+| `bun run typecheck`        | `tsc`                                                                                           |
+| `bun run test`             | tRPC authorization, persistence and `/healthz` against Postgres (`TEST_DATABASE_URL`)           |
+| `bun run test:connections` | The runtime role's connection budget                                                            |
+| `bun run test:e2e`         | Playwright, signed in as a Clerk DEV test user (`E2E_USERNAME`, `E2E_PASSWORD`, `E2E_BASE_URL`) |
+| `bun run build`            | Production build in `dist/`; `bun run start` serves it                                          |
+| `bun run db:generate`      | New migration from `src/server/db/schema.ts`                                                    |
+| `bun run db:migrate`       | Apply migrations (owner role only)                                                              |
+| `bun run format`           | Prettier with the house style                                                                   |
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+`/healthz` returns `{"ok":true,"revision":"<sha>"}` once the database answers,
+or 503 after 3 seconds. Every response carries `X-Date-Pot-Revision`.
 
-## Learn More
+The map on coffee, restaurant and activity pages needs `VITE_GOOGLE_MAPS_API_KEY`
+at build time (a public, referrer-restricted key) and
+`GOOGLE_MAPS_API_KEY_GEOCODING` at runtime; without them the map is not shown.
 
-To learn more about Next.js, take a look at the following resources:
+## Database
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`drizzle/0000_baseline.sql` creates the schema on an empty database. The live
+database predates Drizzle migrations, so on it the baseline only records itself
+and changes nothing. The migration journal lives in the `drizzle` schema, which
+the runtime role cannot read.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+See [deploy/README.md](deploy/README.md) for the host, the release pipeline and
+the one-off cutover from the old host.

@@ -1,0 +1,18 @@
+{
+  "name": "the-date-pot",
+  "title": "The Date Pot",
+  "repo": "kylescudder/the-date-pot",
+  "image": "ghcr.io/kylescudder/the-date-pot",
+  "image_var": "DATE_POT_IMAGE",
+  "service": "the-date-pot",
+  "app_dir": "the-date-pot",
+  "workflow": "release.yml",
+  "branch": "main",
+  "compose_file": "compose.yaml",
+  "hooks": "deploy/hooks.py",
+  "public_status": true,
+  "bind_source_digest": true,
+  "backups": true,
+  "require_host": true,
+  "enabled": false
+}

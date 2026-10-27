@@ -1,17 +1,17 @@
 'use client'
 
 import React, { useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
-import { archiveVinyl, updateVinyl } from '@/lib/actions/vinyl.action'
-import { archiveToast, successToast } from '@/lib/actions/toast.actions'
+import { usePathname, useRouter } from '@/lib/navigation'
+import { archiveVinyl, updateVinyl } from '@/lib/api'
+import { archiveToast, successToast } from '@/lib/toast'
 import { IconTrash } from '@tabler/icons-react'
 import BackButton from '../shared/BackButton'
 import { Vinyl } from '@/server/db/schema'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
-import { FieldValues, Form, useForm } from 'react-hook-form'
-import { FormControl, FormField, FormItem, FormLabel } from '../ui/form'
+import { type FieldValues, useForm } from 'react-hook-form'
+import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form'
 
 export default function AddVinyl(props: { vinyl: Vinyl }) {
   const router = useRouter()
@@ -48,7 +48,7 @@ export default function AddVinyl(props: { vinyl: Vinyl }) {
       purchased: values.purchased
     }
 
-    const [vinyl] = await updateVinyl(payload)
+    const vinyl = await updateVinyl(payload)
 
     if (pathname.includes('/vinyl/')) {
       successToast(vinyl.name)

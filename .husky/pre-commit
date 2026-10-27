@@ -1,1 +1,1 @@
-bun format:check
+bunx --bun --no-install lint-staged

@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/table'
 import { DataTablePagination } from './data-table-pagination'
 import { DataTableViewOptions } from './data-table-column-toggle'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/lib/navigation'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -65,7 +65,7 @@ export function DataTable<TData, TValue>({
     const row = table.getRowModel().rows[rowIndex]
     const originalData = row.original // Retrieve the original row data
     const id = (originalData as any).id
-    router.push(`${potName.toLowerCase()}/${id}`)
+    router.push(`/${potName.toLowerCase()}/${id}`)
   }
   return (
     <div>

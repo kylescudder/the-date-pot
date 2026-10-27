@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/lib/navigation'
 import { IconArrowNarrowLeft } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
 

@@ -19,7 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '../ui/dropdown-menu'
-import { UserButton } from '@clerk/nextjs'
+import { UserButton } from '@clerk/tanstack-react-start'
 import { IconCaretUpDown, IconHomeHeart, IconX } from '@tabler/icons-react'
 
 export function AppSidebar(props: { pots: Pot[] }) {
@@ -50,7 +50,7 @@ export function AppSidebar(props: { pots: Pot[] }) {
                   size='lg'
                   className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
                 >
-                  <div className='text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
+                  <div className='flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground'>
                     <UserButton />
                   </div>
                   <IconCaretUpDown className='ml-auto' />
