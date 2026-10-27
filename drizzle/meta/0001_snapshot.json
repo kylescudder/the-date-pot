@@ -189,7 +189,7 @@
           "name": "abv",
           "type": "double precision",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "addedById": {
           "name": "addedById",
@@ -1058,7 +1058,7 @@
           "name": "dateBeen",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
       "indexes": {},

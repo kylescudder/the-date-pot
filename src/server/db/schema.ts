@@ -66,7 +66,7 @@ export const beer = createTable('beer', {
     .primaryKey()
     .$defaultFn(() => randomUUID()),
   name: varchar('name').notNull(),
-  abv: doublePrecision('abv').notNull(),
+  abv: doublePrecision('abv'),
   addedById: uuid('addedById').references(() => user.id),
   archive: boolean('archive'),
   userGroupId: uuid('userGroupId').references(() => group.id)
@@ -280,7 +280,7 @@ export const holiday = createTable('holiday', {
   been: boolean('been'),
   archive: boolean('archive'),
   userGroupId: uuid('userGroupId').references(() => group.id),
-  dateBeen: timestamp('dateBeen').notNull()
+  dateBeen: timestamp('dateBeen')
 })
 
 export type Holiday = typeof holiday.$inferSelect

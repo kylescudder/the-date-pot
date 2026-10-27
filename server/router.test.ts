@@ -235,6 +235,26 @@ test('ratings must come from group members and use half-star steps', async () =>
   ).toBe(false)
 })
 
+test('unknown legacy ABV and unvisited holiday dates stay unknown', async () => {
+  const me = caller(kyle)
+  const beer = await me.beer.save({
+    id: '',
+    name: 'Unknown ABV',
+    abv: null,
+    archive: false,
+    breweries: [],
+    beerTypes: []
+  })
+  expect((await me.beer.get(beer.id)).abv).toBeNull()
+  await me.beer.archive(beer.id)
+  const holidayId = randomUUID()
+  await sql`INSERT INTO holiday (id, city, country, "dateBeen")
+    VALUES (${holidayId}, 'Unvisited', 'Unknown', NULL)`
+  const [holiday] = await sql`SELECT "dateBeen" FROM holiday WHERE id = ${holidayId}`
+  expect(holiday.dateBeen).toBeNull()
+  await sql`DELETE FROM holiday WHERE id = ${holidayId}`
+})
+
 test('films keep their dates and list the names it searches on', async () => {
   const me = caller(kyle)
   const film = await me.film.save({
