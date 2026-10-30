@@ -19,7 +19,7 @@
     "test:connections": "bun deploy/test-connection-budget.ts"
   },
   "dependencies": {
-    "@clerk/tanstack-react-start": "1.7.7",
+    "@clerk/tanstack-react-start": "1.7.9",
     "@clerk/themes": "2.4.57",
     "@fontsource-variable/inter": "5.3.0",
     "@fontsource-variable/source-code-pro": "5.3.1",
