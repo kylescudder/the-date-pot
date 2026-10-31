@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict'
 import { randomUUID } from 'node:crypto'
 import { createDeploymentDatabase } from './database'
+import { database as createApplicationDatabase } from '../src/server/db'
+import { createHealthCheck } from '../src/server/health'
 import postgres from 'postgres'
 function connect(url: string, max: number) {
   return adapt(postgres(url, { max, connect_timeout: 3, onnotice: () => {} }))
@@ -58,7 +60,7 @@ async function checkBudget() {
     const url = new URL(controlUrl)
     url.username = role
     url.password = ''
-    const app = connect(url.toString(), 4)
+    const app = adapt(createApplicationDatabase(url.toString()))
     const deployment = adapt(createDeploymentDatabase(url.toString()))
     const health = connect(url.toString(), 1)
     const spare = connect(url.toString(), 2)
@@ -78,15 +80,18 @@ async function checkBudget() {
       )
     )
     assert.equal(new Set(rows.map(([row]) => row!.pid)).size, 1)
-    const probe = await health.reserve()
-    held.push(probe)
-    assert.equal((await probe.query('SELECT 42 AS answer'))[0]!.answer, 42)
-    // The app, verifier and health occupy six slots, leaving two for operator work.
+    // Leave only the health slot free: app 4 + verifier 1 + operator work 2.
     for (let i = 0; i < 2; i++) {
       const connection = await spare.reserve()
       held.push(connection)
       await connection.query('SELECT 1')
     }
+    const checkHealth = createHealthCheck(url.toString())
+    await Promise.all(Array.from({ length: 4 }, () => checkHealth()))
+    // Hold the health slot open to prove PostgreSQL rejects a ninth connection.
+    const probe = await health.reserve()
+    held.push(probe)
+    assert.equal((await probe.query('SELECT 42 AS answer'))[0]!.answer, 42)
     let rejected = false
     try {
       await overflow.query('SELECT 1')
