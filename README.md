@@ -22,6 +22,13 @@ A signed-in Clerk user needs a `user` row with their `clerkId` and a
 `userGroups` row linking it to a `group`; otherwise the app says the account
 isn't part of a date pot yet. `tests/fixtures/seed.sql` sets up a local group.
 
+Better Auth is an opt-in alternative to Clerk (`AUTH_PROVIDER=better-auth`, with
+`BETTER_AUTH_URL`, `BETTER_AUTH_SECRET`, `BREVO_API_KEY` and `AUTH_EMAIL_FROM`).
+Sign-up is open, sign-in pages live at `/auth/sign-in`, and a verified account
+without a member row gets one and a pot of its own. Clerk stays the default; see
+[deploy/README.md](deploy/README.md#better-auth-rollout-and-clerk-rollback) for
+the access model, limits and cutover.
+
 | Script                     | Purpose                                                                                         |
 | -------------------------- | ----------------------------------------------------------------------------------------------- |
 | `bun run typecheck`        | `tsc`                                                                                           |

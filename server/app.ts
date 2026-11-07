@@ -33,7 +33,10 @@ export function createApp({
       )
         response = new Response('Forbidden', { status: 403 })
       else response = await app(request)
-    } else if (url.pathname.startsWith('/api/'))
+    } else if (url.pathname.startsWith('/api/auth/'))
+      // Better Auth checks origins itself; the route 404s unless it is enabled.
+      response = await app(request)
+    else if (url.pathname.startsWith('/api/'))
       response = new Response('Not found', { status: 404 })
     else if (!['GET', 'HEAD'].includes(request.method))
       response = new Response('Method not allowed', { status: 405 })

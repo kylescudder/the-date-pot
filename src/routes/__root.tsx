@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import {
   ClerkProvider,
   RedirectToSignIn,
@@ -12,15 +12,20 @@ import {
 } from '@tanstack/react-query'
 import {
   HeadContent,
+  Navigate,
   Outlet,
   Scripts,
   createRootRoute,
+  useRouterState,
   useLocation
 } from '@tanstack/react-router'
 import { createTRPCClient, httpBatchLink } from '@trpc/client'
 import superjson from 'superjson'
 import type { AppRouter } from '@/server/router'
 import { TRPCProvider, setSession, useTRPC } from '@/lib/trpc'
+import { getAuthConfig } from '@/lib/auth-config'
+import { authClient } from '@/lib/auth-client'
+import { clearPendingSignIn } from '@/lib/pending-sign-in'
 import { ThemeProvider } from '@/components/theme-provider'
 import { AppSidebar } from '@/components/shared/AppSidebar'
 import { MainContent } from '@/components/shared/MainContent'
@@ -41,6 +46,8 @@ const icon = (size: number, rel = 'icon') => ({
 })
 
 export const Route = createRootRoute({
+  // Public runtime selection keeps the client and server on the same provider.
+  loader: () => getAuthConfig(),
   head: () => ({
     meta: [
       { charSet: 'UTF-8' },
@@ -76,6 +83,7 @@ export const Route = createRootRoute({
 })
 
 function RootComponent() {
+  const { provider } = Route.useLoaderData()
   useEffect(() => {
     // The app ships no service worker now; remove the old Serwist one so cached
     // pages cannot mask a release.
@@ -86,6 +94,17 @@ function RootComponent() {
           registrations.forEach((registration) => registration.unregister())
         )
   }, [])
+  if (provider === 'better-auth')
+    return (
+      <ThemeProvider
+        attribute='class'
+        defaultTheme='system'
+        enableSystem
+        disableTransitionOnChange
+      >
+        <BetterAuthApp />
+      </ThemeProvider>
+    )
   return (
     <ClerkProvider
       signInUrl='/sign-in'
@@ -118,6 +137,87 @@ function App() {
   if (!isSignedIn) return <RedirectToSignIn />
   // A fresh provider per identity keeps one person's cached data from another's.
   return <SessionApp key={userId} />
+}
+
+const AuthPage = ({ children }: { children: ReactNode }) => (
+  <div className='auth-page'>{children}</div>
+)
+
+function BetterAuthApp() {
+  const location = useLocation()
+  const { data: session, isPending, refetch } = authClient.useSession()
+  const { pathname } = location
+  // Decide from the route the Outlet will actually render, not the new
+  // location: during a navigation the Outlet still shows the previous match,
+  // which must never render outside its providers.
+  const leafRoute = useRouterState({
+    select: (state) => state.matches[state.matches.length - 1]?.routeId
+  })
+  const isAuthRoute = leafRoute === '/auth/$path'
+  const isClerkRoute = leafRoute === '/sign-in/$' || leafRoute === '/sign-up/$'
+  // Sign-in navigates here before the shared session store has refreshed, so
+  // confirm a signed-out state with the server once per page before
+  // redirecting to sign-in.
+  const [confirmedSignedOut, setConfirmedSignedOut] = useState<string | null>(
+    null
+  )
+  const needsCheck =
+    !isPending &&
+    !session &&
+    !isAuthRoute &&
+    !isClerkRoute &&
+    !pathname.startsWith('/auth/') &&
+    confirmedSignedOut !== pathname
+  useEffect(() => {
+    if (session) clearPendingSignIn()
+  }, [session])
+  // `refetch` changes identity on every render, so keep it out of the effect's
+  // dependencies and run at most one check per path.
+  const refetchRef = useRef(refetch)
+  refetchRef.current = refetch
+  const checking = useRef<string | null>(null)
+  useEffect(() => {
+    if (!needsCheck || checking.current === pathname) return
+    checking.current = pathname
+    void refetchRef.current().finally(() => {
+      checking.current = null
+      setConfirmedSignedOut(pathname)
+    })
+  }, [needsCheck, pathname])
+  if (isAuthRoute)
+    return (
+      <AuthPage>
+        <Outlet />
+      </AuthPage>
+    )
+  // Navigating to an auth page: the Outlet still holds the previous route
+  // (which may need providers that are gone), and re-rendering <Navigate>
+  // would navigate again on every render.
+  if (pathname.startsWith('/auth/')) return <Loading />
+  // Clerk's sign-in and sign-up URLs keep working after the switch.
+  if (isClerkRoute)
+    return (
+      <Navigate
+        to='/auth/$path'
+        params={{
+          path: leafRoute === '/sign-up/$' ? 'sign-up' : 'sign-in'
+        }}
+        replace
+      />
+    )
+  if (isPending || needsCheck) return <Loading />
+  if (!session)
+    return (
+      <Navigate
+        to='/auth/$path'
+        params={{ path: 'sign-in' }}
+        // `href` is the in-app path, search and hash; safeAppPath re-checks it.
+        search={{ redirectTo: location.href }}
+        replace
+      />
+    )
+  // A fresh provider per identity keeps one person's cached data from another's.
+  return <SessionApp key={session.user.id} />
 }
 
 function SessionApp() {

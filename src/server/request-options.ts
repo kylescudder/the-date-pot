@@ -4,6 +4,8 @@ import { readEnv } from './env'
 
 export function requestOptions() {
   const env = readEnv()
+  // Better Auth reads its own cookie per request; Clerk is not loaded at all.
+  if (env.AUTH_PROVIDER === 'better-auth') return {}
   return {
     requestMiddleware: [
       clerkMiddleware(() => ({

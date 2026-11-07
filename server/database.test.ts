@@ -106,7 +106,7 @@ test('the owner CLI replays safely and keeps its journal private from runtime', 
     clients.push(journalSql)
     const journal =
       await journalSql`SELECT * FROM drizzle.__drizzle_migrations ORDER BY id`
-    expect(journal).toHaveLength(2)
+    expect(journal).toHaveLength(3)
     await journalSql.end()
 
     const runtimeSql = database(roleUrl(runtime))
