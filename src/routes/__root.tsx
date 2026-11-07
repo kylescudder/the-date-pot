@@ -12,6 +12,7 @@ import {
 } from '@tanstack/react-query'
 import {
   HeadContent,
+  Navigate,
   Outlet,
   Scripts,
   createRootRoute,
@@ -21,6 +22,9 @@ import { createTRPCClient, httpBatchLink } from '@trpc/client'
 import superjson from 'superjson'
 import type { AppRouter } from '@/server/router'
 import { TRPCProvider, setSession, useTRPC } from '@/lib/trpc'
+import { getAuthConfig } from '@/lib/auth-config'
+import { authClient } from '@/lib/auth-client'
+import { clearPendingSignIn } from '@/lib/pending-sign-in'
 import { ThemeProvider } from '@/components/theme-provider'
 import { AppSidebar } from '@/components/shared/AppSidebar'
 import { MainContent } from '@/components/shared/MainContent'
@@ -41,6 +45,8 @@ const icon = (size: number, rel = 'icon') => ({
 })
 
 export const Route = createRootRoute({
+  // Public runtime selection keeps the client and server on the same provider.
+  loader: () => getAuthConfig(),
   head: () => ({
     meta: [
       { charSet: 'UTF-8' },
@@ -76,6 +82,7 @@ export const Route = createRootRoute({
 })
 
 function RootComponent() {
+  const { provider } = Route.useLoaderData()
   useEffect(() => {
     // The app ships no service worker now; remove the old Serwist one so cached
     // pages cannot mask a release.
@@ -86,6 +93,17 @@ function RootComponent() {
           registrations.forEach((registration) => registration.unregister())
         )
   }, [])
+  if (provider === 'better-auth')
+    return (
+      <ThemeProvider
+        attribute='class'
+        defaultTheme='system'
+        enableSystem
+        disableTransitionOnChange
+      >
+        <BetterAuthApp />
+      </ThemeProvider>
+    )
   return (
     <ClerkProvider
       signInUrl='/sign-in'
@@ -118,6 +136,50 @@ function App() {
   if (!isSignedIn) return <RedirectToSignIn />
   // A fresh provider per identity keeps one person's cached data from another's.
   return <SessionApp key={userId} />
+}
+
+const AuthPage = ({ children }: { children: ReactNode }) => (
+  <div className='auth-page'>{children}</div>
+)
+
+function BetterAuthApp() {
+  const location = useLocation()
+  const { data: session, isPending } = authClient.useSession()
+  useEffect(() => {
+    if (session) clearPendingSignIn()
+  }, [session])
+  const { pathname } = location
+  if (pathname.startsWith('/auth/'))
+    return (
+      <AuthPage>
+        <Outlet />
+      </AuthPage>
+    )
+  // Clerk's sign-in and sign-up URLs keep working after the switch.
+  if (pathname.startsWith('/sign-in') || pathname.startsWith('/sign-up'))
+    return (
+      <Navigate
+        to='/auth/$path'
+        params={{
+          path: pathname.startsWith('/sign-up') ? 'sign-up' : 'sign-in'
+        }}
+        replace
+      />
+    )
+  if (isPending) return <Loading />
+  if (!session)
+    return (
+      <Navigate
+        href={
+          '/auth/sign-in?redirectTo=' +
+          // `href` is the in-app path, search and hash; safeAppPath re-checks it.
+          encodeURIComponent(location.href)
+        }
+        replace
+      />
+    )
+  // A fresh provider per identity keeps one person's cached data from another's.
+  return <SessionApp key={session.user.id} />
 }
 
 function SessionApp() {

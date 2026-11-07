@@ -7,7 +7,10 @@ import { user, userGroups } from './db/schema'
 
 export type Context = {
   db: Orm
+  // The verified session's identity: a Clerk user ID, or under Better Auth the
+  // app `user.id` already resolved through `auth_user_id`.
   userId: string | null
+  provider?: 'clerk' | 'better-auth'
   geocode: (address: string) => Promise<number[]>
 }
 
@@ -31,14 +34,18 @@ const authenticated = t.procedure.use(({ ctx, next }) => {
   return next({ ctx: { ...ctx, userId: ctx.userId } })
 })
 
-// A member is a signed-in Clerk user with a user row and a group. Identity and
-// group always come from the session, never from the request body.
+// A member is a signed-in user with a user row and a group. Identity and group
+// always come from the session, never from the request body.
 export const member = authenticated.use(async ({ ctx, next }) => {
   const rows = await ctx.db
     .select({ id: user.id, groupId: userGroups.groupId })
     .from(user)
     .innerJoin(userGroups, eq(userGroups.userId, user.id))
-    .where(eq(user.clerkId, ctx.userId))
+    .where(
+      ctx.provider === 'better-auth'
+        ? eq(user.id, ctx.userId)
+        : eq(user.clerkId, ctx.userId)
+    )
     .limit(1)
   const row = rows[0]
   if (!row?.groupId)

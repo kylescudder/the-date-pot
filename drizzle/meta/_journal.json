@@ -15,6 +15,13 @@
       "when": 1793124554821,
       "tag": "0001_preserve_rating_precision",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794070583427,
+      "tag": "0002_better_auth",
+      "breakpoints": true
     }
   ]
 }
