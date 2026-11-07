@@ -209,7 +209,7 @@ export function MagicLink({
           )}
         </div>
 
-        <SignUpPrompt className='mt-4' />
+        <SignUpPrompt className='mt-4!' />
       </CardContent>
     </Card>
   )

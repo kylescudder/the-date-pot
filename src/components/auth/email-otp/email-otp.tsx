@@ -366,11 +366,11 @@ export function EmailOtp({ className, sessionPending = false }: EmailOtpProps) {
           </form.AppForm>
         </div>
 
-        <FieldDescription className='mt-6'>
+        <FieldDescription className='mt-6!'>
           Signed in before? Save a passkey or set a password in Profile for next
           time.
         </FieldDescription>
-        <SignUpPrompt className='mt-4' />
+        <SignUpPrompt className='mt-4!' />
       </CardContent>
     </Card>
   )

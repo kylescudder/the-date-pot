@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import {
   ClerkProvider,
   RedirectToSignIn,
@@ -16,6 +16,7 @@ import {
   Outlet,
   Scripts,
   createRootRoute,
+  useRouterState,
   useLocation
 } from '@tanstack/react-router'
 import { createTRPCClient, httpBatchLink } from '@trpc/client'
@@ -144,29 +145,67 @@ const AuthPage = ({ children }: { children: ReactNode }) => (
 
 function BetterAuthApp() {
   const location = useLocation()
-  const { data: session, isPending } = authClient.useSession()
+  const { data: session, isPending, refetch } = authClient.useSession()
+  const { pathname } = location
+  // Decide from the route the Outlet will actually render, not the new
+  // location: during a navigation the Outlet still shows the previous match,
+  // which must never render outside its providers.
+  const leafRoute = useRouterState({
+    select: (state) => state.matches[state.matches.length - 1]?.routeId
+  })
+  const isAuthRoute = leafRoute === '/auth/$path'
+  const isClerkRoute = leafRoute === '/sign-in/$' || leafRoute === '/sign-up/$'
+  // Sign-in navigates here before the shared session store has refreshed, so
+  // confirm a signed-out state with the server once per page before
+  // redirecting to sign-in.
+  const [confirmedSignedOut, setConfirmedSignedOut] = useState<string | null>(
+    null
+  )
+  const needsCheck =
+    !isPending &&
+    !session &&
+    !isAuthRoute &&
+    !isClerkRoute &&
+    !pathname.startsWith('/auth/') &&
+    confirmedSignedOut !== pathname
   useEffect(() => {
     if (session) clearPendingSignIn()
   }, [session])
-  const { pathname } = location
-  if (pathname.startsWith('/auth/'))
+  // `refetch` changes identity on every render, so keep it out of the effect's
+  // dependencies and run at most one check per path.
+  const refetchRef = useRef(refetch)
+  refetchRef.current = refetch
+  const checking = useRef<string | null>(null)
+  useEffect(() => {
+    if (!needsCheck || checking.current === pathname) return
+    checking.current = pathname
+    void refetchRef.current().finally(() => {
+      checking.current = null
+      setConfirmedSignedOut(pathname)
+    })
+  }, [needsCheck, pathname])
+  if (isAuthRoute)
     return (
       <AuthPage>
         <Outlet />
       </AuthPage>
     )
+  // Navigating to an auth page: the Outlet still holds the previous route
+  // (which may need providers that are gone), and re-rendering <Navigate>
+  // would navigate again on every render.
+  if (pathname.startsWith('/auth/')) return <Loading />
   // Clerk's sign-in and sign-up URLs keep working after the switch.
-  if (pathname.startsWith('/sign-in') || pathname.startsWith('/sign-up'))
+  if (isClerkRoute)
     return (
       <Navigate
         to='/auth/$path'
         params={{
-          path: pathname.startsWith('/sign-up') ? 'sign-up' : 'sign-in'
+          path: leafRoute === '/sign-up/$' ? 'sign-up' : 'sign-in'
         }}
         replace
       />
     )
-  if (isPending) return <Loading />
+  if (isPending || needsCheck) return <Loading />
   if (!session)
     return (
       <Navigate
