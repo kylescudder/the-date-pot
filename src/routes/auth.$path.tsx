@@ -8,13 +8,21 @@ import { Auth } from '@/components/auth/auth'
 import { BetterAuthUIProvider } from '@/components/BetterAuthUIProvider'
 import { Toaster } from '@/components/ui/sonner'
 
-export const Route = createFileRoute('/auth/$path')({ component: AuthPage })
+export const Route = createFileRoute('/auth/$path')({
+  // Better Auth UI reads `redirectTo` itself and passes it through safeAppPath.
+  validateSearch: (search: Record<string, unknown>): { redirectTo?: string } =>
+    typeof search.redirectTo === 'string'
+      ? { redirectTo: search.redirectTo }
+      : {},
+  component: AuthPage
+})
 
 function AuthPage() {
   const { provider } = useLoaderData({ from: '__root__' })
   const { path } = Route.useParams()
   // Clerk keeps its own /sign-in and /sign-up pages; these are Better Auth only.
-  if (provider !== 'better-auth') return <Navigate href='/sign-in' replace />
+  if (provider !== 'better-auth')
+    return <Navigate to='/sign-in/$' params={{ _splat: '' }} replace />
   return (
     <div className='min-h-dvh bg-background px-4 py-8 text-foreground sm:px-8'>
       <header className='mx-auto flex max-w-sm items-center justify-center'>

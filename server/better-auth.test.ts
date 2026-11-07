@@ -230,7 +230,7 @@ test('email-code sign-in is hashed and single-use, and a new member gets a row a
     SELECT u.name, u.username, u."clerkId", u.bio, g."groupId"
     FROM "user" u JOIN "userGroups" g ON g."userId" = u.id
     WHERE u.auth_user_id = ${(await signedIn.json()).user.id}`
-  expect(rows).toEqual([
+  expect([...rows]).toEqual([
     {
       name: 'new.person',
       username: 'new.person@example.com',

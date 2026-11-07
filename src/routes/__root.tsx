@@ -170,11 +170,10 @@ function BetterAuthApp() {
   if (!session)
     return (
       <Navigate
-        href={
-          '/auth/sign-in?redirectTo=' +
-          // `href` is the in-app path, search and hash; safeAppPath re-checks it.
-          encodeURIComponent(location.href)
-        }
+        to='/auth/$path'
+        params={{ path: 'sign-in' }}
+        // `href` is the in-app path, search and hash; safeAppPath re-checks it.
+        search={{ redirectTo: location.href }}
         replace
       />
     )
