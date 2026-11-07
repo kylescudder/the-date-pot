@@ -169,8 +169,10 @@ change-password, list-accounts and the passkey endpoints. Everything else is 404
 Email codes are six digits, valid once for ten minutes, with five attempts; the
 database stores an HMAC of each code. Magic links (10 minutes, stored hashed),
 reset links (30 minutes, single-use) and sign-up confirmation links (1 hour) use
-the same branded template and logo (`public/email-logo.png`). Every sending
-endpoint shares persistent limits in `auth_email_limit`: one email per recipient
+the same branded template and logo (`public/email-logo.png`). Every email
+that is actually sent shares persistent limits in `auth_email_limit` (reset
+and confirmation emails reserve when they are sent, so requests for unknown
+addresses spend nothing): one email per recipient
 per minute, five per recipient per hour, and an app-wide budget of
 `AUTH_EMAIL_DAILY_LIMIT` (default 40) per rolling 24 hours. Per-IP limits (via
 `cf-connecting-ip`) apply per endpoint: 60/min overall, 3/min for sending codes,

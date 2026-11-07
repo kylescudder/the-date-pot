@@ -180,6 +180,13 @@ export function createDatePotAuth(
       revokeSessionsOnPasswordReset: true,
       async sendResetPassword({ user, url }) {
         if (!allowed(user.email)) return
+        // Reserved here, not in the request hook: requests for addresses with
+        // no account send nothing and must not spend the shared budget.
+        await reserveEmailDelivery(
+          database,
+          user.email,
+          settings.dailyEmailLimit
+        )
         await sendLink(user.email, 'reset-password', url)
       }
     },
@@ -191,6 +198,13 @@ export function createDatePotAuth(
       expiresIn: 3600,
       async sendVerificationEmail({ user, url }) {
         if (!allowed(user.email)) return
+        // Duplicate sign-ups and already-verified addresses send nothing, so
+        // only an actual confirmation email spends the shared budget.
+        await reserveEmailDelivery(
+          database,
+          user.email,
+          settings.dailyEmailLimit
+        )
         await sendLink(user.email, 'verify-email', url)
       }
     },
@@ -263,9 +277,8 @@ export function createDatePotAuth(
             throw new APIError('BAD_REQUEST', {
               message: 'Email and password sign up is not enabled'
             })
+          // The confirmation email reserves its delivery when it is sent.
           Object.assign(ctx.body, parsed.data, { email })
-          // Sign-up sends a confirmation email, so it shares the budget.
-          await reserveEmailDelivery(database, email, settings.dailyEmailLimit)
         }
         // Accounts created by code or link take no client-chosen image URL.
         if (
@@ -298,7 +311,15 @@ export function createDatePotAuth(
           // who is allowed. Only permitted addresses reach the mailer.
           if (!allowed(email)) return ctx.json({ status: true })
           ctx.body.email = email
-          await reserveEmailDelivery(database, email, settings.dailyEmailLimit)
+          // Magic links go to any permitted address (they can create the
+          // account), so reserve now. Reset and verification emails reserve
+          // in their send callbacks, only when an email will really be sent.
+          if (ctx.path === '/sign-in/magic-link')
+            await reserveEmailDelivery(
+              database,
+              email,
+              settings.dailyEmailLimit
+            )
         }
         if (
           ctx.path.startsWith('/passkey/') &&

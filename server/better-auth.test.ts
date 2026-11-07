@@ -280,6 +280,44 @@ test('mail has a per-recipient cooldown and an app-wide budget', async () => {
   expect(cross.status).toBe(403)
 })
 
+test('requests that send no email do not spend the shared mail budget', async () => {
+  const fixture = await authFixture({ dailyEmailLimit: 1 })
+  // Open sign-up has no allowlist, so these reach Better Auth, which sends
+  // nothing for addresses without an account.
+  for (const email of [
+    'ghost1@example.com',
+    'ghost2@example.com',
+    'ghost3@example.com'
+  ]) {
+    await sql`DELETE FROM auth_rate_limit`
+    expect(
+      (
+        await fixture.request('/request-password-reset', {
+          email,
+          redirectTo: '/auth/reset-password'
+        })
+      ).status
+    ).toBe(200)
+  }
+  await sql`DELETE FROM auth_rate_limit`
+  expect(
+    (
+      await fixture.request('/send-verification-email', {
+        email: 'ghost4@example.com',
+        callbackURL: '/'
+      })
+    ).status
+  ).toBe(200)
+  expect(fixture.links.length).toBe(0)
+  expect(
+    (await sql`SELECT key FROM auth_email_limit WHERE key = 'global:day'`)
+      .length
+  ).toBe(0)
+  // The one email the budget allows still goes to a real sign-in.
+  await sql`DELETE FROM auth_rate_limit`
+  await signInWithCode(fixture, 'member@example.com')
+})
+
 test('with AUTH_ALLOWED_EMAILS set, only listed addresses get mail or accounts, and removal revokes access', async () => {
   const fixture = await authFixture({ allowedEmails: ['member@example.com'] })
   for (const [path, body] of [
@@ -444,7 +482,8 @@ test('reset links are single-use, set a password and reject off-site redirects',
       })
     ).status
   ).toBe(401)
-  // The sign-in code used this address's one-a-minute allowance.
+  // The sign-in code used this address's one-a-minute allowance: the answer
+  // stays generic, but no reset email is sent.
   expect(
     (
       await fixture.request('/request-password-reset', {
@@ -452,8 +491,10 @@ test('reset links are single-use, set a password and reject off-site redirects',
         redirectTo: '/auth/reset-password'
       })
     ).status
-  ).toBe(429)
+  ).toBe(200)
+  expect(fixture.links.length).toBe(0)
   await sql`DELETE FROM auth_email_limit`
+  await sql`DELETE FROM auth_verification WHERE identifier LIKE 'reset-password:%'`
   expect(
     (
       await fixture.request('/request-password-reset', {
