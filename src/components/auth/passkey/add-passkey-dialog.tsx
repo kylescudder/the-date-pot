@@ -4,7 +4,6 @@ import type {
   PasskeyAuthClient
 } from '@better-auth-ui/core/plugins/passkey'
 import { useAuth, useAuthPlugin } from '@better-auth-ui/react'
-import { useAddPasskey } from '@better-auth-ui/react/plugins/passkey'
 import { Fingerprint } from 'lucide-react'
 import { buttonVariants } from '@/components/auth/ui/button'
 import {
@@ -19,6 +18,7 @@ import {
 import { Field, FieldError, FieldLabel } from '@/components/auth/ui/field'
 import { Input } from '@/components/auth/ui/input'
 import { passkeyPlugin } from '@/lib/auth/passkey-plugin'
+import { useAddPasskey } from '@/lib/auth/use-add-passkey'
 import { useAuthForm } from '../auth-form'
 import { ReauthenticationAction } from '../reauthentication'
 
@@ -35,6 +35,8 @@ export function AddPasskeyDialog({
   const { authenticatorAttachment, localization: passkeyLocalization } =
     useAuthPlugin(passkeyPlugin)
 
+  // Our hook, not Better Auth UI's: refusals such as SESSION_NOT_FRESH must
+  // reject so the dialog can offer "Sign in again".
   const addPasskey = useAddPasskey(authClient)
 
   const submitRequest = async (
