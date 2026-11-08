@@ -8,7 +8,7 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: '@', replacement: new URL('./src', import.meta.url).pathname },
-      // Clerk's React SDK needs the React 18+ built-in instead of the shim.
+      // Use React's built-in useSyncExternalStore instead of the CommonJS shim.
       // See https://github.com/TanStack/router/issues/5738
       { find: 'use-sync-external-store/shim/index.js', replacement: 'react' }
     ]

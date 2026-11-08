@@ -1,12 +1,10 @@
-import {
-  createFileRoute,
-  Navigate,
-  useLoaderData
-} from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { IconHomeHeart } from '@tabler/icons-react'
 import { Auth } from '@/components/auth/auth'
 import { BetterAuthUIProvider } from '@/components/BetterAuthUIProvider'
 import { Toaster } from '@/components/ui/sonner'
+import { getAuthConfig } from '@/lib/auth-config'
+import { closedSignUpRedirect } from '@/lib/auth/sign-up'
 
 export const Route = createFileRoute('/auth/$path')({
   // Better Auth UI reads `redirectTo` itself and passes it through safeAppPath.
@@ -14,15 +12,25 @@ export const Route = createFileRoute('/auth/$path')({
     typeof search.redirectTo === 'string'
       ? { redirectTo: search.redirectTo }
       : {},
+  // With sign-up closed (AUTH_ALLOWED_EMAILS set), the sign-up page is
+  // sign-in instead. Other auth pages skip the extra settings request.
+  beforeLoad: async ({ params, search }) => {
+    if (params.path !== 'sign-up') return
+    const { signUpOpen } = await getAuthConfig()
+    const path = closedSignUpRedirect(params.path, signUpOpen)
+    if (path)
+      throw redirect({
+        to: '/auth/$path',
+        params: { path },
+        search,
+        replace: true
+      })
+  },
   component: AuthPage
 })
 
 function AuthPage() {
-  const { provider } = useLoaderData({ from: '__root__' })
   const { path } = Route.useParams()
-  // Clerk keeps its own /sign-in and /sign-up pages; these are Better Auth only.
-  if (provider !== 'better-auth')
-    return <Navigate to='/sign-in/$' params={{ _splat: '' }} replace />
   return (
     <div className='min-h-dvh bg-background px-4 py-8 text-foreground sm:px-8'>
       <header className='mx-auto flex max-w-sm items-center justify-center'>
@@ -35,7 +43,6 @@ function AuthPage() {
         </a>
       </header>
       <main className='mx-auto mt-8 flex w-full max-w-sm flex-col items-center gap-6 sm:mt-14'>
-        {/* Sign-up is open: anyone can create an account and start a pot. */}
         <BetterAuthUIProvider>
           <Auth path={path} className='w-full text-left' />
         </BetterAuthUIProvider>

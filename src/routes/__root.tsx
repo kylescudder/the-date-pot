@@ -1,11 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import {
-  ClerkProvider,
-  RedirectToSignIn,
-  useAuth
-} from '@clerk/tanstack-react-start'
-import { dark } from '@clerk/themes'
-import {
   QueryClient,
   QueryClientProvider,
   useQuery
@@ -46,7 +40,7 @@ const icon = (size: number, rel = 'icon') => ({
 })
 
 export const Route = createRootRoute({
-  // Public runtime selection keeps the client and server on the same provider.
+  // Public auth settings (whether sign-up is open), read at runtime.
   loader: () => getAuthConfig(),
   head: () => ({
     meta: [
@@ -83,7 +77,6 @@ export const Route = createRootRoute({
 })
 
 function RootComponent() {
-  const { provider } = Route.useLoaderData()
   useEffect(() => {
     // The app ships no service worker now; remove the old Serwist one so cached
     // pages cannot mask a release.
@@ -94,56 +87,23 @@ function RootComponent() {
           registrations.forEach((registration) => registration.unregister())
         )
   }, [])
-  if (provider === 'better-auth')
-    return (
-      <ThemeProvider
-        attribute='class'
-        defaultTheme='system'
-        enableSystem
-        disableTransitionOnChange
-      >
-        <BetterAuthApp />
-      </ThemeProvider>
-    )
   return (
-    <ClerkProvider
-      signInUrl='/sign-in'
-      signUpUrl='/sign-up'
-      afterSignOutUrl='/sign-in'
-      appearance={{ theme: dark }}
+    <ThemeProvider
+      attribute='class'
+      defaultTheme='system'
+      enableSystem
+      disableTransitionOnChange
     >
-      <ThemeProvider
-        attribute='class'
-        defaultTheme='system'
-        enableSystem
-        disableTransitionOnChange
-      >
-        <App />
-      </ThemeProvider>
-    </ClerkProvider>
+      <AuthenticatedApp />
+    </ThemeProvider>
   )
-}
-
-function App() {
-  const pathname = useLocation({ select: (location) => location.pathname })
-  const { isLoaded, isSignedIn, userId } = useAuth()
-  if (pathname.startsWith('/sign-in') || pathname.startsWith('/sign-up'))
-    return (
-      <div className='auth-page'>
-        <Outlet />
-      </div>
-    )
-  if (!isLoaded) return <Loading />
-  if (!isSignedIn) return <RedirectToSignIn />
-  // A fresh provider per identity keeps one person's cached data from another's.
-  return <SessionApp key={userId} />
 }
 
 const AuthPage = ({ children }: { children: ReactNode }) => (
   <div className='auth-page'>{children}</div>
 )
 
-function BetterAuthApp() {
+function AuthenticatedApp() {
   const location = useLocation()
   const { data: session, isPending, refetch } = authClient.useSession()
   const { pathname } = location
@@ -154,7 +114,6 @@ function BetterAuthApp() {
     select: (state) => state.matches[state.matches.length - 1]?.routeId
   })
   const isAuthRoute = leafRoute === '/auth/$path'
-  const isClerkRoute = leafRoute === '/sign-in/$' || leafRoute === '/sign-up/$'
   // Sign-in navigates here before the shared session store has refreshed, so
   // confirm a signed-out state with the server once per page before
   // redirecting to sign-in.
@@ -165,7 +124,6 @@ function BetterAuthApp() {
     !isPending &&
     !session &&
     !isAuthRoute &&
-    !isClerkRoute &&
     !pathname.startsWith('/auth/') &&
     confirmedSignedOut !== pathname
   useEffect(() => {
@@ -194,17 +152,6 @@ function BetterAuthApp() {
   // (which may need providers that are gone), and re-rendering <Navigate>
   // would navigate again on every render.
   if (pathname.startsWith('/auth/')) return <Loading />
-  // Clerk's sign-in and sign-up URLs keep working after the switch.
-  if (isClerkRoute)
-    return (
-      <Navigate
-        to='/auth/$path'
-        params={{
-          path: leafRoute === '/sign-up/$' ? 'sign-up' : 'sign-in'
-        }}
-        replace
-      />
-    )
   if (isPending || needsCheck) return <Loading />
   if (!session)
     return (

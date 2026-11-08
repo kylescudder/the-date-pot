@@ -10,8 +10,7 @@ import {
 } from 'drizzle-orm/pg-core'
 
 // Separate, additive Better Auth tables. App data stays keyed by the existing
-// `user` rows, which link here through `user.auth_user_id`; Clerk rollback never
-// requires removing auth data or restoring an older database.
+// `user` rows, which link here through `user.auth_user_id`.
 export const authUser = pgTable('auth_user', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),

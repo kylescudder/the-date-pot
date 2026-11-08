@@ -1,6 +1,6 @@
 // Better Auth against a disposable PostgreSQL database: sign-in methods, open
 // sign-up, mail protections, redirect safety, the route allowlist, profile
-// photos, member provisioning, Clerk linking and Clerk-mode parity.
+// photos and member provisioning.
 import { afterAll, beforeAll, expect, test } from 'bun:test'
 import { createHash, createHmac, randomUUID } from 'node:crypto'
 import { readFileSync } from 'node:fs'
@@ -13,15 +13,6 @@ import { betterAuthIdentity, resolveAppUser } from '../src/server/app-user'
 import { createTrpcHandler } from '../src/server/trpc-handler'
 import { createProfileHandler } from '../src/server/profile-handler'
 import { createApp, requestBodyLimit, serverBodyLimit } from './app'
-import {
-  applyEmailOverrides,
-  linkClerkUsers,
-  listClerkUsers,
-  parseEmailOverrides,
-  verifiedPrimaryEmail
-} from '../deploy/link-clerk-users'
-import { drizzle } from 'drizzle-orm/postgres-js'
-import * as schema from '../src/server/db/schema'
 
 if (!process.env.TEST_DATABASE_URL)
   throw new Error(
@@ -35,9 +26,9 @@ const name = 'datepot_auth_' + randomUUID().replaceAll('-', '').slice(0, 10)
 const origin = 'https://thedatepot.auth.test'
 const secret = randomUUID() + randomUUID()
 const kyleId = '22222222-2222-4222-8222-222222222221'
-const kyleClerk = 'user_kyle_fixture'
 let sql: Database
 let fixtureNumber = 0
+let seededUsers: string[] = []
 
 beforeAll(async () => {
   await admin.unsafe(`CREATE DATABASE "${name}"`)
@@ -48,11 +39,9 @@ beforeAll(async () => {
   // the Better Auth migration on top of their rows.
   await migrate(sql)
   await sql.unsafe(
-    readFileSync(
-      new URL('../tests/fixtures/seed.sql', import.meta.url),
-      'utf8'
-    ).replaceAll('user_3LFVN7yEgn8eAU4XqJzSXvo2oqd', kyleClerk)
+    readFileSync(new URL('../tests/fixtures/seed.sql', import.meta.url), 'utf8')
   )
+  seededUsers = (await sql`SELECT id FROM "user"`).map((row) => row.id)
 })
 
 afterAll(async () => {
@@ -63,8 +52,9 @@ afterAll(async () => {
 
 async function resetAuth() {
   await sql`UPDATE "user" SET auth_user_id = NULL`
-  await sql`DELETE FROM "userGroups" WHERE "userId" IN (SELECT id FROM "user" WHERE "clerkId" IS NULL)`
-  await sql`DELETE FROM "user" WHERE "clerkId" IS NULL`
+  // Members provisioned by earlier tests go; the seeded ones stay.
+  await sql`DELETE FROM "userGroups" WHERE "userId" NOT IN ${sql(seededUsers)}`
+  await sql`DELETE FROM "user" WHERE id NOT IN ${sql(seededUsers)}`
   await sql`DELETE FROM auth_user`
   await sql`DELETE FROM auth_verification`
   await sql`DELETE FROM auth_rate_limit`
@@ -112,8 +102,7 @@ async function authFixture({
   const trpc = createTrpcHandler(
     db,
     betterAuthIdentity(db, auth, allowedEmails),
-    async () => [],
-    'better-auth'
+    async () => []
   )
   const call = async (procedure: string, cookie: string) => {
     const response = await trpc(
@@ -165,24 +154,19 @@ async function signInWithCode(
   }
 }
 
-test('the migration is additive: existing members keep their rows and Clerk ids', async () => {
+test('the migration is additive: existing members keep their rows', async () => {
   const [kyle] =
-    await sql`SELECT id, name, username, "clerkId", auth_user_id FROM "user" WHERE id = ${kyleId}`
+    await sql`SELECT id, name, username, auth_user_id FROM "user" WHERE id = ${kyleId}`
   expect(kyle).toEqual({
     id: kyleId,
     name: 'Test Kyle',
     username: 'testkyle',
-    clerkId: kyleClerk,
     auth_user_id: null
   })
-  const columns = await sql`
-    SELECT column_name, is_nullable FROM information_schema.columns
-    WHERE table_name = 'user' AND column_name IN ('clerkId', 'auth_user_id')
-    ORDER BY column_name`
-  expect(columns.map((row) => [row.column_name, row.is_nullable])).toEqual([
-    ['auth_user_id', 'YES'],
-    ['clerkId', 'YES']
-  ])
+  const [link] = await sql`
+    SELECT is_nullable FROM information_schema.columns
+    WHERE table_name = 'user' AND column_name = 'auth_user_id'`
+  expect(link!.is_nullable).toBe('YES')
   const tables = await sql`
     SELECT tablename FROM pg_tables WHERE tablename LIKE 'auth\\_%' ORDER BY 1`
   expect(tables.map((row) => row.tablename)).toEqual([
@@ -231,14 +215,13 @@ test('email-code sign-in is hashed and single-use, and a new member gets a row a
   expect(first.status).toBe(200)
   expect(second.data).toEqual(first.data)
   const rows = await sql`
-    SELECT u.name, u.username, u."clerkId", u.bio, g."groupId"
+    SELECT u.name, u.username, u.bio, g."groupId"
     FROM "user" u JOIN "userGroups" g ON g."userId" = u.id
     WHERE u.auth_user_id = ${(await signedIn.json()).user.id}`
   expect([...rows]).toEqual([
     {
       name: 'new.person',
       username: 'new.person@example.com',
-      clerkId: null,
       bio: '',
       groupId: first.data.groupId
     }
@@ -437,8 +420,7 @@ test('with AUTH_ALLOWED_EMAILS set, only listed addresses get mail or accounts, 
   const narrowed = createTrpcHandler(
     fixture.db,
     betterAuthIdentity(fixture.db, fixture.auth, ['someone-else@example.com']),
-    async () => [],
-    'better-auth'
+    async () => []
   )
   const revoked = await narrowed(
     new Request(origin + '/api/trpc/users.me', { headers: { Cookie: cookie } })
@@ -907,7 +889,7 @@ test('profile photos need a verified email that is still on a configured allowli
   ).toBe(403)
 })
 
-test('the photo route is forwarded by the server and is a 404 under Clerk', async () => {
+test('the photo route is forwarded by the server', async () => {
   const app = createApp({
     app: () => new Response('app'),
     checkHealth: async () => {},
@@ -940,40 +922,11 @@ test('the photo route is forwarded by the server and is a 404 under Clerk', asyn
     'app'
   )
   expect(serverBodyLimit).toBeGreaterThan(2 * 1024 * 1024)
-  const { handleProfileRequest } = await import('../src/server/profile')
-  const saved = { ...process.env }
-  try {
-    Object.assign(process.env, {
-      DATABASE_URL: 'postgres://u@localhost/db',
-      APP_ORIGIN: origin,
-      CLERK_PUBLISHABLE_KEY: 'pk_test_ZXhhbXBsZS5jb20k',
-      CLERK_SECRET_KEY: 'sk_test_fixture'
-    })
-    delete process.env.AUTH_PROVIDER
-    for (const method of ['GET', 'PUT', 'DELETE'])
-      expect(
-        (
-          await handleProfileRequest(
-            new Request(origin + '/api/profile/avatar', {
-              method,
-              headers: { Origin: origin }
-            })
-          )
-        ).status
-      ).toBe(404)
-  } finally {
-    for (const key of Object.keys(process.env))
-      if (!(key in saved)) delete process.env[key]
-    Object.assign(process.env, saved)
-  }
 })
 
 test('the app exposes only the allowlisted auth endpoints, including open sign-up', async () => {
   const fixture = await authFixture()
-  const handler = createAuthRouteHandler(
-    () => 'better-auth',
-    () => fixture.auth
-  )
+  const handler = createAuthRouteHandler(() => fixture.auth)
   const post = (path: string, method = 'POST') =>
     handler(
       new Request(origin + '/api/auth' + path, {
@@ -1005,17 +958,6 @@ test('the app exposes only the allowlisted auth endpoints, including open sign-u
     '/list-sessions'
   ])
     expect((await post(path)).status, path).toBe(404)
-  // Clerk mode exposes none of them.
-  const clerk = createAuthRouteHandler(
-    () => 'clerk',
-    () => {
-      throw new Error('Better Auth must not load under Clerk')
-    }
-  )
-  for (const path of ['/get-session', '/sign-up/email', '/sign-in/email-otp'])
-    expect((await clerk(new Request(origin + '/api/auth' + path))).status).toBe(
-      404
-    )
   // The Bun server forwards /api/auth/* to the app instead of 404ing it.
   const app = createApp({
     app: () => new Response('app'),
@@ -1029,264 +971,22 @@ test('the app exposes only the allowlisted auth endpoints, including open sign-u
   expect((await app(new Request(origin + '/api/other'))).status).toBe(404)
 })
 
-test('Clerk mode is unchanged: members resolve by Clerk id', async () => {
-  await resetAuth()
-  const db = orm(sql)
-  const trpc = createTrpcHandler(
-    db,
-    async (request) => request.headers.get('x-test-clerk-user'),
-    async () => []
-  )
-  const me = await trpc(
-    new Request(origin + '/api/trpc/users.me', {
-      headers: { 'x-test-clerk-user': kyleClerk }
-    })
-  )
-  expect(me.status).toBe(200)
-  expect((await me.json()).result.data.json.id).toBe(kyleId)
-  expect((await trpc(new Request(origin + '/api/trpc/users.me'))).status).toBe(
-    401
-  )
-  const { requestOptions } = await import('../src/server/request-options')
-  const saved = { ...process.env }
-  try {
-    Object.assign(process.env, {
-      DATABASE_URL: 'postgres://u@localhost/db',
-      APP_ORIGIN: origin,
-      CLERK_PUBLISHABLE_KEY: 'pk_test_ZXhhbXBsZS5jb20k',
-      CLERK_SECRET_KEY: 'sk_test_fixture'
-    })
-    delete process.env.AUTH_PROVIDER
-    expect(requestOptions().requestMiddleware).toHaveLength(1)
-    Object.assign(process.env, {
-      AUTH_PROVIDER: 'better-auth',
-      BETTER_AUTH_URL: origin,
-      BETTER_AUTH_SECRET: secret,
-      BREVO_API_KEY: 'fixture',
-      AUTH_EMAIL_FROM: 'hello@example.com'
-    })
-    expect(requestOptions()).toEqual({})
-  } finally {
-    for (const key of Object.keys(process.env))
-      if (!(key in saved)) delete process.env[key]
-    Object.assign(process.env, saved)
-  }
-})
-
-test('the cutover script links Clerk members by verified primary email, idempotently', async () => {
-  await resetAuth()
-  const db = drizzle(sql, { schema })
-  const clerkUsers = [
-    { id: kyleClerk, email: 'kyle@example.com' },
-    // Partner has no verified primary email in Clerk.
-    { id: 'user_partner_fixture', email: null },
-    // A Clerk user who never got an app row.
-    { id: 'user_without_row', email: 'norow@example.com' }
-  ]
-  // The stranger fixture's Clerk user no longer exists: an orphan app row.
-  const dryRun = await linkClerkUsers(db, clerkUsers, { apply: false })
-  expect(dryRun).toEqual({
-    clerkUsers: 3,
-    withoutVerifiedEmail: 1,
-    withoutAppUser: 1,
-    alreadyLinked: 0,
-    linked: 1,
-    authUsersCreated: 1,
-    conflicts: 0,
-    orphanAppUsers: 1
-  })
-  expect((await sql`SELECT id FROM auth_user`).length).toBe(0)
-  expect(
-    (
-      await sql`SELECT count(*)::int AS n FROM "user" WHERE auth_user_id IS NOT NULL`
-    )[0].n
-  ).toBe(0)
-  const applied = await linkClerkUsers(db, clerkUsers, { apply: true })
-  expect(applied).toEqual(dryRun)
-  const again = await linkClerkUsers(db, clerkUsers, { apply: true })
-  expect(again).toMatchObject({
-    alreadyLinked: 1,
-    linked: 0,
-    authUsersCreated: 0
-  })
-  const [linked] = await sql`
-    SELECT a.email, a.email_verified, a.name FROM "user" u
-    JOIN auth_user a ON a.id = u.auth_user_id WHERE u.id = ${kyleId}`
-  expect(linked).toEqual({
-    email: 'kyle@example.com',
-    email_verified: true,
-    name: 'Test Kyle'
-  })
-  const users = await sql`SELECT count(*)::int AS n FROM "user"`
-  expect(users[0].n).toBe(3)
-  // The member signs in by code and lands in their existing pot.
-  const fixture = await createFixtureKeepingUsers()
-  const { cookie } = await signInWithCode(fixture, 'kyle@example.com')
+test('a linked member resolves by auth_user_id and keeps their pot', async () => {
+  const fixture = await authFixture()
+  const { cookie, user } = await signInWithCode(fixture, 'kyle@example.com')
+  await sql`UPDATE "user" SET auth_user_id = ${user.id} WHERE id = ${kyleId}`
   const me = await fixture.call('users.me', cookie)
-  expect(me.data).toEqual({
-    id: kyleId,
-    groupId: '11111111-1111-4111-8111-111111111111'
-  })
-  const beers = await fixture.call('beer.list', cookie)
-  expect(beers.data.map((beer: { name: string }) => beer.name).sort()).toEqual([
-    'Faith',
-    'Old Stout'
-  ])
-  // An unverified Better Auth account for a member's address is never linked.
-  await sql`UPDATE "user" SET auth_user_id = NULL WHERE id = ${kyleId}`
-  await sql`UPDATE auth_user SET email_verified = false WHERE email = 'kyle@example.com'`
-  expect(await linkClerkUsers(db, clerkUsers, { apply: true })).toMatchObject({
-    conflicts: 1,
-    linked: 0
-  })
-})
-
-async function createFixtureKeepingUsers() {
-  const db = orm(sql)
-  const codes = new Map<string, string>()
-  const auth = createDatePotAuth(
-    db,
-    { baseURL: origin, secret, allowedEmails: [], dailyEmailLimit: 40 },
-    async (email, otp) => {
-      codes.set(email, otp)
-    }
+  expect(me.status).toBe(200)
+  expect(me.data.id).toBe(kyleId)
+  expect((await sql`SELECT count(*)::int AS n FROM "user"`)[0].n).toBe(
+    seededUsers.length
   )
-  const ip = `203.0.113.${++fixtureNumber}`
-  const trpc = createTrpcHandler(
-    db,
-    betterAuthIdentity(db, auth, []),
-    async () => [],
-    'better-auth'
-  )
-  return {
-    auth,
-    db,
-    codes,
-    links: [],
-    ip,
-    request: (path: string, body?: unknown, cookie = '') =>
-      auth.handler(
-        new Request(origin + '/api/auth' + path, {
-          method: body === undefined ? 'GET' : 'POST',
-          headers: {
-            Origin: origin,
-            'Content-Type': 'application/json',
-            'CF-Connecting-IP': ip,
-            Cookie: cookie
-          },
-          body: body === undefined ? undefined : JSON.stringify(body)
-        })
-      ),
-    call: async (procedure: string, cookie: string) => {
-      const response = await trpc(
-        new Request(origin + '/api/trpc/' + procedure, {
-          headers: { Cookie: cookie }
-        })
-      )
-      const body = await response.json()
-      return { status: response.status, data: body.result?.data?.json }
-    }
-  } as unknown as Awaited<ReturnType<typeof authFixture>>
-}
-
-test('an --email override links a member under a corrected address', async () => {
-  await resetAuth()
-  const db = drizzle(sql, { schema })
-  const overrides = parseEmailOverrides([
-    '--apply',
-    '--email',
-    kyleClerk + '= Kyle.New@Example.com '
-  ])
-  expect([...overrides]).toEqual([[kyleClerk, 'kyle.new@example.com']])
-  for (const bad of [
-    ['--email'],
-    ['--email', 'kyle@example.com'],
-    ['--email', 'user_x=not-an-email'],
-    ['--email', 'notclerk=kyle@example.com'],
-    ['--email', 'user_x=a@example.com', '--email', 'user_x=b@example.com']
-  ])
-    expect(() => parseEmailOverrides(bad)).toThrow()
-  // The Clerk email is a typo the member never used.
-  const clerkUsers = applyEmailOverrides(
-    [{ id: kyleClerk, email: 'kyel@example.com' }],
-    overrides
-  )
-  expect(() =>
-    applyEmailOverrides(
-      clerkUsers,
-      new Map([['user_missing', 'a@example.com']])
-    )
-  ).toThrow()
-  expect(await linkClerkUsers(db, clerkUsers, { apply: true })).toMatchObject({
-    linked: 1,
-    authUsersCreated: 1
-  })
-  const [linked] = await sql`
-    SELECT a.email, a.email_verified FROM "user" u
-    JOIN auth_user a ON a.id = u.auth_user_id WHERE u.id = ${kyleId}`
-  expect(linked).toEqual({
-    email: 'kyle.new@example.com',
-    email_verified: true
-  })
   expect(
-    (
-      await sql`SELECT count(*)::int AS n FROM auth_user WHERE email = 'kyel@example.com'`
-    )[0].n
-  ).toBe(0)
-})
-
-test('Clerk listing pages through users and keeps only verified primary emails', async () => {
-  const page = (count: number, start: number) =>
-    Array.from({ length: count }, (_, index) => ({
-      id: 'user_' + (start + index),
-      primary_email_address_id: 'e' + (start + index),
-      email_addresses: [
-        {
-          id: 'e' + (start + index),
-          email_address: `Person${start + index}@Example.com`,
-          verification: { status: index === 0 ? 'unverified' : 'verified' }
-        }
-      ]
-    }))
-  const requests: string[] = []
-  const users = await listClerkUsers('sk_test_fixture', (async (
-    url: URL,
-    init: RequestInit
-  ) => {
-    requests.push(new URL(url).searchParams.get('offset')!)
-    expect(new Headers(init.headers).get('authorization')).toBe(
-      'Bearer sk_test_fixture'
-    )
-    const offset = Number(new URL(url).searchParams.get('offset'))
-    return Response.json(offset === 0 ? page(100, 0) : page(5, 100))
-  }) as unknown as typeof fetch)
-  expect(requests).toEqual(['0', '100'])
-  expect(users).toHaveLength(105)
-  expect(users[0]).toEqual({ id: 'user_0', email: null })
-  expect(users[1]).toEqual({ id: 'user_1', email: 'person1@example.com' })
-  expect(
-    verifiedPrimaryEmail({
-      id: 'user_x',
-      primary_email_address_id: 'primary',
-      email_addresses: [
-        {
-          id: 'other',
-          email_address: 'other@example.com',
-          verification: { status: 'verified' }
-        },
-        { id: 'primary', email_address: 'p@example.com', verification: null }
-      ]
-    })
-  ).toBeNull()
-  await expect(
-    listClerkUsers(
-      'sk',
-      (async () =>
-        new Response('secret detail', {
-          status: 401
-        })) as unknown as typeof fetch
-    )
-  ).rejects.toThrow('Clerk API request failed with status 401')
+    ((await fixture.call('beer.list', cookie)).data as { name: string }[])
+      .map((beer) => beer.name)
+      .sort()
+  ).toEqual(['Faith', 'Old Stout'])
+  expect((await fixture.call('users.me', '')).status).toBe(401)
 })
 
 test('resolveAppUser reuses a linked row instead of creating another', async () => {

@@ -9,18 +9,18 @@ export default async function setup(config: FullConfig) {
   const password = process.env.E2E_PASSWORD
   if (!username || !password)
     throw new Error(
-      'Set E2E_USERNAME and E2E_PASSWORD to an existing Clerk DEV test login.'
+      'Set E2E_USERNAME and E2E_PASSWORD to an existing local test account.'
     )
   await mkdir('state/e2e', { recursive: true })
   // Login has no tracing or screenshots: credentials never enter test artifacts.
   const browser = await chromium.launch()
   try {
     const page = await browser.newPage()
-    await page.goto(baseURL + '/sign-in')
-    await page.locator('#identifier-field').fill(username)
-    await page.locator('#password-field').fill(password)
-    await page.getByRole('button', { name: 'Continue', exact: true }).click()
-    await page.waitForURL((url) => !url.pathname.includes('sign-in'), {
+    await page.goto(baseURL + '/auth/sign-in')
+    await page.locator('#email').fill(username)
+    await page.locator('#password').fill(password)
+    await page.getByRole('button', { name: 'Sign In', exact: true }).click()
+    await page.waitForURL((url) => !url.pathname.startsWith('/auth/'), {
       timeout: 30000
     })
     await page.getByRole('link', { name: 'Beer' }).waitFor()

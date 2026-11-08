@@ -17,6 +17,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/auth/ui/card'
+import { useSignUpOpen } from '@/lib/auth/sign-up'
 import { cn } from 'cn'
 
 type AuthResultProps = {
@@ -26,6 +27,7 @@ type AuthResultProps = {
 
 function AuthResultView({ className, fallbackIntent }: AuthResultProps) {
   const { basePaths, localization, navigate, viewPaths } = useAuth()
+  const signUpOpen = useSignUpOpen()
   const [result, setResult] = useState<AuthResult>(() =>
     parseAuthResult('', fallbackIntent)
   )
@@ -35,8 +37,11 @@ function AuthResultView({ className, fallbackIntent }: AuthResultProps) {
   }, [fallbackIntent])
 
   const message = getAuthResultMessage(result, localization)
+  // With sign-up closed, the default sign-in action takes its place.
+  const resultAction =
+    result.action === 'signUp' && !signUpOpen ? undefined : result.action
   const action = (() => {
-    switch (result.action) {
+    switch (resultAction) {
       case 'accountSettings':
         return {
           label: localization.auth.callbackViewAccountSettings,

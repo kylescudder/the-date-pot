@@ -3,9 +3,10 @@
 A collection of films to watch, places to eat, things to do, coffee shops to rate
 and vinyls to buy with your loved one.
 
-TanStack Start (React, Router, Query) with tRPC, Drizzle on PostgreSQL and Clerk,
-served by a small Bun server. Every record belongs to a group; the server takes
-the member and group from the Clerk session and scopes every query to that group.
+TanStack Start (React, Router, Query) with tRPC, Drizzle on PostgreSQL and
+Better Auth, served by a small Bun server. Every record belongs to a group; the
+server takes the member and group from the Better Auth session and scopes every
+query to that group.
 
 ## Development
 
@@ -13,32 +14,30 @@ Use Bun 1.4.4, matching `.bun-version` and the Dockerfile.
 
 ```sh
 bun install --frozen-lockfile
-cp .env.example .env   # DATABASE_URL, APP_ORIGIN, Clerk DEV keys
+cp .env.example .env   # DATABASE_URL, APP_ORIGIN, Better Auth and Brevo settings
 bun run db:migrate
 bun run dev
 ```
 
-A signed-in Clerk user needs a `user` row with their `clerkId` and a
-`userGroups` row linking it to a `group`; otherwise the app says the account
-isn't part of a date pot yet. `tests/fixtures/seed.sql` sets up a local group.
+Authentication is Better Auth (`BETTER_AUTH_URL`, `BETTER_AUTH_SECRET`,
+`BREVO_API_KEY` and `AUTH_EMAIL_FROM`). Sign-in pages live at `/auth/sign-in`,
+and a verified account without a member row gets one and a pot of its own. A
+member's `user` row links to their account through `auth_user_id`;
+`tests/fixtures/seed.sql` sets up a local group. Sign-up is open unless
+`AUTH_ALLOWED_EMAILS` is set, which closes it; see
+[deploy/README.md](deploy/README.md#authentication) for the access model and
+limits.
 
-Better Auth is an opt-in alternative to Clerk (`AUTH_PROVIDER=better-auth`, with
-`BETTER_AUTH_URL`, `BETTER_AUTH_SECRET`, `BREVO_API_KEY` and `AUTH_EMAIL_FROM`).
-Sign-up is open, sign-in pages live at `/auth/sign-in`, and a verified account
-without a member row gets one and a pot of its own. Clerk stays the default; see
-[deploy/README.md](deploy/README.md#better-auth-rollout-and-clerk-rollback) for
-the access model, limits and cutover.
-
-| Script                     | Purpose                                                                                         |
-| -------------------------- | ----------------------------------------------------------------------------------------------- |
-| `bun run typecheck`        | `tsc`                                                                                           |
-| `bun run test`             | tRPC authorization, persistence and `/healthz` against Postgres (`TEST_DATABASE_URL`)           |
-| `bun run test:connections` | The runtime role's connection budget                                                            |
-| `bun run test:e2e`         | Playwright, signed in as a Clerk DEV test user (`E2E_USERNAME`, `E2E_PASSWORD`, `E2E_BASE_URL`) |
-| `bun run build`            | Production build in `dist/`; `bun run start` serves it                                          |
-| `bun run db:generate`      | New migration from `src/server/db/schema.ts`                                                    |
-| `bun run db:migrate`       | Apply migrations (owner role only)                                                              |
-| `bun run format`           | Prettier with the house style                                                                   |
+| Script                     | Purpose                                                                                          |
+| -------------------------- | ------------------------------------------------------------------------------------------------ |
+| `bun run typecheck`        | `tsc`                                                                                            |
+| `bun run test`             | tRPC authorization, persistence and `/healthz` against Postgres (`TEST_DATABASE_URL`)            |
+| `bun run test:connections` | The runtime role's connection budget                                                             |
+| `bun run test:e2e`         | Playwright, signed in with a local test account (`E2E_USERNAME`, `E2E_PASSWORD`, `E2E_BASE_URL`) |
+| `bun run build`            | Production build in `dist/`; `bun run start` serves it                                           |
+| `bun run db:generate`      | New migration from `src/server/db/schema.ts`                                                     |
+| `bun run db:migrate`       | Apply migrations (owner role only)                                                               |
+| `bun run format`           | Prettier with the house style                                                                    |
 
 `/healthz` returns `{"ok":true,"revision":"<sha>"}` once the database answers,
 or 503 after 3 seconds. Every response carries `X-Date-Pot-Revision`.

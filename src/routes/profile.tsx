@@ -1,9 +1,4 @@
-import {
-  createFileRoute,
-  Navigate,
-  useLoaderData,
-  useNavigate
-} from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { authClient } from '@/lib/auth-client'
 import { ChangePassword } from '@/components/auth/settings/security/change-password'
@@ -18,9 +13,6 @@ import { Button } from '@/components/ui/button'
 export const Route = createFileRoute('/profile')({ component: ProfilePage })
 
 function ProfilePage() {
-  const { provider } = useLoaderData({ from: '__root__' })
-  // Clerk keeps its existing account menu; Profile is the Better Auth account page.
-  if (provider !== 'better-auth') return <Navigate to='/' />
   return (
     <div className='auth-page mx-auto w-full max-w-2xl px-2 pb-12'>
       <h1 className='mt-2 mb-8 text-3xl font-black'>Your profile</h1>

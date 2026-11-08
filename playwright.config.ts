@@ -1,7 +1,8 @@
 import { defineConfig } from '@playwright/test'
 
 // Runs against a local server whose database was seeded from
-// tests/fixtures/seed.sql, signed in as the Clerk DEV test user.
+// tests/fixtures/seed.sql, signed in with a verified password account linked
+// to a seeded member through `user.auth_user_id`.
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: false,

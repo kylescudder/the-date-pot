@@ -1,10 +1,12 @@
-import { SignIn } from '@clerk/tanstack-react-start'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
+// The old sign-in URL keeps working for bookmarks and saved home-screen apps.
 export const Route = createFileRoute('/sign-in/$')({
-  component: () => (
-    <div className='flex h-screen items-center justify-center'>
-      <SignIn routing='hash' signUpUrl='/sign-up' forceRedirectUrl='/' />
-    </div>
-  )
+  beforeLoad: () => {
+    throw redirect({
+      to: '/auth/$path',
+      params: { path: 'sign-in' },
+      replace: true
+    })
+  }
 })

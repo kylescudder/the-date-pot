@@ -7,10 +7,9 @@ import { user, userGroups } from './db/schema'
 
 export type Context = {
   db: Orm
-  // The verified session's identity: a Clerk user ID, or under Better Auth the
-  // app `user.id` already resolved through `auth_user_id`.
+  // The verified session's app `user.id`, already resolved through
+  // `auth_user_id`.
   userId: string | null
-  provider?: 'clerk' | 'better-auth'
   geocode: (address: string) => Promise<number[]>
 }
 
@@ -41,11 +40,7 @@ export const member = authenticated.use(async ({ ctx, next }) => {
     .select({ id: user.id, groupId: userGroups.groupId })
     .from(user)
     .innerJoin(userGroups, eq(userGroups.userId, user.id))
-    .where(
-      ctx.provider === 'better-auth'
-        ? eq(user.id, ctx.userId)
-        : eq(user.clerkId, ctx.userId)
-    )
+    .where(eq(user.id, ctx.userId))
     .limit(1)
   const row = rows[0]
   if (!row?.groupId)

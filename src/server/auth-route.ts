@@ -1,5 +1,4 @@
-// The only Better Auth endpoints the app exposes. Everything else, and every
-// path while Clerk is selected, is a 404.
+// The only Better Auth endpoints the app exposes. Everything else is a 404.
 export const authPaths = new Set([
   '/get-session',
   '/sign-out',
@@ -7,8 +6,9 @@ export const authPaths = new Set([
   '/email-otp/send-verification-otp',
   '/sign-in/email-otp',
   '/sign-in/email',
-  // Open sign-up: The Date Pot lets anyone create an account. Password
-  // sign-ups confirm their address through the emailed /verify-email link.
+  // Sign-up is open unless AUTH_ALLOWED_EMAILS is set, when Better Auth refuses
+  // other addresses. Password sign-ups confirm their address through the
+  // emailed /verify-email link.
   '/sign-up/email',
   '/verify-email',
   '/send-verification-email',
@@ -33,13 +33,11 @@ export function isAuthPath(path: string) {
 }
 
 export function createAuthRouteHandler(
-  provider: () => 'clerk' | 'better-auth',
   auth: () => { handler: (request: Request) => Promise<Response> }
 ) {
   return async (request: Request) => {
     const path = new URL(request.url).pathname.slice('/api/auth'.length)
-    if (provider() !== 'better-auth' || !isAuthPath(path))
-      return new Response('Not found', { status: 404 })
+    if (!isAuthPath(path)) return new Response('Not found', { status: 404 })
     return auth().handler(request)
   }
 }

@@ -5,7 +5,7 @@ import { isVerifiedMember } from './auth-policy'
 
 export type AuthIdentity = { id: string; email: string; name: string }
 
-// Mirrors the Clerk-era onboarding defaults: the username is the account's
+// Mirrors the original onboarding defaults: the username is the account's
 // email address and the name is the profile's name (falling back to the
 // email's local part, since email-code accounts start without one).
 export function appUserDefaults(identity: AuthIdentity) {
@@ -14,9 +14,9 @@ export function appUserDefaults(identity: AuthIdentity) {
   return { name: name.slice(0, 120), username: email, bio: '' }
 }
 
-// Returns the app user linked to a verified Better Auth account. Members linked
-// by deploy/link-clerk-users.ts keep their existing row and data. Anyone else
-// gets a new row and, like the original onboarding, a pot (group) of their own.
+// Returns the app user linked to a verified Better Auth account through
+// `auth_user_id`. Anyone without one gets a new row and, like the original
+// onboarding, a pot (group) of their own.
 export async function resolveAppUser(db: Orm, identity: AuthIdentity) {
   const [linked] = await db
     .select({ id: user.id })
@@ -63,7 +63,7 @@ export async function syncAppUserName(
     .where(eq(user.authUserId, authUserId))
 }
 
-// tRPC identity under Better Auth: a verified, still-permitted session resolves
+// tRPC identity: a verified, still-permitted session resolves
 // to the linked (or newly provisioned) app user's id on every request.
 export function betterAuthIdentity(
   db: Orm,

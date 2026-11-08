@@ -1,8 +1,8 @@
 -- Fixture for local verification only: one group with two members and a little of everything.
 INSERT INTO "group" (id) VALUES ('11111111-1111-4111-8111-111111111111');
-INSERT INTO "user" (id, name, username, "clerkId", bio) VALUES
-  ('22222222-2222-4222-8222-222222222221', 'Test Kyle', 'testkyle', 'user_3LFVN7yEgn8eAU4XqJzSXvo2oqd', NULL),
-  ('22222222-2222-4222-8222-222222222222', 'Test Partner', 'testpartner', 'user_partner_fixture', NULL);
+INSERT INTO "user" (id, name, username, bio) VALUES
+  ('22222222-2222-4222-8222-222222222221', 'Test Kyle', 'testkyle', NULL),
+  ('22222222-2222-4222-8222-222222222222', 'Test Partner', 'testpartner', NULL);
 -- userGroups.id matches group.id so either foreign-key target is satisfied
 INSERT INTO "userGroups" (id, "userId", "groupId") VALUES
   ('11111111-1111-4111-8111-111111111111', '22222222-2222-4222-8222-222222222221', '11111111-1111-4111-8111-111111111111'),
@@ -49,7 +49,7 @@ INSERT INTO vinyl (id, name, artist, archive, "userGroupId", "addedById", purcha
   ('55555555-5555-4555-8555-5555555555a1', 'Blue', 'Joni Mitchell', false, '11111111-1111-4111-8111-111111111111', '22222222-2222-4222-8222-222222222221', false);
 -- A second group whose data the test user must never see
 INSERT INTO "group" (id) VALUES ('99999999-9999-4999-8999-999999999999');
-INSERT INTO "user" (id, name, username, "clerkId") VALUES ('99999999-9999-4999-8999-999999999998', 'Stranger', 'stranger', 'user_stranger_fixture');
+INSERT INTO "user" (id, name, username) VALUES ('99999999-9999-4999-8999-999999999998', 'Stranger', 'stranger');
 INSERT INTO "userGroups" (id, "userId", "groupId") VALUES ('99999999-9999-4999-8999-999999999999', '99999999-9999-4999-8999-999999999998', '99999999-9999-4999-8999-999999999999');
 INSERT INTO beer (id, name, abv, "addedById", archive, "userGroupId") VALUES
   ('99999999-9999-4999-8999-999999999991', 'Someone Else''s Beer', 4.0, '99999999-9999-4999-8999-999999999998', false, '99999999-9999-4999-8999-999999999999');
