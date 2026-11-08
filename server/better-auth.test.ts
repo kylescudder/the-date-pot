@@ -12,8 +12,10 @@ import { betterAuthIdentity, resolveAppUser } from '../src/server/app-user'
 import { createTrpcHandler } from '../src/server/trpc-handler'
 import { createApp } from './app'
 import {
+  applyEmailOverrides,
   linkClerkUsers,
   listClerkUsers,
+  parseEmailOverrides,
   verifiedPrimaryEmail
 } from '../deploy/link-clerk-users'
 import { drizzle } from 'drizzle-orm/postgres-js'
@@ -846,6 +848,52 @@ async function createFixtureKeepingUsers() {
     }
   } as unknown as Awaited<ReturnType<typeof authFixture>>
 }
+
+test('an --email override links a member under a corrected address', async () => {
+  await resetAuth()
+  const db = drizzle(sql, { schema })
+  const overrides = parseEmailOverrides([
+    '--apply',
+    '--email',
+    kyleClerk + '= Kyle.New@Example.com '
+  ])
+  expect([...overrides]).toEqual([[kyleClerk, 'kyle.new@example.com']])
+  for (const bad of [
+    ['--email'],
+    ['--email', 'kyle@example.com'],
+    ['--email', 'user_x=not-an-email'],
+    ['--email', 'notclerk=kyle@example.com'],
+    ['--email', 'user_x=a@example.com', '--email', 'user_x=b@example.com']
+  ])
+    expect(() => parseEmailOverrides(bad)).toThrow()
+  // The Clerk email is a typo the member never used.
+  const clerkUsers = applyEmailOverrides(
+    [{ id: kyleClerk, email: 'kyel@example.com' }],
+    overrides
+  )
+  expect(() =>
+    applyEmailOverrides(
+      clerkUsers,
+      new Map([['user_missing', 'a@example.com']])
+    )
+  ).toThrow()
+  expect(await linkClerkUsers(db, clerkUsers, { apply: true })).toMatchObject({
+    linked: 1,
+    authUsersCreated: 1
+  })
+  const [linked] = await sql`
+    SELECT a.email, a.email_verified FROM "user" u
+    JOIN auth_user a ON a.id = u.auth_user_id WHERE u.id = ${kyleId}`
+  expect(linked).toEqual({
+    email: 'kyle.new@example.com',
+    email_verified: true
+  })
+  expect(
+    (
+      await sql`SELECT count(*)::int AS n FROM auth_user WHERE email = 'kyel@example.com'`
+    )[0].n
+  ).toBe(0)
+})
 
 test('Clerk listing pages through users and keeps only verified primary emails', async () => {
   const page = (count: number, start: number) =>

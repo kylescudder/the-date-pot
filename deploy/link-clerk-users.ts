@@ -7,8 +7,13 @@
 // Dry run by default; `--apply` writes. Idempotent. Prints counts only, never
 // emails, names, IDs or tokens. Never deletes or rewrites app rows.
 //
+// `--email <clerk user id>=<address>` (repeatable) links that Clerk user's
+// member under a different address, for example when the Clerk email is wrong
+// or no longer used. The operator vouches for the address, so it is treated as
+// verified; the member then signs in with it.
+//
 //   docker compose --env-file .env run --rm the-date-pot \
-//     bun deploy/link-clerk-users.ts [--apply]
+//     bun deploy/link-clerk-users.ts [--email user_x=new@example.com] [--apply]
 import { randomUUID } from 'node:crypto'
 import { and, eq, isNotNull, isNull } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/postgres-js'
@@ -61,6 +66,52 @@ export async function listClerkUsers(
       users.push({ id: clerkUser.id, email: verifiedPrimaryEmail(clerkUser) })
     if (page.length < limit) return users
   }
+}
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+// Parses `--email <clerk user id>=<address>` pairs. Throws on anything
+// malformed rather than guessing, and never echoes the address.
+export function parseEmailOverrides(args: readonly string[]) {
+  const overrides = new Map<string, string>()
+  for (let index = 0; index < args.length; index++) {
+    if (args[index] !== '--email') continue
+    const pair = args[++index] ?? ''
+    const separator = pair.indexOf('=')
+    const clerkId = pair.slice(0, separator).trim()
+    const email = pair
+      .slice(separator + 1)
+      .trim()
+      .toLowerCase()
+    if (
+      separator < 1 ||
+      !clerkId.startsWith('user_') ||
+      !emailPattern.test(email)
+    )
+      throw new Error('--email expects <clerk user id>=<email address>')
+    if (overrides.has(clerkId))
+      throw new Error('--email given twice for one Clerk user')
+    overrides.set(clerkId, email)
+  }
+  return overrides
+}
+
+// Replaces the email of each overridden Clerk user. Every override must name a
+// Clerk user that exists, so a typo cannot silently link nobody.
+export function applyEmailOverrides(
+  clerkUsers: readonly ClerkUser[],
+  overrides: ReadonlyMap<string, string>
+): ClerkUser[] {
+  const ids = new Set(clerkUsers.map((clerkUser) => clerkUser.id))
+  for (const clerkId of overrides.keys())
+    if (!ids.has(clerkId))
+      throw new Error(
+        'An --email override names a Clerk user that does not exist'
+      )
+  return clerkUsers.map((clerkUser) => ({
+    id: clerkUser.id,
+    email: overrides.get(clerkUser.id) ?? clerkUser.email
+  }))
 }
 
 type Orm = ReturnType<typeof drizzle<typeof schema>>
@@ -163,18 +214,30 @@ export async function linkClerkUsers(
 
 if (import.meta.main) {
   const apply = process.argv.includes('--apply')
+  const overrides = parseEmailOverrides(process.argv.slice(2))
   const secretKey = process.env.CLERK_SECRET_KEY
   const databaseUrl = process.env.DATABASE_URL
   if (!secretKey || !databaseUrl)
     throw new Error('Set CLERK_SECRET_KEY and DATABASE_URL')
-  const clerkUsers = await listClerkUsers(secretKey)
+  const clerkUsers = applyEmailOverrides(
+    await listClerkUsers(secretKey),
+    overrides
+  )
   const sql = createDeploymentDatabase(databaseUrl)
   try {
     const report = await linkClerkUsers(drizzle(sql, { schema }), clerkUsers, {
       apply
     })
     console.log(
-      JSON.stringify({ mode: apply ? 'apply' : 'dry-run', ...report }, null, 2)
+      JSON.stringify(
+        {
+          mode: apply ? 'apply' : 'dry-run',
+          emailOverrides: overrides.size,
+          ...report
+        },
+        null,
+        2
+      )
     )
     if (!apply)
       console.log('Dry run: nothing was written. Re-run with --apply.')

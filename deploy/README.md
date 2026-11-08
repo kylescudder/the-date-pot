@@ -208,6 +208,12 @@ see [Brevo's explanation](https://help.brevo.com/hc/en-us/articles/1910026047285
    `orphanAppUsers` before applying. Members without a verified Clerk email are
    not linked; if they sign in later they get a new, empty pot.
 
+   If a member's Clerk email is wrong or no longer used, add
+   `--email <clerk user id>=<address>` (repeatable) to both runs to link their
+   existing row under the address they will sign in with. The override must
+   name an existing Clerk user, and the address is treated as verified, so only
+   use addresses the member has confirmed are theirs.
+
 3. Set `AUTH_PROVIDER=better-auth` and recreate only the `the-date-pot` service
    with the same image. Verify email-code sign-in, the pot list, Profile and
    passkey enrolment. Clerk sessions stop working; members sign in again by
