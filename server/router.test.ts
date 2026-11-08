@@ -1,6 +1,15 @@
 import { afterAll, beforeAll, expect, test } from 'bun:test'
 import { randomUUID } from 'node:crypto'
-import { readFileSync } from 'node:fs'
+import {
+  cpSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync
+} from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { migrate as migrateDrizzle } from 'drizzle-orm/postgres-js/migrator'
 import postgres from 'postgres'
 import { database, migrate, orm, type Database } from '../src/server/db'
 import { appRouter } from '../src/server/router'
@@ -17,6 +26,7 @@ const admin = postgres(process.env.TEST_DATABASE_URL, {
 })
 const name = 'datepot_ci_' + randomUUID().replaceAll('-', '').slice(0, 10)
 const pushedName = name + '_pushed'
+const previousName = name + '_previous'
 const clients: Database[] = []
 let sql: Database
 
@@ -49,6 +59,7 @@ const caller = (userId: string | null) =>
 beforeAll(async () => {
   await admin.unsafe(`CREATE DATABASE "${name}"`)
   await admin.unsafe(`CREATE DATABASE "${pushedName}"`)
+  await admin.unsafe(`CREATE DATABASE "${previousName}"`)
   sql = client(name)
   await migrate(sql)
   // Running again must be a no-op.
@@ -62,7 +73,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await Promise.all(clients.map((connection) => connection.end({ timeout: 1 })))
-  for (const db of [name, pushedName])
+  for (const db of [name, pushedName, previousName])
     await admin.unsafe(`DROP DATABASE IF EXISTS "${db}" WITH (FORCE)`)
   await admin.end()
 })
@@ -80,19 +91,57 @@ test('the baseline leaves a database created by drizzle-kit push untouched', asy
     ORDER BY tablename`
   // Besides the existing table, only new auth and profile-photo tables appear.
   expect(tables.map((row) => row.tablename)).toEqual(['user', 'user_profile'])
-  // Only the additive Better Auth link reaches the existing table.
+  // The Better Auth link is added and the legacy Clerk id is dropped (0004).
   const columns = await pushed`
     SELECT column_name FROM information_schema.columns
     WHERE table_name = 'user' ORDER BY ordinal_position`
   expect(columns.map((row) => row.column_name)).toEqual([
     'id',
-    'clerkId',
     'onboarded',
     'auth_user_id'
   ])
   const journal =
     await pushed`SELECT count(*)::int AS n FROM drizzle.__drizzle_migrations`
-  expect(journal[0].n).toBe(4)
+  expect(journal[0].n).toBe(5)
+})
+
+test('dropping the Clerk id keeps linked members on a database at 0003_profile', async () => {
+  const previous = client(previousName)
+  // Stop the migration history at 0003, as on production before this change.
+  const folder = mkdtempSync(join(tmpdir(), 'datepot-0003-'))
+  try {
+    const source = new URL('../drizzle', import.meta.url).pathname
+    cpSync(source, folder, { recursive: true })
+    const journalPath = join(folder, 'meta/_journal.json')
+    const journal = JSON.parse(readFileSync(journalPath, 'utf8'))
+    journal.entries = journal.entries.filter(
+      (entry: { idx: number }) => entry.idx <= 3
+    )
+    writeFileSync(journalPath, JSON.stringify(journal))
+    await migrateDrizzle(orm(previous), {
+      migrationsFolder: folder,
+      migrationsSchema: 'drizzle',
+      migrationsTable: '__drizzle_migrations'
+    })
+  } finally {
+    rmSync(folder, { recursive: true, force: true })
+  }
+  await previous`
+    INSERT INTO auth_user (id, name, email, email_verified, created_at, updated_at)
+    VALUES ('auth-kyle', 'Kyle', 'kyle@example.com', true, now(), now())`
+  await previous`
+    INSERT INTO "user" (id, name, username, "clerkId", auth_user_id)
+    VALUES (${kyle}, 'Kyle', 'kyle', 'user_legacy', 'auth-kyle')`
+  await migrate(previous)
+  const rows =
+    await previous`SELECT id, name, username, auth_user_id FROM "user"`
+  expect([...rows]).toEqual([
+    { id: kyle, name: 'Kyle', username: 'kyle', auth_user_id: 'auth-kyle' }
+  ])
+  const legacy = await previous`
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'user' AND column_name = 'clerkId'`
+  expect(legacy).toHaveLength(0)
 })
 
 test('signed-out requests are rejected', async () => {

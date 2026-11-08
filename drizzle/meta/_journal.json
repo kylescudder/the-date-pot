@@ -29,6 +29,13 @@
       "when": 1794131829905,
       "tag": "0003_profile",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794172115730,
+      "tag": "0004_drop_clerk_id",
+      "breakpoints": true
     }
   ]
 }
