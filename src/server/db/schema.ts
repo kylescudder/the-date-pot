@@ -328,9 +328,8 @@ export const user = createTable('user', {
     .$defaultFn(() => randomUUID()),
   name: varchar('name').notNull(),
   username: varchar('username').notNull(),
-  // Legacy identity from the previous auth provider. Nothing reads it; it is
-  // kept until a later migration drops it.
-  clerkId: varchar('clerkId'),
+  // The legacy "clerkId" column still exists in the database but is left out
+  // here so no query selects it; a later migration drops it.
   bio: varchar('bio'),
   // Better Auth identity: how every request finds its app user.
   authUserId: text('auth_user_id')
