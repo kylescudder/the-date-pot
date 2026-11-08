@@ -104,7 +104,12 @@ The app uses Better Auth, with its own tables in the app database. The owner
 migration `0002_better_auth` added `auth_user`, `auth_session`, `auth_account`,
 `auth_verification`, `auth_passkey`, `auth_rate_limit` and `auth_email_limit`,
 plus a nullable unique `user.auth_user_id` that links each member's row to their
-account. Every request finds its member through that link. The runtime keeps
+account. Every request finds its member through that link. Migration
+`0004_drop_clerk_id` then dropped the legacy `user."clerkId"` column once every
+member was linked and the previous release (#951) had stopped selecting it.
+That drop is a deliberate exception to the compatible-schema rule above: images
+from before #951 select the column, so rolling back to them is no longer
+supported. The runtime keeps
 its four-connection pool and restricted role (the owner's default privileges
 grant it the auth tables).
 
