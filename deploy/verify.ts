@@ -8,7 +8,16 @@ assert.equal(
   process.env.DATE_POT_REVISION
 )
 assert.equal((await health.json()).ok, true)
-for (const path of ['/', '/beers', '/films', '/sign-in', '/sign-up']) {
+// Redirects are followed: /sign-in goes to /auth/sign-in, and /auth/sign-up
+// goes there too when AUTH_ALLOWED_EMAILS closes sign-up.
+for (const path of [
+  '/',
+  '/beers',
+  '/films',
+  '/sign-in',
+  '/auth/sign-in',
+  '/auth/sign-up'
+]) {
   const response = await fetch(base + path)
   assert.equal(response.status, 200)
   const html = await response.text()
