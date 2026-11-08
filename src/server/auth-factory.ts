@@ -34,6 +34,16 @@ export function isSameSiteTarget(target: unknown, origin: string) {
   return url.origin === origin && !url.pathname.startsWith('//')
 }
 
+// What Better Auth itself answers when a request sends no mail, so refused
+// requests and requests that really send mail are indistinguishable.
+const genericAnswer = (path: string) => ({
+  status: true as const,
+  ...(path === '/request-password-reset' && {
+    message:
+      'If this email exists in our system, check your email for the reset link'
+  })
+})
+
 const names = {
   name: z.string().trim().min(1).max(120),
   givenName: z
@@ -184,11 +194,15 @@ export function createDatePotAuth(
         if (!allowed(user.email)) return
         // Reserved here, not in the request hook: requests for addresses with
         // no account send nothing and must not spend the shared budget.
-        await reserveEmailDelivery(
-          database,
-          user.email,
-          settings.dailyEmailLimit
+        // A throttled recipient gets the usual response and no email.
+        if (
+          !(await reserveEmailDelivery(
+            database,
+            user.email,
+            settings.dailyEmailLimit
+          ))
         )
+          return
         await sendLink(user.email, 'reset-password', url)
       }
     },
@@ -202,11 +216,15 @@ export function createDatePotAuth(
         if (!allowed(user.email)) return
         // Duplicate sign-ups and already-verified addresses send nothing, so
         // only an actual confirmation email spends the shared budget.
-        await reserveEmailDelivery(
-          database,
-          user.email,
-          settings.dailyEmailLimit
+        // A throttled recipient gets the usual response and no email.
+        if (
+          !(await reserveEmailDelivery(
+            database,
+            user.email,
+            settings.dailyEmailLimit
+          ))
         )
+          return
         await sendLink(user.email, 'verify-email', url)
       }
     },
@@ -307,7 +325,14 @@ export function createDatePotAuth(
             })
           if (!allowed(email)) return ctx.json({ success: true })
           ctx.body.email = email
-          await reserveEmailDelivery(database, email, settings.dailyEmailLimit)
+          if (
+            !(await reserveEmailDelivery(
+              database,
+              email,
+              settings.dailyEmailLimit
+            ))
+          )
+            return ctx.json({ success: true })
         }
         if (
           ctx.path === '/sign-in/magic-link' ||
@@ -319,17 +344,20 @@ export function createDatePotAuth(
           const email = normalisedEmail(ctx.body)
           // Same generic answer for every address, so the form never reveals
           // who is allowed. Only permitted addresses reach the mailer.
-          if (!allowed(email)) return ctx.json({ status: true })
+          if (!allowed(email)) return ctx.json(genericAnswer(ctx.path))
           ctx.body.email = email
           // Magic links go to any permitted address (they can create the
           // account), so reserve now. Reset and verification emails reserve
           // in their send callbacks, only when an email will really be sent.
-          if (ctx.path === '/sign-in/magic-link')
-            await reserveEmailDelivery(
+          if (
+            ctx.path === '/sign-in/magic-link' &&
+            !(await reserveEmailDelivery(
               database,
               email,
               settings.dailyEmailLimit
-            )
+            ))
+          )
+            return ctx.json(genericAnswer(ctx.path))
         }
         if (
           ctx.path.startsWith('/passkey/') &&

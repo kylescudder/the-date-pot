@@ -2,7 +2,7 @@
 // sign-up, mail protections, redirect safety, the route allowlist, profile
 // photos, member provisioning, Clerk linking and Clerk-mode parity.
 import { afterAll, beforeAll, expect, test } from 'bun:test'
-import { createHmac, randomUUID } from 'node:crypto'
+import { createHash, createHmac, randomUUID } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import postgres from 'postgres'
 import sharp from 'sharp'
@@ -266,7 +266,8 @@ test('mail has a per-recipient cooldown and an app-wide budget', async () => {
       type: 'sign-in'
     })
   expect((await send('a@example.com')).status).toBe(200)
-  expect((await send('A@example.com')).status).toBe(429)
+  // A throttled recipient gets the same answer as any address that gets no mail.
+  expect((await send('A@example.com')).status).toBe(200)
   expect(fixture.codes.size).toBe(1)
   expect((await send('b@example.com')).status).toBe(200)
   // Clear the per-IP endpoint limit (3 a minute) so only the mail budget applies.
@@ -282,6 +283,86 @@ test('mail has a per-recipient cooldown and an app-wide budget', async () => {
     { Origin: 'https://evil.example', 'Sec-Fetch-Site': 'cross-site' }
   )
   expect(cross.status).toBe(403)
+})
+
+test('a throttled allowlisted address gets the same answer as an unlisted one', async () => {
+  const fixture = await authFixture({ allowedEmails: ['admin@example.com'] })
+  const endpoints = [
+    ['/email-otp/send-verification-otp', { type: 'sign-in' }],
+    ['/sign-in/magic-link', { callbackURL: '/' }],
+    ['/request-password-reset', { redirectTo: '/auth/reset-password' }]
+  ] as const
+  const answer = async (path: string, extra: object, email: string) => {
+    // Keep the per-IP endpoint limit out of the comparison.
+    await sql`DELETE FROM auth_rate_limit`
+    const response = await fixture.request(path, { email, ...extra })
+    return { status: response.status, body: await response.text() }
+  }
+  expect(
+    (await answer(endpoints[0][0], endpoints[0][1], 'admin@example.com')).status
+  ).toBe(200)
+  const code = fixture.codes.get('admin@example.com')
+  expect(code).toBeTruthy()
+  for (const [path, extra] of endpoints) {
+    const throttled = await answer(path, extra, 'admin@example.com')
+    const unlisted = await answer(path, extra, 'stranger@example.com')
+    expect(throttled, path).toEqual(unlisted)
+    expect(throttled.status, path).toBe(200)
+  }
+  // Nothing more was sent or charged, and the first code still works.
+  expect(fixture.links.length).toBe(0)
+  expect(fixture.codes.get('admin@example.com')).toBe(code)
+  const [global] =
+    await sql`SELECT count FROM auth_email_limit WHERE key = 'global:day'`
+  expect(global.count).toBe(1)
+  await sql`DELETE FROM auth_rate_limit`
+  expect(
+    (
+      await fixture.request('/sign-in/email-otp', {
+        email: 'admin@example.com',
+        otp: code
+      })
+    ).status
+  ).toBe(200)
+})
+
+test('with open sign-up, a throttled address looks like one that gets no mail', async () => {
+  const fixture = await authFixture()
+  const throttle = async (email: string) => {
+    const recipient = createHash('sha256').update(email).digest('hex')
+    await sql`INSERT INTO auth_email_limit (key, count, window_started_at) VALUES (${`recipient:${recipient}:minute`}, 1, now())`
+  }
+  // An address with an account and a used-up cooldown, against one with no account.
+  await signInWithCode(fixture, 'member@example.com')
+  await sql`DELETE FROM auth_rate_limit`
+  const reset = async (email: string) => {
+    await sql`DELETE FROM auth_rate_limit`
+    const response = await fixture.request('/request-password-reset', {
+      email,
+      redirectTo: '/auth/reset-password'
+    })
+    return { status: response.status, body: await response.text() }
+  }
+  const throttled = await reset('member@example.com')
+  expect(throttled).toEqual(await reset('nobody@example.com'))
+  expect(throttled.status).toBe(200)
+  expect(fixture.links.length).toBe(0)
+  // A sign-up whose confirmation email is throttled still answers as usual,
+  // sends nothing and spends nothing.
+  await sql`DELETE FROM auth_email_limit`
+  await throttle('newbie@example.com')
+  await sql`DELETE FROM auth_rate_limit`
+  const signUp = await fixture.request('/sign-up/email', {
+    email: 'newbie@example.com',
+    password: 'correct horse battery staple',
+    name: 'Newbie'
+  })
+  expect(signUp.status).toBe(200)
+  expect(fixture.links.length).toBe(0)
+  expect(
+    (await sql`SELECT key FROM auth_email_limit WHERE key = 'global:day'`)
+      .length
+  ).toBe(0)
 })
 
 test('requests that send no email do not spend the shared mail budget', async () => {
