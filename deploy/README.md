@@ -37,9 +37,11 @@ Compose limits it to 256 MiB, one CPU, 128 processes and bounded logs, drops all
 capabilities and uses a read-only root filesystem. The API uses four pooled
 Postgres connections.
 
-All RPCs require a verified Clerk session and are scoped to the member’s group. The app uses the
-production instance of the The Date Pot Clerk application, served from
-`clerk.thedatepot.co.uk`. Do not substitute another app's Clerk instance.
+All RPCs require a verified session from the selected provider (Clerk by
+default, Better Auth when `AUTH_PROVIDER=better-auth`) and are scoped to the
+member’s group. The app uses the production instance of the The Date Pot Clerk
+application, served from `clerk.thedatepot.co.uk`. Do not substitute another
+app's Clerk instance.
 
 The receiver joins only `platform-web`, has no Docker socket, host shell
 credentials or database access, and can write only its queue. It reads only the
@@ -98,6 +100,148 @@ first deploy, while the old app is paused or read-only:
 
 The restored schema keeps whatever constraints the old database had. The code
 stores the owning group's id in each `userGroupId` column, exactly as before.
+
+## Better Auth rollout and Clerk rollback
+
+`AUTH_PROVIDER` selects exactly one authentication provider for both the server
+and the rendered client. It defaults to `clerk`, so the additive release can be
+deployed before the sign-in flow changes. Changing it requires recreating the
+app container. With `clerk`, `/api/auth/*` returns 404 and nothing below runs.
+
+The owner migration `0002_better_auth` adds `auth_user`, `auth_session`,
+`auth_account`, `auth_verification`, `auth_passkey`, `auth_rate_limit` and
+`auth_email_limit`, plus a nullable unique `user.auth_user_id` link. It also
+relaxes `user.clerkId` to nullable so members who join under Better Auth need
+no Clerk id. Existing rows, ids and Clerk ids are not rewritten. The runtime
+keeps its four-connection pool and restricted role (the owner's default
+privileges already grant it the new tables).
+
+Prepare these settings in the host's protected `.env`, keeping the Clerk keys:
+
+```dotenv
+AUTH_PROVIDER=clerk
+BETTER_AUTH_URL=https://thedatepot.co.uk
+BETTER_AUTH_SECRET=<stable, cryptographically random app-specific secret, 32+ chars>
+BREVO_API_KEY=<The Date Pot transactional API key>
+AUTH_EMAIL_FROM=<verified Brevo sender, e.g. hello@thedatepot.co.uk>
+AUTH_EMAIL_DAILY_LIMIT=40
+# Optional. Empty keeps sign-up open; a list restricts accounts and mail to it.
+AUTH_ALLOWED_EMAILS=
+```
+
+`BETTER_AUTH_URL` must be `https://` in production. The secret also keys the
+stored email-code hashes, so keep it stable and out of Git, image layers and
+CI. The passkey RP ID is the exact hostname in `BETTER_AUTH_URL`.
+
+### Access model
+
+The Date Pot has open sign-up: anyone can create an account with a password
+(`/auth/sign-up`), an email code or a magic link. Password sign-ups must confirm
+their address through an emailed link before they can sign in, and a second
+sign-up for an existing address gets the same generic answer. Every tRPC call
+requires a session whose email is verified (and, if `AUTH_ALLOWED_EMAILS` is set,
+still listed — removing an address revokes access). A verified account with no
+linked member row gets a new row (name from the profile, username = email) and
+a pot of its own, matching the Clerk-era onboarding.
+
+Sign-in lives at `/auth/<view>`: password (`/auth/sign-in`), email code
+(`/auth/email-otp`), magic link (`/auth/magic-link`) and passkey, each linking to
+the others, plus `/auth/sign-up`, `/auth/forgot-password` and
+`/auth/reset-password`. The old Clerk `/sign-in` and `/sign-up` URLs redirect
+there. Success returns to `/` or to a same-site `?redirectTo=`; off-site
+`redirectTo`, `callbackURL`, `newUserCallbackURL` and `errorCallbackURL` values
+are refused on the server and ignored in the client. Signed-in members get an
+avatar menu (Better Auth UI `UserButton`) in the sidebar with Profile and Sign
+out. `/profile` uploads or removes a profile photo (shown in the avatar menu), edits
+the display name and optional first/last names (shown to other pot members),
+shows the verified email read-only, sets or changes a password (no password yet
+→ "Set password" emails a reset link), manages passkeys and signs out.
+
+`/api/auth/*` forwards only: get-session, sign-out, update-user,
+email-otp/send-verification-otp, sign-in/email-otp, sign-in/email, sign-up/email,
+verify-email, send-verification-email, sign-in/magic-link, magic-link/verify,
+request-password-reset, reset-password, `/reset-password/<token>`,
+change-password, list-accounts and the passkey endpoints. Everything else is 404.
+
+### Profile photos
+
+`/api/profile/avatar` (GET, PUT, DELETE) serves and changes the signed-in
+account's own photo; nobody can read another member's. It requires a verified
+email that is still permitted (any verified account while sign-up is open; a
+listed one when `AUTH_ALLOWED_EMAILS` is set), and same-origin `Origin` for PUT
+and DELETE. It is a 404 under Clerk. The browser crops photos to a 512 px JPEG;
+the server then accepts only JPEG, PNG or WebP by signature, at most 2 MB and
+4 megapixels, decodes it with `sharp` (one image at a time, uncached) and
+re-encodes it as a 256 px JPEG without EXIF or other metadata. The owner
+migration `0003_profile` adds `user_profile` (one row per `auth_user`, deleted
+with it), so photos stay in the app's own Postgres and its encrypted backups;
+the owner's default privileges grant it to the runtime role. Responses are
+`no-store`, `nosniff` and same-origin only, and each upload gets a new
+`?v=` version in `auth_user.image`. `update-user` accepts an image only when it
+matches the stored photo (or none), so clients cannot point it elsewhere.
+
+### Emails and limits
+
+Email codes are six digits, valid once for ten minutes, with five attempts; the
+database stores an HMAC of each code. Magic links (10 minutes, stored hashed),
+reset links (30 minutes, single-use) and sign-up confirmation links (1 hour) use
+the same branded template and logo (`public/email-logo.png`). Every email
+that is actually sent shares persistent limits in `auth_email_limit` (reset
+and confirmation emails reserve when they are sent, so requests for unknown
+addresses spend nothing): one email per recipient
+per minute, five per recipient per hour, and an app-wide budget of
+`AUTH_EMAIL_DAILY_LIMIT` (default 40) per rolling 24 hours. Per-IP limits (via
+`cf-connecting-ip`) apply per endpoint: 60/min overall, 3/min for sending codes,
+links, resets and sign-ups, 5/min for password sign-in, reset and change, 10/min
+for code and link verification, 20/min for passkeys. Brevo is called with an 8 s
+timeout; responses, codes, links and keys are never logged. Sessions last seven
+days and refresh daily. A password reset revokes existing sessions.
+
+On phones, magic links open wherever the mail app opens links, so email codes
+remain the most reliable mobile method. The code form keeps only the pending
+email and request time in tab-scoped storage for ten minutes so a reload does
+not send another email; it never stores the code.
+
+Brevo's free plan adds a `List-Unsubscribe` header even to transactional email;
+see [Brevo's explanation](https://help.brevo.com/hc/en-us/articles/19100260472850-FAQs-About-list-unsubscribe-and-list-help-headers-in-emails).
+
+### Cutover
+
+1. Deploy the release through the central service with `AUTH_PROVIDER=clerk` and
+   the settings above. Owner migrations add the tables; behaviour is unchanged.
+2. Link existing members so their pots and ratings carry over. The script lists
+   Clerk users through the Clerk Backend API, takes each verified primary email,
+   finds or creates the Better Auth user (marked verified) and sets
+   `user.auth_user_id`. It prints counts only, is idempotent and writes nothing
+   without `--apply`:
+
+   ```sh
+   docker compose --env-file .env run --rm the-date-pot bun deploy/link-clerk-users.ts
+   docker compose --env-file .env run --rm the-date-pot bun deploy/link-clerk-users.ts --apply
+   ```
+
+   Review `withoutVerifiedEmail`, `withoutAppUser`, `conflicts` and
+   `orphanAppUsers` before applying. Members without a verified Clerk email are
+   not linked; if they sign in later they get a new, empty pot.
+
+   If a member's Clerk email is wrong or no longer used, add
+   `--email <clerk user id>=<address>` (repeatable) to both runs to link their
+   existing row under the address they will sign in with. The override must
+   name an existing Clerk user, and the address is treated as verified, so only
+   use addresses the member has confirmed are theirs.
+
+3. Set `AUTH_PROVIDER=better-auth` and recreate only the `the-date-pot` service
+   with the same image. Verify email-code sign-in, the pot list, Profile and
+   passkey enrolment. Clerk sessions stop working; members sign in again by
+   email code, magic link or a reset-link password.
+4. Re-run the link script with `--apply` just before the switch if new members
+   joined through Clerk after step 2.
+
+To roll back, set `AUTH_PROVIDER=clerk` and recreate the app service with the
+same image. Keep the Clerk keys, its production app and DNS. Leave the auth
+tables and links in place; never restore an older database to change providers.
+Members who joined under Better Auth have no Clerk id and cannot sign in with
+Clerk until they are linked by hand.
 
 ## Configuration and commands
 

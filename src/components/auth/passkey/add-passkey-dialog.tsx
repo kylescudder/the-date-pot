@@ -1,0 +1,155 @@
+import { isReauthenticationRequiredError } from '@better-auth-ui/core'
+import type {
+  AddPasskeyParams,
+  PasskeyAuthClient
+} from '@better-auth-ui/core/plugins/passkey'
+import { useAuth, useAuthPlugin } from '@better-auth-ui/react'
+import { Fingerprint } from 'lucide-react'
+import { buttonVariants } from '@/components/auth/ui/button'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@/components/auth/ui/dialog'
+import { Field, FieldError, FieldLabel } from '@/components/auth/ui/field'
+import { Input } from '@/components/auth/ui/input'
+import { passkeyPlugin } from '@/lib/auth/passkey-plugin'
+import { useAddPasskey } from '@/lib/auth/use-add-passkey'
+import { useAuthForm } from '../auth-form'
+import { ReauthenticationAction } from '../reauthentication'
+
+export type AddPasskeyDialogProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}
+
+export function AddPasskeyDialog({
+  open,
+  onOpenChange
+}: AddPasskeyDialogProps) {
+  const { authClient, localization } = useAuth<PasskeyAuthClient>()
+  const { authenticatorAttachment, localization: passkeyLocalization } =
+    useAuthPlugin(passkeyPlugin)
+
+  // Our hook, not Better Auth UI's: refusals such as SESSION_NOT_FRESH must
+  // reject so the dialog can offer "Sign in again".
+  const addPasskey = useAddPasskey(authClient)
+
+  const submitRequest = async (
+    request: AddPasskeyParams<PasskeyAuthClient>
+  ) => {
+    const requestWithCallbacks = {
+      ...request,
+      fetchOptions: {
+        ...request?.fetchOptions,
+        onSuccess: () => handleOpenChange(false)
+      }
+    }
+    await addPasskey.mutateAsync(requestWithCallbacks)
+  }
+
+  const form = useAuthForm({
+    defaultValues: { name: '' },
+    onSubmit: async ({ value }) => {
+      const name = value.name.trim()
+      await submitRequest({
+        ...(name ? { name } : {}),
+        ...(authenticatorAttachment ? { authenticatorAttachment } : {})
+      } as AddPasskeyParams<PasskeyAuthClient>)
+    }
+  })
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      addPasskey.reset()
+      form.reset()
+    }
+    onOpenChange(nextOpen)
+  }
+
+  const needsReauthentication = isReauthenticationRequiredError(
+    addPasskey.error
+  )
+
+  return (
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent>
+        {needsReauthentication ? (
+          <>
+            <DialogHeader>
+              <DialogTitle className='sr-only'>
+                {localization.settings.reauthenticationTitle}
+              </DialogTitle>
+            </DialogHeader>
+            <ReauthenticationAction showTitle={false} />
+          </>
+        ) : (
+          <form.AppForm>
+            <form.AuthFormRoot className='flex flex-col gap-6'>
+              <DialogHeader>
+                <DialogTitle className='flex items-center gap-2'>
+                  <Fingerprint />
+                  {passkeyLocalization.addPasskey}
+                </DialogTitle>
+
+                <DialogDescription>
+                  {passkeyLocalization.passkeysDescription}
+                </DialogDescription>
+              </DialogHeader>
+
+              <form.AppField name='name'>
+                {(field) => (
+                  <Field data-invalid={addPasskey.isError}>
+                    <FieldLabel htmlFor='passkey-name'>
+                      {passkeyLocalization.name}
+                    </FieldLabel>
+                    <Input
+                      id='passkey-name'
+                      name={field.name}
+                      autoFocus
+                      placeholder={localization.settings.optional}
+                      disabled={addPasskey.isPending}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      aria-invalid={addPasskey.isError}
+                    />
+                    {addPasskey.error && (
+                      <FieldError>
+                        {addPasskey.error.error?.message ??
+                          addPasskey.error.message}
+                      </FieldError>
+                    )}
+                  </Field>
+                )}
+              </form.AppField>
+
+              <DialogFooter>
+                <DialogClose
+                  className={buttonVariants({ variant: 'outline' })}
+                  disabled={addPasskey.isPending}
+                  type='button'
+                >
+                  {localization.settings.cancel}
+                </DialogClose>
+
+                <form.AuthFormSubmitButton
+                  isPending={addPasskey.isPending}
+                  disabled={addPasskey.isPending}
+                >
+                  {passkeyLocalization.addPasskey}
+                </form.AuthFormSubmitButton>
+              </DialogFooter>
+            </form.AuthFormRoot>
+          </form.AppForm>
+        )}
+      </DialogContent>
+    </Dialog>
+  )
+}

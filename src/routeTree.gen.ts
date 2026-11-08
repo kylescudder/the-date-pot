@@ -14,9 +14,11 @@ import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as BeersRouteImport } from './routes/beers'
 import { Route as CoffeesRouteImport } from './routes/coffees'
 import { Route as FilmsRouteImport } from './routes/films'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as RestaurantsRouteImport } from './routes/restaurants'
 import { Route as VinylsRouteImport } from './routes/vinyls'
 import { Route as ActivityIdRouteImport } from './routes/activity.$id'
+import { Route as AuthPathRouteImport } from './routes/auth.$path'
 import { Route as BeerIdRouteImport } from './routes/beer.$id'
 import { Route as CoffeeIdRouteImport } from './routes/coffee.$id'
 import { Route as FilmIdRouteImport } from './routes/film.$id'
@@ -24,6 +26,8 @@ import { Route as RestaurantIdRouteImport } from './routes/restaurant.$id'
 import { Route as SignInSplatRouteImport } from './routes/sign-in.$'
 import { Route as SignUpSplatRouteImport } from './routes/sign-up.$'
 import { Route as VinylIdRouteImport } from './routes/vinyl.$id'
+import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
+import { Route as ApiProfileAvatarRouteImport } from './routes/api.profile.avatar'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -51,6 +55,11 @@ const FilmsRoute = FilmsRouteImport.update({
   path: '/films',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RestaurantsRoute = RestaurantsRouteImport.update({
   id: '/restaurants',
   path: '/restaurants',
@@ -64,6 +73,11 @@ const VinylsRoute = VinylsRouteImport.update({
 const ActivityIdRoute = ActivityIdRouteImport.update({
   id: '/activity/$id',
   path: '/activity/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthPathRoute = AuthPathRouteImport.update({
+  id: '/auth/$path',
+  path: '/auth/$path',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BeerIdRoute = BeerIdRouteImport.update({
@@ -101,6 +115,16 @@ const VinylIdRoute = VinylIdRouteImport.update({
   path: '/vinyl/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiProfileAvatarRoute = ApiProfileAvatarRouteImport.update({
+  id: '/api/profile/avatar',
+  path: '/api/profile/avatar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
   id: '/api/trpc/$',
   path: '/api/trpc/$',
@@ -113,9 +137,11 @@ export interface FileRoutesByFullPath {
   '/beers': typeof BeersRoute
   '/coffees': typeof CoffeesRoute
   '/films': typeof FilmsRoute
+  '/profile': typeof ProfileRoute
   '/restaurants': typeof RestaurantsRoute
   '/vinyls': typeof VinylsRoute
   '/activity/$id': typeof ActivityIdRoute
+  '/auth/$path': typeof AuthPathRoute
   '/beer/$id': typeof BeerIdRoute
   '/coffee/$id': typeof CoffeeIdRoute
   '/film/$id': typeof FilmIdRoute
@@ -123,6 +149,8 @@ export interface FileRoutesByFullPath {
   '/sign-in/$': typeof SignInSplatRoute
   '/sign-up/$': typeof SignUpSplatRoute
   '/vinyl/$id': typeof VinylIdRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/profile/avatar': typeof ApiProfileAvatarRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRoutesByTo {
@@ -131,9 +159,11 @@ export interface FileRoutesByTo {
   '/beers': typeof BeersRoute
   '/coffees': typeof CoffeesRoute
   '/films': typeof FilmsRoute
+  '/profile': typeof ProfileRoute
   '/restaurants': typeof RestaurantsRoute
   '/vinyls': typeof VinylsRoute
   '/activity/$id': typeof ActivityIdRoute
+  '/auth/$path': typeof AuthPathRoute
   '/beer/$id': typeof BeerIdRoute
   '/coffee/$id': typeof CoffeeIdRoute
   '/film/$id': typeof FilmIdRoute
@@ -141,6 +171,8 @@ export interface FileRoutesByTo {
   '/sign-in/$': typeof SignInSplatRoute
   '/sign-up/$': typeof SignUpSplatRoute
   '/vinyl/$id': typeof VinylIdRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/profile/avatar': typeof ApiProfileAvatarRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRoutesById {
@@ -150,9 +182,11 @@ export interface FileRoutesById {
   '/beers': typeof BeersRoute
   '/coffees': typeof CoffeesRoute
   '/films': typeof FilmsRoute
+  '/profile': typeof ProfileRoute
   '/restaurants': typeof RestaurantsRoute
   '/vinyls': typeof VinylsRoute
   '/activity/$id': typeof ActivityIdRoute
+  '/auth/$path': typeof AuthPathRoute
   '/beer/$id': typeof BeerIdRoute
   '/coffee/$id': typeof CoffeeIdRoute
   '/film/$id': typeof FilmIdRoute
@@ -160,6 +194,8 @@ export interface FileRoutesById {
   '/sign-in/$': typeof SignInSplatRoute
   '/sign-up/$': typeof SignUpSplatRoute
   '/vinyl/$id': typeof VinylIdRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/profile/avatar': typeof ApiProfileAvatarRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
 }
 export interface FileRouteTypes {
@@ -170,9 +206,11 @@ export interface FileRouteTypes {
     | '/beers'
     | '/coffees'
     | '/films'
+    | '/profile'
     | '/restaurants'
     | '/vinyls'
     | '/activity/$id'
+    | '/auth/$path'
     | '/beer/$id'
     | '/coffee/$id'
     | '/film/$id'
@@ -180,6 +218,8 @@ export interface FileRouteTypes {
     | '/sign-in/$'
     | '/sign-up/$'
     | '/vinyl/$id'
+    | '/api/auth/$'
+    | '/api/profile/avatar'
     | '/api/trpc/$'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -188,9 +228,11 @@ export interface FileRouteTypes {
     | '/beers'
     | '/coffees'
     | '/films'
+    | '/profile'
     | '/restaurants'
     | '/vinyls'
     | '/activity/$id'
+    | '/auth/$path'
     | '/beer/$id'
     | '/coffee/$id'
     | '/film/$id'
@@ -198,6 +240,8 @@ export interface FileRouteTypes {
     | '/sign-in/$'
     | '/sign-up/$'
     | '/vinyl/$id'
+    | '/api/auth/$'
+    | '/api/profile/avatar'
     | '/api/trpc/$'
   id:
     | '__root__'
@@ -206,9 +250,11 @@ export interface FileRouteTypes {
     | '/beers'
     | '/coffees'
     | '/films'
+    | '/profile'
     | '/restaurants'
     | '/vinyls'
     | '/activity/$id'
+    | '/auth/$path'
     | '/beer/$id'
     | '/coffee/$id'
     | '/film/$id'
@@ -216,6 +262,8 @@ export interface FileRouteTypes {
     | '/sign-in/$'
     | '/sign-up/$'
     | '/vinyl/$id'
+    | '/api/auth/$'
+    | '/api/profile/avatar'
     | '/api/trpc/$'
   fileRoutesById: FileRoutesById
 }
@@ -225,9 +273,11 @@ export interface RootRouteChildren {
   BeersRoute: typeof BeersRoute
   CoffeesRoute: typeof CoffeesRoute
   FilmsRoute: typeof FilmsRoute
+  ProfileRoute: typeof ProfileRoute
   RestaurantsRoute: typeof RestaurantsRoute
   VinylsRoute: typeof VinylsRoute
   ActivityIdRoute: typeof ActivityIdRoute
+  AuthPathRoute: typeof AuthPathRoute
   BeerIdRoute: typeof BeerIdRoute
   CoffeeIdRoute: typeof CoffeeIdRoute
   FilmIdRoute: typeof FilmIdRoute
@@ -235,6 +285,8 @@ export interface RootRouteChildren {
   SignInSplatRoute: typeof SignInSplatRoute
   SignUpSplatRoute: typeof SignUpSplatRoute
   VinylIdRoute: typeof VinylIdRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiProfileAvatarRoute: typeof ApiProfileAvatarRoute
   ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
 }
 
@@ -275,6 +327,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FilmsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/restaurants': {
       id: '/restaurants'
       path: '/restaurants'
@@ -294,6 +353,13 @@ declare module '@tanstack/react-router' {
       path: '/activity/$id'
       fullPath: '/activity/$id'
       preLoaderRoute: typeof ActivityIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/$path': {
+      id: '/auth/$path'
+      path: '/auth/$path'
+      fullPath: '/auth/$path'
+      preLoaderRoute: typeof AuthPathRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/beer/$id': {
@@ -345,6 +411,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VinylIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/profile/avatar': {
+      id: '/api/profile/avatar'
+      path: '/api/profile/avatar'
+      fullPath: '/api/profile/avatar'
+      preLoaderRoute: typeof ApiProfileAvatarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/trpc/$': {
       id: '/api/trpc/$'
       path: '/api/trpc/$'
@@ -361,9 +441,11 @@ const rootRouteChildren: RootRouteChildren = {
   BeersRoute: BeersRoute,
   CoffeesRoute: CoffeesRoute,
   FilmsRoute: FilmsRoute,
+  ProfileRoute: ProfileRoute,
   RestaurantsRoute: RestaurantsRoute,
   VinylsRoute: VinylsRoute,
   ActivityIdRoute: ActivityIdRoute,
+  AuthPathRoute: AuthPathRoute,
   BeerIdRoute: BeerIdRoute,
   CoffeeIdRoute: CoffeeIdRoute,
   FilmIdRoute: FilmIdRoute,
@@ -371,6 +453,8 @@ const rootRouteChildren: RootRouteChildren = {
   SignInSplatRoute: SignInSplatRoute,
   SignUpSplatRoute: SignUpSplatRoute,
   VinylIdRoute: VinylIdRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiProfileAvatarRoute: ApiProfileAvatarRoute,
   ApiTrpcSplatRoute: ApiTrpcSplatRoute,
 }
 export const routeTree = rootRouteImport

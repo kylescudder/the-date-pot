@@ -6,8 +6,13 @@ import {
   boolean,
   uuid,
   integer,
-  doublePrecision
+  doublePrecision,
+  text
 } from 'drizzle-orm/pg-core'
+import { authUser } from './auth-schema'
+
+export * from './auth-schema'
+export * from './profile-schema'
 
 export const createTable = pgTableCreator((name) => `${name}`)
 
@@ -323,8 +328,13 @@ export const user = createTable('user', {
     .$defaultFn(() => randomUUID()),
   name: varchar('name').notNull(),
   username: varchar('username').notNull(),
-  clerkId: varchar('clerkId').notNull(),
-  bio: varchar('bio')
+  // Clerk-era identity. Nullable so members who join under Better Auth need none.
+  clerkId: varchar('clerkId'),
+  bio: varchar('bio'),
+  // Better Auth identity, set on first sign-in or by deploy/link-clerk-users.ts.
+  authUserId: text('auth_user_id')
+    .unique('user_auth_user_id_unique')
+    .references(() => authUser.id, { onDelete: 'set null' })
 })
 
 export type User = typeof user.$inferSelect
