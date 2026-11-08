@@ -2,13 +2,12 @@ import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
 import type { Orm } from './db'
 import { appRouter } from './router'
 
-// The Start route supplies the selected provider's session; tests supply their
-// own identity. Under Better Auth, `authenticate` returns the app user's id.
+// The Start route supplies the Better Auth session; tests supply their own
+// identity. `authenticate` returns the app user's id.
 export function createTrpcHandler(
   db: Orm,
   authenticate: (request: Request) => Promise<string | null>,
-  geocode: (address: string) => Promise<number[]>,
-  provider: 'clerk' | 'better-auth' = 'clerk'
+  geocode: (address: string) => Promise<number[]>
 ) {
   return async (request: Request) => {
     let userId: string | null = null
@@ -21,7 +20,7 @@ export function createTrpcHandler(
       endpoint: '/api/trpc',
       req: request,
       router: appRouter,
-      createContext: () => ({ db, userId, provider, geocode })
+      createContext: () => ({ db, userId, geocode })
     })
   }
 }

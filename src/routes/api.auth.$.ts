@@ -1,12 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { readEnv } from '@/server/env'
 import { getBetterAuth } from '@/server/auth'
 import { createAuthRouteHandler } from '@/server/auth-route'
 
-const handler = createAuthRouteHandler(
-  () => readEnv().AUTH_PROVIDER,
-  getBetterAuth
-)
+const handler = createAuthRouteHandler(getBetterAuth)
 
 export const Route = createFileRoute('/api/auth/$')({
   server: {

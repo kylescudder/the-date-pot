@@ -1,16 +1,9 @@
 import { expect, test } from 'bun:test'
-import { readEnv } from '../src/server/env'
+import { publicAuthConfig, readEnv } from '../src/server/env'
 
-const clerk = {
+const better = {
   DATABASE_URL: 'postgres://fixture:password@localhost:5432/app',
   APP_ORIGIN: 'https://thedatepot.example.com',
-  CLERK_PUBLISHABLE_KEY: 'public-fixture',
-  CLERK_SECRET_KEY: 'secret-fixture'
-}
-const better = {
-  DATABASE_URL: clerk.DATABASE_URL,
-  APP_ORIGIN: clerk.APP_ORIGIN,
-  AUTH_PROVIDER: 'better-auth',
   BETTER_AUTH_URL: 'https://thedatepot.example.com',
   BETTER_AUTH_SECRET:
     'fixture-secret-that-is-longer-than-thirty-two-characters',
@@ -18,23 +11,8 @@ const better = {
   AUTH_EMAIL_FROM: 'hello@example.com'
 }
 
-test('Clerk stays the default and still requires its keys', () => {
-  expect(readEnv(clerk).AUTH_PROVIDER).toBe('clerk')
-  expect(() => readEnv({ ...clerk, CLERK_SECRET_KEY: '' })).toThrow(
-    'CLERK_SECRET_KEY'
-  )
-  expect(() => readEnv({ ...clerk, CLERK_PUBLISHABLE_KEY: undefined })).toThrow(
-    'CLERK_PUBLISHABLE_KEY'
-  )
-  expect(() => readEnv({ ...clerk, AUTH_PROVIDER: 'unknown' })).toThrow(
-    'AUTH_PROVIDER'
-  )
-})
-
-test('Better Auth settings are required only when it is selected', () => {
+test('Better Auth settings are required', () => {
   const env = readEnv(better)
-  expect(env.AUTH_PROVIDER).toBe('better-auth')
-  expect(env.CLERK_SECRET_KEY).toBeUndefined()
   expect(env.AUTH_EMAIL_DAILY_LIMIT).toBe(40)
   // Open sign-up: no allowlist unless one is configured.
   expect(env.AUTH_ALLOWED_EMAILS).toEqual([])
@@ -43,8 +21,10 @@ test('Better Auth settings are required only when it is selected', () => {
     'BETTER_AUTH_SECRET',
     'BREVO_API_KEY',
     'AUTH_EMAIL_FROM'
-  ])
+  ]) {
     expect(() => readEnv({ ...better, [key]: '' })).toThrow(key)
+    expect(() => readEnv({ ...better, [key]: undefined })).toThrow(key)
+  }
   expect(() => readEnv({ ...better, BETTER_AUTH_SECRET: 'short' })).toThrow(
     'BETTER_AUTH_SECRET'
   )
@@ -58,10 +38,19 @@ test('Better Auth settings are required only when it is selected', () => {
   expect(() => readEnv({ ...better, AUTH_EMAIL_DAILY_LIMIT: '301' })).toThrow(
     'AUTH_EMAIL_DAILY_LIMIT'
   )
-  // Keeping both sets of settings supports a configuration-only rollback.
-  expect(
-    readEnv({ ...clerk, ...better, AUTH_PROVIDER: 'clerk' }).AUTH_PROVIDER
-  ).toBe('clerk')
+})
+
+test('leftover settings from the previous provider are ignored', () => {
+  const env = readEnv({
+    ...better,
+    NODE_ENV: 'production',
+    AUTH_PROVIDER: 'clerk',
+    CLERK_PUBLISHABLE_KEY: 'public-fixture',
+    CLERK_SECRET_KEY: 'secret-fixture'
+  })
+  expect(env.BETTER_AUTH_URL).toBe('https://thedatepot.example.com')
+  expect(Object.keys(env)).not.toContain('AUTH_PROVIDER')
+  expect(Object.keys(env)).not.toContain('CLERK_SECRET_KEY')
 })
 
 test('an optional email allowlist is trimmed, lowercased and validated', () => {
@@ -74,6 +63,18 @@ test('an optional email allowlist is trimmed, lowercased and validated', () => {
   expect(() => readEnv({ ...better, AUTH_ALLOWED_EMAILS: 'nope' })).toThrow(
     'AUTH_ALLOWED_EMAILS'
   )
+})
+
+test('the client learns only whether sign-up is open, never the allowlist', () => {
+  expect(publicAuthConfig(readEnv(better))).toEqual({ signUpOpen: true })
+  const closed = publicAuthConfig(
+    readEnv({
+      ...better,
+      AUTH_ALLOWED_EMAILS: 'kyle@example.com,partner@example.com'
+    })
+  )
+  expect(closed).toEqual({ signUpOpen: false })
+  expect(JSON.stringify(closed)).not.toContain('example.com')
 })
 
 test('configuration errors name settings without printing their values', () => {

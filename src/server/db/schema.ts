@@ -328,10 +328,11 @@ export const user = createTable('user', {
     .$defaultFn(() => randomUUID()),
   name: varchar('name').notNull(),
   username: varchar('username').notNull(),
-  // Clerk-era identity. Nullable so members who join under Better Auth need none.
+  // Legacy identity from the previous auth provider. Nothing reads it; it is
+  // kept until a later migration drops it.
   clerkId: varchar('clerkId'),
   bio: varchar('bio'),
-  // Better Auth identity, set on first sign-in or by deploy/link-clerk-users.ts.
+  // Better Auth identity: how every request finds its app user.
   authUserId: text('auth_user_id')
     .unique('user_auth_user_id_unique')
     .references(() => authUser.id, { onDelete: 'set null' })

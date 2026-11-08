@@ -11,6 +11,7 @@ import {
 } from '@/components/auth/ui/card'
 import { FieldDescription } from '@/components/auth/ui/field'
 import { magicLinkPlugin } from '@/lib/auth/magic-link-plugin'
+import { useSignUpOpen } from '@/lib/auth/sign-up'
 import { cn } from 'cn'
 import { OpenEmailButton } from './open-email-button'
 import { useIsHydrated } from './use-is-hydrated'
@@ -37,6 +38,7 @@ export function MagicLinkSent({ className }: MagicLinkSentProps) {
   const { basePaths, emailAndPassword, localization, viewPaths, Link } =
     useAuth()
   const { localization: magicLinkLocalization } = useAuthPlugin(magicLinkPlugin)
+  const signUpOpen = useSignUpOpen()
 
   const isHydrated = useIsHydrated()
   const [email, setEmail] = useState(
@@ -69,7 +71,7 @@ export function MagicLinkSent({ className }: MagicLinkSentProps) {
           {email && <OpenEmailButton email={email} />}
         </div>
 
-        {emailAndPassword?.enabled && (
+        {emailAndPassword?.enabled && signUpOpen && (
           <div className='mt-4 flex w-full flex-col items-center gap-3'>
             <FieldDescription className='text-center'>
               {localization.auth.needToCreateAnAccount}{' '}

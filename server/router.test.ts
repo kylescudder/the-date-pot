@@ -31,7 +31,7 @@ function client(db: string) {
   return connection
 }
 
-const kyle = 'user_kyle_fixture'
+const kyle = '22222222-2222-4222-8222-222222222221'
 const partnerId = '22222222-2222-4222-8222-222222222222'
 const strangerBeer = '99999999-9999-4999-8999-999999999991'
 const faith = '55555555-5555-4555-8555-555555555551'
@@ -101,8 +101,8 @@ test('signed-out requests are rejected', async () => {
   })
 })
 
-test('a signed-in Clerk user without a group is told so', async () => {
-  await expect(caller('user_nobody').users.me()).rejects.toMatchObject({
+test('a signed-in user without a group is told so', async () => {
+  await expect(caller(randomUUID()).users.me()).rejects.toMatchObject({
     code: 'FORBIDDEN'
   })
 })
@@ -313,7 +313,7 @@ test('places are scoped to the group and geocoding stays server-side', async () 
   expect(await me.maps.lookup('Manchester')).toEqual([-2.24, 53.48])
   expect(await me.maps.lookup('')).toEqual([])
   await expect(
-    caller('user_stranger_fixture').restaurant.get(restaurant.id)
+    caller('99999999-9999-4999-8999-999999999998').restaurant.get(restaurant.id)
   ).rejects.toMatchObject({ code: 'NOT_FOUND' })
   const vinyl = await me.vinyl.save({
     id: '',

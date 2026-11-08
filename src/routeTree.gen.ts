@@ -24,7 +24,6 @@ import { Route as CoffeeIdRouteImport } from './routes/coffee.$id'
 import { Route as FilmIdRouteImport } from './routes/film.$id'
 import { Route as RestaurantIdRouteImport } from './routes/restaurant.$id'
 import { Route as SignInSplatRouteImport } from './routes/sign-in.$'
-import { Route as SignUpSplatRouteImport } from './routes/sign-up.$'
 import { Route as VinylIdRouteImport } from './routes/vinyl.$id'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
 import { Route as ApiProfileAvatarRouteImport } from './routes/api.profile.avatar'
@@ -105,11 +104,6 @@ const SignInSplatRoute = SignInSplatRouteImport.update({
   path: '/sign-in/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SignUpSplatRoute = SignUpSplatRouteImport.update({
-  id: '/sign-up/$',
-  path: '/sign-up/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const VinylIdRoute = VinylIdRouteImport.update({
   id: '/vinyl/$id',
   path: '/vinyl/$id',
@@ -147,7 +141,6 @@ export interface FileRoutesByFullPath {
   '/film/$id': typeof FilmIdRoute
   '/restaurant/$id': typeof RestaurantIdRoute
   '/sign-in/$': typeof SignInSplatRoute
-  '/sign-up/$': typeof SignUpSplatRoute
   '/vinyl/$id': typeof VinylIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/profile/avatar': typeof ApiProfileAvatarRoute
@@ -169,7 +162,6 @@ export interface FileRoutesByTo {
   '/film/$id': typeof FilmIdRoute
   '/restaurant/$id': typeof RestaurantIdRoute
   '/sign-in/$': typeof SignInSplatRoute
-  '/sign-up/$': typeof SignUpSplatRoute
   '/vinyl/$id': typeof VinylIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/profile/avatar': typeof ApiProfileAvatarRoute
@@ -192,7 +184,6 @@ export interface FileRoutesById {
   '/film/$id': typeof FilmIdRoute
   '/restaurant/$id': typeof RestaurantIdRoute
   '/sign-in/$': typeof SignInSplatRoute
-  '/sign-up/$': typeof SignUpSplatRoute
   '/vinyl/$id': typeof VinylIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/profile/avatar': typeof ApiProfileAvatarRoute
@@ -216,7 +207,6 @@ export interface FileRouteTypes {
     | '/film/$id'
     | '/restaurant/$id'
     | '/sign-in/$'
-    | '/sign-up/$'
     | '/vinyl/$id'
     | '/api/auth/$'
     | '/api/profile/avatar'
@@ -238,7 +228,6 @@ export interface FileRouteTypes {
     | '/film/$id'
     | '/restaurant/$id'
     | '/sign-in/$'
-    | '/sign-up/$'
     | '/vinyl/$id'
     | '/api/auth/$'
     | '/api/profile/avatar'
@@ -260,7 +249,6 @@ export interface FileRouteTypes {
     | '/film/$id'
     | '/restaurant/$id'
     | '/sign-in/$'
-    | '/sign-up/$'
     | '/vinyl/$id'
     | '/api/auth/$'
     | '/api/profile/avatar'
@@ -283,7 +271,6 @@ export interface RootRouteChildren {
   FilmIdRoute: typeof FilmIdRoute
   RestaurantIdRoute: typeof RestaurantIdRoute
   SignInSplatRoute: typeof SignInSplatRoute
-  SignUpSplatRoute: typeof SignUpSplatRoute
   VinylIdRoute: typeof VinylIdRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiProfileAvatarRoute: typeof ApiProfileAvatarRoute
@@ -397,13 +384,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignInSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sign-up/$': {
-      id: '/sign-up/$'
-      path: '/sign-up/$'
-      fullPath: '/sign-up/$'
-      preLoaderRoute: typeof SignUpSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/vinyl/$id': {
       id: '/vinyl/$id'
       path: '/vinyl/$id'
@@ -451,7 +431,6 @@ const rootRouteChildren: RootRouteChildren = {
   FilmIdRoute: FilmIdRoute,
   RestaurantIdRoute: RestaurantIdRoute,
   SignInSplatRoute: SignInSplatRoute,
-  SignUpSplatRoute: SignUpSplatRoute,
   VinylIdRoute: VinylIdRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiProfileAvatarRoute: ApiProfileAvatarRoute,
@@ -462,11 +441,10 @@ export const routeTree = rootRouteImport
   ._addFileTypes<FileRouteTypes>()
 
 import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
+import type { createStart } from '@tanstack/react-start'
 declare module '@tanstack/react-start' {
   interface Register {
     ssr: true
     router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
   }
 }
