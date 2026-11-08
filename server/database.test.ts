@@ -106,13 +106,20 @@ test('the owner CLI replays safely and keeps its journal private from runtime', 
     clients.push(journalSql)
     const journal =
       await journalSql`SELECT * FROM drizzle.__drizzle_migrations ORDER BY id`
-    expect(journal).toHaveLength(3)
+    expect(journal).toHaveLength(4)
     await journalSql.end()
 
     const runtimeSql = database(roleUrl(runtime))
     clients.push(runtimeSql)
     const db = orm(runtimeSql)
     await db.insert(beerType).values({ beerType: 'Connection test' })
+    // Owner default privileges cover tables added by later migrations.
+    await runtimeSql`INSERT INTO auth_user (id, name, email) VALUES ('grant-test', 'Grant', 'grant@example.com')`
+    await runtimeSql`INSERT INTO user_profile (user_id, avatar, avatar_version) VALUES ('grant-test', '\\xff'::bytea, 'v1')`
+    const photos = await runtimeSql`SELECT avatar_version FROM user_profile`
+    expect(photos.map((row) => row.avatar_version)).toEqual(['v1'])
+    await runtimeSql`DELETE FROM auth_user WHERE id = 'grant-test'`
+    expect(await runtimeSql`SELECT * FROM user_profile`).toHaveLength(0)
     await runMigration()
     expect(await db.select().from(beerType)).toMatchObject([
       { beerType: 'Connection test' }

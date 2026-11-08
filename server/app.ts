@@ -2,6 +2,11 @@ import { resolve } from 'node:path'
 
 type Handler = (request: Request) => Response | Promise<Response>
 
+// Bun's own body cap fits a profile photo (the photo handler enforces its
+// 2 MB limit while streaming); every other route keeps the 64 KB limit.
+export const requestBodyLimit = 65536
+export const serverBodyLimit = 2 * 1024 * 1024 + requestBodyLimit
+
 // Health, static assets and response headers around the TanStack Start app.
 export function createApp({
   app,
@@ -19,7 +24,12 @@ export function createApp({
   return async (request: Request): Promise<Response> => {
     const url = new URL(request.url)
     let response: Response
-    if (url.pathname === '/healthz') {
+    if (
+      url.pathname !== '/api/profile/avatar' &&
+      Number(request.headers.get('content-length')) > requestBodyLimit
+    )
+      response = new Response('Payload too large', { status: 413 })
+    else if (url.pathname === '/healthz') {
       try {
         await checkHealth()
         response = Response.json({ ok: true, revision })
@@ -33,8 +43,12 @@ export function createApp({
       )
         response = new Response('Forbidden', { status: 403 })
       else response = await app(request)
-    } else if (url.pathname.startsWith('/api/auth/'))
-      // Better Auth checks origins itself; the route 404s unless it is enabled.
+    } else if (
+      url.pathname.startsWith('/api/auth/') ||
+      url.pathname === '/api/profile/avatar'
+    )
+      // Better Auth and the photo handler check origins and sessions themselves;
+      // both routes 404 unless Better Auth is enabled.
       response = await app(request)
     else if (url.pathname.startsWith('/api/'))
       response = new Response('Not found', { status: 404 })

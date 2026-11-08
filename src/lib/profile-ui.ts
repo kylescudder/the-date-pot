@@ -1,3 +1,5 @@
+import { prepareAvatar, uploadAvatar, deleteAvatar } from './profile'
+
 const nameField = (name: string, label: string) => ({
   name,
   type: 'string' as const,
@@ -23,3 +25,15 @@ export const profileFields = [
     copyable: true
   }
 ]
+
+// The photo is cropped and shrunk in the browser, then validated and
+// re-encoded again on the server, which owns the stored image URL.
+export const profileAvatar = {
+  enabled: true,
+  size: 512,
+  extension: 'jpg' as const,
+  resize: async (file: File) =>
+    new File([await prepareAvatar(file)], 'avatar.jpg', { type: 'image/jpeg' }),
+  upload: uploadAvatar,
+  delete: deleteAvatar
+}

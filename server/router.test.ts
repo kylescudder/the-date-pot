@@ -76,8 +76,10 @@ test('the baseline leaves a database created by drizzle-kit push untouched', asy
   await migrate(pushed)
   const tables = await pushed`
     SELECT tablename FROM pg_tables
-    WHERE schemaname = 'public' AND tablename NOT LIKE 'auth\\_%'`
-  expect(tables.map((row) => row.tablename)).toEqual(['user'])
+    WHERE schemaname = 'public' AND tablename NOT LIKE 'auth\\_%'
+    ORDER BY tablename`
+  // Besides the existing table, only new auth and profile-photo tables appear.
+  expect(tables.map((row) => row.tablename)).toEqual(['user', 'user_profile'])
   // Only the additive Better Auth link reaches the existing table.
   const columns = await pushed`
     SELECT column_name FROM information_schema.columns
@@ -90,7 +92,7 @@ test('the baseline leaves a database created by drizzle-kit push untouched', asy
   ])
   const journal =
     await pushed`SELECT count(*)::int AS n FROM drizzle.__drizzle_migrations`
-  expect(journal[0].n).toBe(3)
+  expect(journal[0].n).toBe(4)
 })
 
 test('signed-out requests are rejected', async () => {

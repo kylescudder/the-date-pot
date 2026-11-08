@@ -21,14 +21,14 @@ import {
   isAuthFormFieldInvalid,
   useAuthForm
 } from '../../auth-form'
+import { ChangeAvatar } from './change-avatar'
 
 export type UserProfileProps = {
   className?: string
 }
 
 /**
- * Render a profile card that lets the authenticated user view and update their display name and names.
- * The Date Pot has no photo storage, so the avatar upload is omitted.
+ * Render a profile card that lets the authenticated user view and update their photo, display name and names.
  *
  * @param className - Optional additional CSS class names applied to the card container
  * @returns A JSX element containing the profile card with avatar upload and editable name/username fields
@@ -98,6 +98,8 @@ export function UserProfile({ className }: UserProfileProps) {
         <form.AuthFormRoot>
           <Card className={cn(className)}>
             <CardContent className='flex flex-col gap-6'>
+              {avatar.enabled && <ChangeAvatar />}
+
               {profile.name && (
                 <form.AppField
                   name='name'

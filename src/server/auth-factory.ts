@@ -14,6 +14,7 @@ import * as schema from './db/auth-schema'
 import { reserveEmailDelivery, type LinkEmailKind } from './auth-email'
 import { isAllowedEmail, isVerifiedMember } from './auth-policy'
 import { syncAppUserName } from './app-user'
+import { currentAvatarUrl } from './profile-photo'
 
 const hasUnsafeCharacters = (value: string) =>
   [...value].some((character) => {
@@ -49,13 +50,14 @@ const names = {
     .transform((value) => value ?? '')
 }
 
-// Profile edits may change names only: never email, verification or an image
-// URL (The Date Pot has no photo storage).
+// Profile edits may change names, never email or verification. An image is
+// accepted only as confirmation of the photo /api/profile/avatar stored.
 const profileUpdateSchema = z
   .strictObject({
     name: names.name.optional(),
     givenName: names.givenName.optional(),
-    familyName: names.familyName.optional()
+    familyName: names.familyName.optional(),
+    image: z.string().max(200).nullable().optional()
   })
   .refine((value) => Object.keys(value).length > 0)
 
@@ -261,6 +263,14 @@ export function createDatePotAuth(
           if (!parsed.success)
             throw new APIError('BAD_REQUEST', {
               message: 'Invalid profile update'
+            })
+          if (
+            parsed.data.image !== undefined &&
+            parsed.data.image !==
+              (await currentAvatarUrl(database, session!.user.id))
+          )
+            throw new APIError('BAD_REQUEST', {
+              message: 'Upload or remove your profile photo first'
             })
           Object.assign(ctx.body, parsed.data)
         }

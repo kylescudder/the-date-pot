@@ -1,16 +1,18 @@
 // Better Auth against a disposable PostgreSQL database: sign-in methods, open
-// sign-up, mail protections, redirect safety, the route allowlist, member
-// provisioning, Clerk linking and Clerk-mode parity.
+// sign-up, mail protections, redirect safety, the route allowlist, profile
+// photos, member provisioning, Clerk linking and Clerk-mode parity.
 import { afterAll, beforeAll, expect, test } from 'bun:test'
 import { createHmac, randomUUID } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import postgres from 'postgres'
+import sharp from 'sharp'
 import { database, migrate, orm, type Database } from '../src/server/db'
 import { createDatePotAuth } from '../src/server/auth-factory'
 import { createAuthRouteHandler } from '../src/server/auth-route'
 import { betterAuthIdentity, resolveAppUser } from '../src/server/app-user'
 import { createTrpcHandler } from '../src/server/trpc-handler'
-import { createApp } from './app'
+import { createProfileHandler } from '../src/server/profile-handler'
+import { createApp, requestBodyLimit, serverBodyLimit } from './app'
 import {
   applyEmailOverrides,
   linkClerkUsers,
@@ -626,6 +628,263 @@ test('profile updates change names only and sync the name other members see', as
   const [account] =
     await sql`SELECT given_name, family_name, image FROM auth_user WHERE email = 'renamer@example.com'`
   expect(account).toEqual({ given_name: 'Ren', family_name: '', image: null })
+})
+
+test('profile photos are bounded, re-encoded without EXIF, private to their owner and removable', async () => {
+  const fixture = await authFixture()
+  const owner = await signInWithCode(fixture, 'photo@example.com')
+  const other = await signInWithCode(fixture, 'other@example.com')
+  const handler = createProfileHandler(fixture.db, {
+    origin,
+    allowedEmails: [],
+    getSession: (headers) => fixture.auth.api.getSession({ headers })
+  })
+  const image = await sharp({
+    create: { width: 64, height: 32, channels: 3, background: '#8844ff' }
+  })
+    .jpeg()
+    .withMetadata({ exif: { IFD0: { Artist: 'Metadata to strip' } } })
+    .toBuffer()
+  expect((await sharp(image).metadata()).exif).toBeDefined()
+  const avatar = (
+    method = 'GET',
+    body?: BodyInit,
+    type = 'image/jpeg',
+    cookie = owner.cookie,
+    extra: Record<string, string> = {}
+  ) =>
+    handler(
+      new Request(origin + '/api/profile/avatar', {
+        method,
+        body,
+        headers: {
+          Origin: origin,
+          Cookie: cookie,
+          'Content-Type': type,
+          ...extra
+        }
+      })
+    )
+  const bytes = new Uint8Array(image)
+  expect((await avatar('GET', undefined, 'image/jpeg', '')).status).toBe(401)
+  expect((await avatar('PUT', bytes, 'image/jpeg', '')).status).toBe(401)
+  expect((await avatar('DELETE', undefined, 'image/jpeg', '')).status).toBe(401)
+  expect(
+    (
+      await avatar('PUT', bytes, 'image/jpeg', owner.cookie, {
+        Origin: 'https://evil.example'
+      })
+    ).status
+  ).toBe(403)
+  expect(
+    (
+      await avatar('PUT', bytes, 'image/jpeg', owner.cookie, {
+        'Sec-Fetch-Site': 'cross-site'
+      })
+    ).status
+  ).toBe(403)
+  expect((await avatar('PATCH', bytes)).status).toBe(405)
+  // Non-images are refused by type and, when mislabelled, by signature.
+  expect(
+    (await avatar('PUT', '<svg onload="alert(1)"/>', 'image/svg+xml')).status
+  ).toBe(415)
+  expect(
+    (await avatar('PUT', '<svg onload="alert(1)"/>', 'image/png')).status
+  ).toBe(400)
+  expect((await avatar('PUT', 'GIF89a not allowed', 'image/jpeg')).status).toBe(
+    400
+  )
+  // A valid signature on a truncated image is still unreadable.
+  expect(
+    (await avatar('PUT', new Uint8Array(image.subarray(0, 40)))).status
+  ).toBe(400)
+  const oversized = new Uint8Array(2 * 1024 * 1024 + 1)
+  oversized.set([0xff, 0xd8, 0xff])
+  expect((await avatar('PUT', oversized)).status).toBe(413)
+  expect((await sql`SELECT count(*)::int AS n FROM user_profile`)[0].n).toBe(0)
+
+  const first = await avatar('PUT', bytes)
+  expect(first.status).toBe(200)
+  expect(first.headers.get('Cache-Control')).toBe('no-store')
+  const { image: initial } = (await first.json()) as { image: string }
+  expect(initial).toMatch(/^\/api\/profile\/avatar\?v=[0-9a-f-]{36}$/)
+  const picture = await avatar()
+  expect(picture.status).toBe(200)
+  expect(picture.headers.get('Content-Type')).toBe('image/jpeg')
+  expect(picture.headers.get('Cache-Control')).toBe('no-store')
+  expect(picture.headers.get('X-Content-Type-Options')).toBe('nosniff')
+  expect(picture.headers.get('Cross-Origin-Resource-Policy')).toBe(
+    'same-origin'
+  )
+  const stored = Buffer.from(await picture.arrayBuffer())
+  const metadata = await sharp(stored).metadata()
+  expect(metadata.format).toBe('jpeg')
+  expect([metadata.width, metadata.height]).toEqual([256, 256])
+  expect(metadata.exif).toBeUndefined()
+  expect(stored.includes(Buffer.from('Metadata to strip'))).toBe(false)
+  // The session's image is the server-owned URL; update-user may only confirm it.
+  const [account] =
+    await sql`SELECT image FROM auth_user WHERE id = ${owner.user.id}`
+  expect(account.image).toBe(initial)
+  expect(
+    (await fixture.request('/update-user', { image: initial }, owner.cookie))
+      .status
+  ).toBe(200)
+  expect(
+    (await fixture.request('/update-user', { image: null }, owner.cookie))
+      .status
+  ).toBe(400)
+  expect(
+    (await fixture.request('/update-user', { image: initial }, other.cookie))
+      .status
+  ).toBe(400)
+  // Another member gets only their own (absent) photo, whatever the URL says.
+  const otherRead = await handler(
+    new Request(origin + initial, { headers: { Cookie: other.cookie } })
+  )
+  expect(otherRead.status).toBe(404)
+  expect(otherRead.headers.get('Content-Type')).not.toBe('image/jpeg')
+
+  // Replacing changes the stored image and its version.
+  const png = await sharp({
+    create: { width: 300, height: 600, channels: 4, background: '#00ff0080' }
+  })
+    .png()
+    .toBuffer()
+  const second = await avatar('PUT', new Uint8Array(png), 'image/png')
+  expect(second.status).toBe(200)
+  const { image: replaced } = (await second.json()) as { image: string }
+  expect(replaced).not.toBe(initial)
+  const [updated] =
+    await sql`SELECT image FROM auth_user WHERE id = ${owner.user.id}`
+  expect(updated.image).toBe(replaced)
+  const replacedBytes = Buffer.from(await (await avatar()).arrayBuffer())
+  expect(replacedBytes.equals(stored)).toBe(false)
+  expect((await sharp(replacedBytes).metadata()).format).toBe('jpeg')
+  expect(
+    (await fixture.request('/update-user', { image: initial }, owner.cookie))
+      .status
+  ).toBe(400)
+
+  // Removing clears both the photo and the account image.
+  const removed = await avatar('DELETE')
+  expect(removed.status).toBe(200)
+  expect(await removed.json()).toEqual({ image: null })
+  expect((await avatar()).status).toBe(404)
+  const [cleared] =
+    await sql`SELECT image FROM auth_user WHERE id = ${owner.user.id}`
+  expect(cleared.image).toBeNull()
+  expect(
+    (await fixture.request('/update-user', { image: null }, owner.cookie))
+      .status
+  ).toBe(200)
+  // Deleting the account deletes its photo row.
+  await avatar('PUT', bytes)
+  await sql`DELETE FROM auth_user WHERE id = ${owner.user.id}`
+  expect((await sql`SELECT count(*)::int AS n FROM user_profile`)[0].n).toBe(0)
+})
+
+test('profile photos need a verified email that is still on a configured allowlist', async () => {
+  const fixture = await authFixture({ allowedEmails: ['listed@example.com'] })
+  const { cookie } = await signInWithCode(fixture, 'listed@example.com')
+  const image = new Uint8Array(
+    await sharp({
+      create: { width: 8, height: 8, channels: 3, background: '#000' }
+    })
+      .jpeg()
+      .toBuffer()
+  )
+  const put = (allowedEmails: string[]) =>
+    createProfileHandler(fixture.db, {
+      origin,
+      allowedEmails,
+      getSession: (headers) => fixture.auth.api.getSession({ headers })
+    })(
+      new Request(origin + '/api/profile/avatar', {
+        method: 'PUT',
+        body: image,
+        headers: {
+          Origin: origin,
+          Cookie: cookie,
+          'Content-Type': 'image/jpeg'
+        }
+      })
+    )
+  expect((await put(['listed@example.com'])).status).toBe(200)
+  // Removing the address from the list revokes the same session.
+  expect((await put(['someone-else@example.com'])).status).toBe(403)
+  // An unverified account is refused even with open sign-up.
+  const unverified = createProfileHandler(fixture.db, {
+    origin,
+    allowedEmails: [],
+    getSession: async () => ({
+      user: { id: 'unverified', email: 'new@example.com', emailVerified: false }
+    })
+  })
+  expect(
+    (await unverified(new Request(origin + '/api/profile/avatar'))).status
+  ).toBe(403)
+})
+
+test('the photo route is forwarded by the server and is a 404 under Clerk', async () => {
+  const app = createApp({
+    app: () => new Response('app'),
+    checkHealth: async () => {},
+    origin,
+    revision: 'test'
+  })
+  expect(
+    await (await app(new Request(origin + '/api/profile/avatar'))).text()
+  ).toBe('app')
+  expect((await app(new Request(origin + '/api/profile/other'))).status).toBe(
+    404
+  )
+  // Only the photo route accepts bodies above the 64 KB server-wide limit.
+  const body = (path: string, size: number) =>
+    app(
+      new Request(origin + path, {
+        method: 'POST',
+        headers: { Origin: origin, 'Content-Length': String(size) },
+        body: new Uint8Array(size)
+      })
+    )
+  expect(
+    (await body('/api/trpc/beers.save', requestBodyLimit + 1)).status
+  ).toBe(413)
+  expect(
+    (await body('/api/auth/sign-in/email', requestBodyLimit + 1)).status
+  ).toBe(413)
+  expect(await (await body('/api/trpc/beers.save', 1024)).text()).toBe('app')
+  expect(await (await body('/api/profile/avatar', 1024 * 1024)).text()).toBe(
+    'app'
+  )
+  expect(serverBodyLimit).toBeGreaterThan(2 * 1024 * 1024)
+  const { handleProfileRequest } = await import('../src/server/profile')
+  const saved = { ...process.env }
+  try {
+    Object.assign(process.env, {
+      DATABASE_URL: 'postgres://u@localhost/db',
+      APP_ORIGIN: origin,
+      CLERK_PUBLISHABLE_KEY: 'pk_test_ZXhhbXBsZS5jb20k',
+      CLERK_SECRET_KEY: 'sk_test_fixture'
+    })
+    delete process.env.AUTH_PROVIDER
+    for (const method of ['GET', 'PUT', 'DELETE'])
+      expect(
+        (
+          await handleProfileRequest(
+            new Request(origin + '/api/profile/avatar', {
+              method,
+              headers: { Origin: origin }
+            })
+          )
+        ).status
+      ).toBe(404)
+  } finally {
+    for (const key of Object.keys(process.env))
+      if (!(key in saved)) delete process.env[key]
+    Object.assign(process.env, saved)
+  }
 })
 
 test('the app exposes only the allowlisted auth endpoints, including open sign-up', async () => {

@@ -12,6 +12,7 @@ import {
 import { authUser } from './auth-schema'
 
 export * from './auth-schema'
+export * from './profile-schema'
 
 export const createTable = pgTableCreator((name) => `${name}`)
 

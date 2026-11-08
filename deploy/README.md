@@ -152,17 +152,33 @@ there. Success returns to `/` or to a same-site `?redirectTo=`; off-site
 `redirectTo`, `callbackURL`, `newUserCallbackURL` and `errorCallbackURL` values
 are refused on the server and ignored in the client. Signed-in members get an
 avatar menu (Better Auth UI `UserButton`) in the sidebar with Profile and Sign
-out. `/profile` edits the display name and optional first/last names (shown to
-other pot members), shows the verified email read-only, sets or changes a
-password (no password yet → "Set password" emails a reset link), manages
-passkeys and signs out. There is no profile photo storage, so avatars use
-initials.
+out. `/profile` uploads or removes a profile photo (shown in the avatar menu), edits
+the display name and optional first/last names (shown to other pot members),
+shows the verified email read-only, sets or changes a password (no password yet
+→ "Set password" emails a reset link), manages passkeys and signs out.
 
 `/api/auth/*` forwards only: get-session, sign-out, update-user,
 email-otp/send-verification-otp, sign-in/email-otp, sign-in/email, sign-up/email,
 verify-email, send-verification-email, sign-in/magic-link, magic-link/verify,
 request-password-reset, reset-password, `/reset-password/<token>`,
 change-password, list-accounts and the passkey endpoints. Everything else is 404.
+
+### Profile photos
+
+`/api/profile/avatar` (GET, PUT, DELETE) serves and changes the signed-in
+account's own photo; nobody can read another member's. It requires a verified
+email that is still permitted (any verified account while sign-up is open; a
+listed one when `AUTH_ALLOWED_EMAILS` is set), and same-origin `Origin` for PUT
+and DELETE. It is a 404 under Clerk. The browser crops photos to a 512 px JPEG;
+the server then accepts only JPEG, PNG or WebP by signature, at most 2 MB and
+4 megapixels, decodes it with `sharp` (one image at a time, uncached) and
+re-encodes it as a 256 px JPEG without EXIF or other metadata. The owner
+migration `0003_profile` adds `user_profile` (one row per `auth_user`, deleted
+with it), so photos stay in the app's own Postgres and its encrypted backups;
+the owner's default privileges grant it to the runtime role. Responses are
+`no-store`, `nosniff` and same-origin only, and each upload gets a new
+`?v=` version in `auth_user.image`. `update-user` accepts an image only when it
+matches the stored photo (or none), so clients cannot point it elsewhere.
 
 ### Emails and limits
 
