@@ -194,7 +194,7 @@ export function SignUp({
               )}
 
               {showSeparator && (
-                <FieldSeparator className='flex items-center text-xs *:data-[slot=field-separator-content]:bg-card'>
+                <FieldSeparator className='*:data-[slot=field-separator-content]:bg-card flex items-center text-xs'>
                   {localization.auth.or}
                 </FieldSeparator>
               )}
@@ -545,7 +545,7 @@ export function SignUp({
           {socialPosition === 'bottom' && (
             <>
               {showSeparator && (
-                <FieldSeparator className='flex items-center text-xs *:data-[slot=field-separator-content]:bg-card'>
+                <FieldSeparator className='*:data-[slot=field-separator-content]:bg-card flex items-center text-xs'>
                   {localization.auth.or}
                 </FieldSeparator>
               )}

@@ -49,7 +49,7 @@ export function ReauthenticationAction({
             {auth.localization.settings.reauthenticationTitle}
           </h3>
         ) : null}
-        <p className='text-sm text-muted-foreground'>
+        <p className='text-muted-foreground text-sm'>
           {auth.localization.settings.reauthenticationDescription}
         </p>
       </div>

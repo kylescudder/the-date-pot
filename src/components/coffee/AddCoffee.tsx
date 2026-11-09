@@ -231,7 +231,7 @@ export default function AddCoffee(props: {
                     <div className='contents w-1/2'>
                       <IconCircleMinus
                         onClick={() => handleRemoveRecord(rating)}
-                        className='float-right text-destructive'
+                        className='text-destructive float-right'
                       />
                     </div>
                     <div className='flex items-center pt-2 text-base'>

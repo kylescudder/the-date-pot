@@ -54,11 +54,11 @@ function BetterAuthProfile() {
         <ChangePassword />
       </div>
       <Passkeys className='mt-8' />
-      <p className='mt-4 text-sm text-muted-foreground'>
+      <p className='text-muted-foreground mt-4 text-sm'>
         Email codes remain available for recovery.
       </p>
       {error && (
-        <p role='alert' className='mt-6 text-destructive'>
+        <p role='alert' className='text-destructive mt-6'>
           {error}
         </p>
       )}

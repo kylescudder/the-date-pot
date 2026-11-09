@@ -8,8 +8,11 @@ backups
 deploy-spool
 # Vendored into deploy-core, which pins this file by hash
 deploy/receiver
-# Generated
-drizzle/meta
-src/routeTree.gen.ts
+# Generated, vendored and test output
+.output
 .tanstack
-.env.vault
+src/routeTree.gen.ts
+drizzle/meta
+src/vendor
+test-results
+playwright-report

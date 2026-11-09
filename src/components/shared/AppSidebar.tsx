@@ -45,12 +45,12 @@ export function AppSidebar(props: { pots: Pot[] }) {
           <SidebarMenuItem className='flex items-center gap-3 p-2'>
             <Suspense
               fallback={
-                <span className='block size-8 rounded-full bg-sidebar-accent' />
+                <span className='bg-sidebar-accent block size-8 rounded-full' />
               }
             >
               <BetterAuthUserMenu />
             </Suspense>
-            <span className='text-sm text-sidebar-foreground/80'>Account</span>
+            <span className='text-sidebar-foreground/80 text-sm'>Account</span>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

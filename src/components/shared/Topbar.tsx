@@ -8,7 +8,7 @@ export default function Topbar() {
   return (
     <CustomThemeProvider>
       <div className='w-full'>
-        <nav className='sticky top-0 z-30 flex w-full items-center justify-between bg-background p-2 lg:px-6'>
+        <nav className='bg-background sticky top-0 z-30 flex w-full items-center justify-between p-2 lg:px-6'>
           <div className='flex items-center gap-1 lg:py-4'>
             <SidebarTrigger />
           </div>
