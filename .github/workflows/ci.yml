@@ -30,6 +30,8 @@ jobs:
         run: docker build --target build -t the-date-pot:checks .
       - name: Check dependency advisories
         run: docker run --rm the-date-pot:checks bun audit --audit-level high
+      - name: Lint
+        run: docker run --rm the-date-pot:checks bun run lint
       - name: Check formatting
         run: docker run --rm the-date-pot:checks bun run format:check
       - name: Test
