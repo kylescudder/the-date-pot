@@ -64,7 +64,7 @@ export function UserView({
       <UserAvatar user={resolvedUser as User | undefined} />
 
       <div className='grid min-w-0 flex-1 text-left text-sm leading-tight'>
-        <span className='truncate font-medium text-foreground'>
+        <span className='text-foreground truncate font-medium'>
           {resolvedUser?.displayUsername ||
             resolvedUser?.name ||
             resolvedUser?.email}
@@ -72,7 +72,7 @@ export function UserView({
 
         {!hideSubtitle &&
           (resolvedUser?.displayUsername || resolvedUser?.name) && (
-            <span className='truncate text-xs text-muted-foreground'>
+            <span className='text-muted-foreground truncate text-xs'>
               {resolvedUser?.email}
             </span>
           )}

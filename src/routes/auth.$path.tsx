@@ -32,13 +32,13 @@ export const Route = createFileRoute('/auth/$path')({
 function AuthPage() {
   const { path } = Route.useParams()
   return (
-    <div className='min-h-dvh bg-background px-4 py-8 text-foreground sm:px-8'>
+    <div className='bg-background text-foreground min-h-dvh px-4 py-8 sm:px-8'>
       <header className='mx-auto flex max-w-sm items-center justify-center'>
         <a
           href='/'
           className='flex items-center gap-2 text-xl font-semibold tracking-tight'
         >
-          <IconHomeHeart aria-hidden='true' className='size-7 text-primary' />
+          <IconHomeHeart aria-hidden='true' className='text-primary size-7' />
           The Date Pot
         </a>
       </header>
@@ -46,7 +46,7 @@ function AuthPage() {
         <BetterAuthUIProvider>
           <Auth path={path} className='w-full text-left' />
         </BetterAuthUIProvider>
-        <p className='text-center text-sm text-muted-foreground'>
+        <p className='text-muted-foreground text-center text-sm'>
           Films, food, coffee, vinyls and days out, planned together.
         </p>
       </main>

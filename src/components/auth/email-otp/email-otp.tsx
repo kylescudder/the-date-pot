@@ -235,7 +235,7 @@ export function EmailOtp({ className, sessionPending = false }: EmailOtpProps) {
       <CardContent>
         <div className='flex flex-col gap-6'>
           {sessionPending && (
-            <p role='status' className='text-sm text-muted-foreground'>
+            <p role='status' className='text-muted-foreground text-sm'>
               Checking sign-in…
             </p>
           )}
