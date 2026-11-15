@@ -51,6 +51,7 @@ test('another group’s beer cannot be opened', async ({ page }, info) => {
   await expect(
     page.getByText('Something went wrong getting that beer!')
   ).toBeVisible()
+  await waitForAnimations(page)
   await capture(page, info, 'stranger-beer-error')
 })
 
