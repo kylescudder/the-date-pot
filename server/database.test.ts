@@ -130,10 +130,11 @@ test('the owner CLI replays safely and keeps its journal private from runtime', 
       await replaySql`SELECT * FROM drizzle.__drizzle_migrations ORDER BY id`
     ).toEqual(journal)
     await expect(
-      runtimeSql`SELECT * FROM drizzle.__drizzle_migrations`
+      // Postgres.js queries are lazy; start them before Bun's promise matcher.
+      runtimeSql`SELECT * FROM drizzle.__drizzle_migrations`.execute()
     ).rejects.toMatchObject({ code: '42501' })
     await expect(
-      runtimeSql`CREATE TABLE public.forbidden (id int)`
+      runtimeSql`CREATE TABLE public.forbidden (id int)`.execute()
     ).rejects.toMatchObject({ code: '42501' })
   } finally {
     await Promise.all(clients.map((sql) => sql.end({ timeout: 1 })))
