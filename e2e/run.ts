@@ -61,9 +61,12 @@ async function throwawayDatabase() {
   const external = process.env.E2E_DATABASE_URL
   if (external) {
     const url = new URL(external)
-    if (!['localhost', '127.0.0.1'].includes(url.hostname))
+    if (
+      !['postgres:', 'postgresql:'].includes(url.protocol) ||
+      !['localhost', '127.0.0.1'].includes(url.hostname)
+    )
       throw new Error('E2E_DATABASE_URL must be a local disposable database.')
-    if (!url.pathname.slice(1).startsWith('date_pot_e2e'))
+    if (!/^\/date_pot_e2e(?:_|$)/.test(url.pathname))
       throw new Error('Use a date_pot_e2e disposable database.')
     return external
   }
@@ -144,6 +147,21 @@ async function seedUser(databaseUrl: string) {
 let exitCode = 1
 try {
   const databaseUrl = await throwawayDatabase()
+  if (process.env.E2E_DATABASE_URL) {
+    // The validated external database is disposable. Recreate both schemas so
+    // fixtures and their migration journal describe the same clean state,
+    // including after an interrupted or failed browser run.
+    const sql = postgres(databaseUrl, { max: 1, onnotice: () => {} })
+    try {
+      await sql.begin(async (tx) => {
+        await tx`DROP SCHEMA IF EXISTS public CASCADE`
+        await tx`DROP SCHEMA IF EXISTS drizzle CASCADE`
+        await tx`CREATE SCHEMA public`
+      })
+    } finally {
+      await sql.end()
+    }
+  }
   run(MIGRATE, { ...process.env, DATABASE_URL: databaseUrl })
   const user = await seedUser(databaseUrl)
   if (process.env.E2E_SKIP_BUILD !== '1') run(BUILD)

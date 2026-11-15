@@ -71,5 +71,8 @@ No production accounts or stored credentials are needed.
 Tests live permanently in `e2e/`. Reports are ignored artifacts.
 `E2E_SKIP_BUILD=1` reuses a current build. `E2E_DATABASE_URL` may name a
 disposable local database with the prefix in `e2e/run.ts`; migrations and
-fixtures modify that database, so never point it at valuable data.
+fixtures modify that database. On every external-database run the harness
+recreates the `public` and `drizzle` schemas before migrating and seeding,
+so retries start from clean fixtures. All data in those schemas is deleted;
+never point it at valuable data.
 Passkeys, real email delivery and production are not exercised.
