@@ -116,6 +116,74 @@ test('a film opens with its saved details and can be updated', async ({
   await expect(page.locator('#runTime')).toHaveValue('95')
 })
 
+const ladyBird = '/film/55555555-5555-4555-8555-555555555571'
+
+// The release date calendar opens on the current month, not the film's saved
+// date, so these tests pick the first of this month: it is always on screen
+// and never in the future.
+function firstOfThisMonth() {
+  const now = new Date()
+  const first = new Date(now.getFullYear(), now.getMonth(), 1)
+  return {
+    weekday: first.toLocaleString('en-US', { weekday: 'long' }),
+    month: first.toLocaleString('en-US', { month: 'long' }),
+    year: first.getFullYear()
+  }
+}
+
+// The popover fades and scales in; wait for that to finish so screenshots and
+// measurements show the settled calendar.
+async function waitForAnimations(page: Page) {
+  await page.waitForFunction(() => document.getAnimations().length === 0)
+}
+
+test('a film’s release date is picked on the calendar and saved', async ({
+  page
+}, info) => {
+  const { weekday, month, year } = firstOfThisMonth()
+  await page.goto(ladyBird)
+  await expect(page.locator('#name')).toHaveValue('Lady Bird')
+  await page.getByRole('button', { name: 'Release Date', exact: true }).click()
+  const calendar = page.getByRole('grid', { name: `${month} ${year}` })
+  await expect(calendar).toBeVisible()
+  await waitForAnimations(page)
+  await page.screenshot({ path: info.outputPath('film-calendar-desktop.png') })
+  await calendar
+    .getByRole('button', {
+      name: `${weekday}, ${month} 1st, ${year}`,
+      exact: true
+    })
+    .click()
+  await page.keyboard.press('Escape')
+  await page.getByRole('button', { name: /Update Film/ }).click()
+  await expect(page.getByText('Lady Bird updated! 🥳')).toBeVisible()
+  await page.reload()
+  await expect(
+    page.getByRole('button', { name: 'Release Date', exact: true })
+  ).toHaveText(`${month} 1st, ${year}`)
+})
+
+test.describe('on a phone-width screen', () => {
+  test.use({ viewport: { width: 390, height: 844 } })
+
+  test('a film’s release date calendar fits within the screen', async ({
+    page
+  }, info) => {
+    await page.goto(ladyBird)
+    await page
+      .getByRole('button', { name: 'Release Date', exact: true })
+      .click()
+    const calendar = page.getByRole('grid')
+    await expect(calendar).toBeVisible()
+    await waitForAnimations(page)
+    const box = await calendar.boundingBox()
+    expect(box).not.toBeNull()
+    expect(box!.x).toBeGreaterThanOrEqual(0)
+    expect(box!.x + box!.width).toBeLessThanOrEqual(390)
+    await page.screenshot({ path: info.outputPath('film-calendar-mobile.png') })
+  })
+})
+
 test('the restaurant, coffee and activity pages load their records', async ({
   page
 }) => {
