@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Page, type TestInfo } from '@playwright/test'
 
 const faith = '/beer/55555555-5555-4555-8555-555555555551'
 const strangerBeer = '/beer/99999999-9999-4999-8999-999999999991'
@@ -7,6 +7,19 @@ async function addRecord(page: Page, list: string) {
   await page.goto(list)
   await page.locator('#add-button').click()
   return page.getByRole('dialog')
+}
+
+// Saves a PNG of the settled page and attaches it to this test's report entry,
+// so every journey's screenshot maps to its test and viewport.
+async function capture(
+  page: Page,
+  info: TestInfo,
+  name: string,
+  fullPage = false
+) {
+  const path = info.outputPath(`${name}.png`)
+  await page.screenshot({ path, fullPage })
+  await info.attach(name, { path, contentType: 'image/png' })
 }
 
 test('the sidebar lists every pot and the beer list shows only our group', async ({
@@ -25,28 +38,23 @@ test('the sidebar lists every pot and the beer list shows only our group', async
   await expect(page.getByRole('cell', { name: 'Faith' })).toBeVisible()
   await expect(page.getByRole('cell', { name: 'Old Stout' })).toBeVisible()
   await expect(page.getByText("Someone Else's Beer")).toHaveCount(0)
-  await page.screenshot({
-    path: info.outputPath('beers-desktop.png'),
-    fullPage: true
-  })
+  await capture(page, info, 'beers-desktop', true)
   await page.setViewportSize({ width: 390, height: 844 })
   await expect(
     page.getByRole('cell', { name: 'Faith', exact: true })
   ).toBeVisible()
-  await page.screenshot({
-    path: info.outputPath('beers-mobile.png'),
-    fullPage: true
-  })
+  await capture(page, info, 'beers-mobile', true)
 })
 
-test('another group’s beer cannot be opened', async ({ page }) => {
+test('another group’s beer cannot be opened', async ({ page }, info) => {
   await page.goto(strangerBeer)
   await expect(
     page.getByText('Something went wrong getting that beer!')
   ).toBeVisible()
+  await capture(page, info, 'stranger-beer-error')
 })
 
-test('a beer can be added, renamed and archived', async ({ page }) => {
+test('a beer can be added, renamed and archived', async ({ page }, info) => {
   const dialog = await addRecord(page, '/beers')
   await dialog.locator('#name').fill('Playwright Pale')
   await dialog.locator('#abv').fill('4.5')
@@ -60,24 +68,27 @@ test('a beer can be added, renamed and archived', async ({ page }) => {
   await expect(page.getByText('Playwright Pale Ale updated! 🥳')).toBeVisible()
   await page.reload()
   await expect(page.locator('#name')).toHaveValue('Playwright Pale Ale')
+  await capture(page, info, 'beer-renamed')
 
   await page.getByRole('button', { name: 'archive' }).click()
   await expect(page.getByText('Playwright Pale Ale archived 📦')).toBeVisible()
   await page.waitForURL(/\/beers$/)
   await expect(page.getByRole('cell', { name: 'Faith' })).toBeVisible()
   await expect(page.getByText('Playwright Pale Ale')).toHaveCount(0)
+  await capture(page, info, 'beer-archived')
 })
 
 test('a beer’s ratings are shown and its overall rating is averaged', async ({
   page
-}) => {
+}, info) => {
   await page.goto(faith)
   await expect(page.getByText('Test Kyle')).toBeVisible()
   await expect(page.getByText('Test Partner')).toBeVisible()
   await expect(page.getByText('Northern Monk', { exact: true })).toBeVisible()
+  await capture(page, info, 'beer-ratings')
 })
 
-test('a vinyl can be added and appears in the list', async ({ page }) => {
+test('a vinyl can be added and appears in the list', async ({ page }, info) => {
   const dialog = await addRecord(page, '/vinyls')
   await dialog.locator('#name').fill('Court and Spark')
   await dialog.locator('#artist').fill('Joni Mitchell')
@@ -87,11 +98,12 @@ test('a vinyl can be added and appears in the list', async ({ page }) => {
   await expect(
     page.getByRole('cell', { name: 'Court and Spark' })
   ).toBeVisible()
+  await capture(page, info, 'vinyl-added')
 })
 
 test('an existing vinyl opens and can be marked as purchased', async ({
   page
-}) => {
+}, info) => {
   await page.goto('/vinyl/55555555-5555-4555-8555-5555555555a1')
   await expect(page.locator('#artist')).toHaveValue('Joni Mitchell')
   await page.getByRole('checkbox').check()
@@ -99,11 +111,12 @@ test('an existing vinyl opens and can be marked as purchased', async ({
   await expect(page.getByText('Blue updated! 🥳')).toBeVisible()
   await page.reload()
   await expect(page.getByRole('checkbox')).toBeChecked()
+  await capture(page, info, 'vinyl-purchased')
 })
 
 test('a film opens with its saved details and can be updated', async ({
   page
-}) => {
+}, info) => {
   await page.goto('/films')
   await page.getByRole('cell', { name: 'Lady Bird' }).click()
   await page.waitForURL(/\/film\/55555555/)
@@ -114,6 +127,7 @@ test('a film opens with its saved details and can be updated', async ({
   await expect(page.getByText('Lady Bird updated! 🥳')).toBeVisible()
   await page.reload()
   await expect(page.locator('#runTime')).toHaveValue('95')
+  await capture(page, info, 'film-updated')
 })
 
 const ladyBird = '/film/55555555-5555-4555-8555-555555555571'
@@ -147,7 +161,7 @@ test('a film’s release date is picked on the calendar and saved', async ({
   const calendar = page.getByRole('grid', { name: `${month} ${year}` })
   await expect(calendar).toBeVisible()
   await waitForAnimations(page)
-  await page.screenshot({ path: info.outputPath('film-calendar-desktop.png') })
+  await capture(page, info, 'film-calendar-desktop')
   await calendar
     .getByRole('button', {
       name: `${weekday}, ${month} 1st, ${year}`,
@@ -180,17 +194,20 @@ test.describe('on a phone-width screen', () => {
     expect(box).not.toBeNull()
     expect(box!.x).toBeGreaterThanOrEqual(0)
     expect(box!.x + box!.width).toBeLessThanOrEqual(390)
-    await page.screenshot({ path: info.outputPath('film-calendar-mobile.png') })
+    await capture(page, info, 'film-calendar-mobile')
   })
 })
 
 test('the restaurant, coffee and activity pages load their records', async ({
   page
-}) => {
+}, info) => {
   await page.goto('/restaurants')
   await expect(page.getByRole('cell', { name: "Rudy's Pizza" })).toBeVisible()
+  await capture(page, info, 'restaurants')
   await page.goto('/coffees')
   await expect(page.getByRole('cell', { name: 'Grindsmith' })).toBeVisible()
+  await capture(page, info, 'coffees')
   await page.goto('/activities')
   await expect(page.getByRole('cell', { name: 'Crazy golf' })).toBeVisible()
+  await capture(page, info, 'activities')
 })
