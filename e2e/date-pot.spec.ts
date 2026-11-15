@@ -11,7 +11,7 @@ async function addRecord(page: Page, list: string) {
 
 test('the sidebar lists every pot and the beer list shows only our group', async ({
   page
-}) => {
+}, info) => {
   await page.goto('/beers')
   for (const pot of [
     'Activity',
@@ -25,6 +25,18 @@ test('the sidebar lists every pot and the beer list shows only our group', async
   await expect(page.getByRole('cell', { name: 'Faith' })).toBeVisible()
   await expect(page.getByRole('cell', { name: 'Old Stout' })).toBeVisible()
   await expect(page.getByText("Someone Else's Beer")).toHaveCount(0)
+  await page.screenshot({
+    path: info.outputPath('beers-desktop.png'),
+    fullPage: true
+  })
+  await page.setViewportSize({ width: 390, height: 844 })
+  await expect(
+    page.getByRole('cell', { name: 'Faith', exact: true })
+  ).toBeVisible()
+  await page.screenshot({
+    path: info.outputPath('beers-mobile.png'),
+    fullPage: true
+  })
 })
 
 test('another group’s beer cannot be opened', async ({ page }) => {
