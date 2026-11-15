@@ -14,6 +14,13 @@ export default defineConfig({
     ['list'],
     ['html', { outputFolder: 'state/e2e/playwright-report', open: 'never' }]
   ],
+  webServer: process.env.E2E_PORT
+    ? {
+        command: 'bun run start',
+        url: process.env.E2E_BASE_URL!,
+        reuseExistingServer: false
+      }
+    : undefined,
   globalSetup: './e2e/setup.ts',
   use: {
     baseURL: process.env.E2E_BASE_URL ?? 'http://localhost:3472',

@@ -57,3 +57,22 @@ the runtime role cannot read.
 
 See [deploy/README.md](deploy/README.md) for the host, the release pipeline and
 the one-off cutover from the old host.
+
+## Self-contained browser tests
+
+Run `bun install --frozen-lockfile`, install Chromium with
+`bunx --no-install playwright install chromium`, then run `bun run test:e2e`.
+Homebrew PostgreSQL tools (`brew install postgresql@18`) must be on PATH.
+The harness creates a temporary local cluster, migrates it, seeds a verified
+throwaway account with a random password, builds the app, and signs in through
+the real password form. It stops and removes the cluster on completion.
+No production accounts or stored credentials are needed.
+
+Tests live permanently in `e2e/`. Reports are ignored artifacts.
+`E2E_SKIP_BUILD=1` reuses a current build. `E2E_DATABASE_URL` may name a
+disposable local database with the prefix in `e2e/run.ts`; migrations and
+fixtures modify that database. On every external-database run the harness
+recreates the `public` and `drizzle` schemas before migrating and seeding,
+so retries start from clean fixtures. All data in those schemas is deleted;
+never point it at valuable data.
+Passkeys, real email delivery and production are not exercised.

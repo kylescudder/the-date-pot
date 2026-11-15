@@ -10,7 +10,7 @@
     "start": "bun server/index.ts",
     "typecheck": "tsc --noEmit",
     "test": "bun test ./server/*.test.ts && bun test ./client/*.test.ts",
-    "test:e2e": "playwright test",
+    "test:e2e": "bun e2e/run.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "bun server/migrate.ts",
     "format": "prettier --write .",
