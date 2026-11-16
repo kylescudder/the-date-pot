@@ -7,7 +7,10 @@ function connect(url: string, max: number) {
   return postgres(url, {
     max,
     idle_timeout: 20,
-    connect_timeout: 10,
+    // postgres.js v4 retries a connection refused for too many connections
+    // (53300) until connect_timeout has passed, so keep it short: a refused
+    // connection then fails in about 3 seconds instead of hanging requests.
+    connect_timeout: 2,
     onnotice: () => {}
   })
 }
