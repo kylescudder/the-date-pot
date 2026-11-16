@@ -42,3 +42,39 @@ jobs:
         run: docker run --rm -v "$PWD/deploy/receiver:/app:ro" -w /app node:24-alpine@sha256:06d7adf3e0ef61a13f1d28682726366f97a15aa1888c934d3ecec86c33918b53 node --test server.test.mjs
       - name: Build production image
         run: docker build --build-arg DATE_POT_REVISION="$GITHUB_SHA" -t the-date-pot:ci .
+
+  e2e:
+    name: E2E tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: 1.4.4
+      - name: Install dependencies
+        run: HUSKY=0 bun install --frozen-lockfile
+      - name: Install disposable PostgreSQL tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes postgresql
+          pg_config --bindir >> "$GITHUB_PATH"
+      - name: Install Chromium
+        run: bunx --no-install playwright install --with-deps chromium
+      - name: Run end-to-end tests
+        run: |
+          set -o pipefail
+          mkdir -p artifacts/e2e-ci
+          bun run test:e2e 2>&1 | tee artifacts/e2e-ci/run.log
+      - name: Save test reports and evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: e2e-evidence
+          retention-days: 7
+          path: |
+            state/e2e/playwright-report/
+            state/e2e/test-results/
+            artifacts/e2e-ci/
