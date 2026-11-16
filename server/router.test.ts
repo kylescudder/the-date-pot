@@ -22,6 +22,7 @@ if (!process.env.TEST_DATABASE_URL)
   )
 const admin = postgres(process.env.TEST_DATABASE_URL, {
   max: 1,
+  connect_timeout: 2,
   onnotice: () => {}
 })
 const name = 'datepot_ci_' + randomUUID().replaceAll('-', '').slice(0, 10)

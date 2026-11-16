@@ -5,7 +5,7 @@ import { database as createApplicationDatabase } from '../src/server/db'
 import { createHealthCheck } from '../src/server/health'
 import postgres from 'postgres'
 function connect(url: string, max: number) {
-  return adapt(postgres(url, { max, connect_timeout: 3, onnotice: () => {} }))
+  return adapt(postgres(url, { max, connect_timeout: 2, onnotice: () => {} }))
 }
 function adapt(pool: ReturnType<typeof postgres>): Client {
   return {
@@ -93,16 +93,23 @@ async function checkBudget() {
     held.push(probe)
     assert.equal((await probe.query('SELECT 42 AS answer'))[0]!.answer, 42)
     let rejected = false
+    const started = performance.now()
     try {
       await overflow.query('SELECT 1')
     } catch (error) {
       const value = error as { code?: string; errno?: string }
       rejected = value.code === '53300' || value.errno === '53300'
     }
+    const elapsed = performance.now() - started
     assert.equal(
       rejected,
       true,
       'The ninth connection must hit the real role limit'
+    )
+    // postgres.js v4 retries 53300 until connect_timeout (2 s) has passed.
+    assert.ok(
+      elapsed < 5_000,
+      `The refused connection took ${Math.round(elapsed)} ms to fail`
     )
   } finally {
     await Promise.all(held.map((connection) => connection.release()))

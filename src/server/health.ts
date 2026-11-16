@@ -13,7 +13,7 @@ export function createHealthCheck(databaseUrl: string) {
     // Own this connection so a deadline can retire it without touching app SQL.
     const sql = postgres(databaseUrl, {
       max: 1,
-      connect_timeout: 3,
+      connect_timeout: 2,
       connection: { statement_timeout: 3000 },
       onnotice: () => {}
     })
