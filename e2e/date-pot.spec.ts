@@ -163,10 +163,10 @@ test('a film’s release date is picked on the calendar and saved', async ({
   await expect(calendar).toBeVisible()
   await waitForAnimations(page)
   await capture(page, info, 'film-calendar-desktop')
+  // On the 1st, react-day-picker also labels the day as today ("Today, …").
   await calendar
     .getByRole('button', {
-      name: `${weekday}, ${month} 1st, ${year}`,
-      exact: true
+      name: new RegExp(`^(Today, )?${weekday}, ${month} 1st, ${year}$`)
     })
     .click()
   await page.keyboard.press('Escape')
