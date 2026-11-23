@@ -268,10 +268,15 @@ database CLI work at most one. Sequential deployment commands use their own
 one-connection client instead of importing the application pool. This leaves
 two slots for operator connections during a release; owner migrations use a
 separate role and a one-connection client. Application and owner clients retire
-idle connections after 20 seconds and allow 10 seconds to connect. Health keeps
-its separate three-second deadline.
+idle connections after 20 seconds. Every client, including health, deployment
+and test clients, sets `connect_timeout` to 2 seconds. postgres.js v4 retries a
+connection the server refuses for too many connections (`53300`) with backoff
+until `connect_timeout` has passed, rather than failing at once as v3 did, so a
+refused connection fails in about 3 seconds instead of leaving requests waiting.
+Health keeps its separate three-second deadline.
 
 CI exercises the real application and deployment clients against an
 eight-connection test role, with all four application slots held open. Concurrent
 deployment queries must share one backend, health must still connect, two spare
-slots must remain usable, and a ninth connection must be rejected by PostgreSQL.
+slots must remain usable, and a ninth connection must be rejected by PostgreSQL
+with `53300` within five seconds.

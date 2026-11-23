@@ -15,7 +15,7 @@ test('application connections have bounded idle and connection waits', async () 
   try {
     expect(sql.options.max).toBe(4)
     expect(sql.options.idle_timeout).toBe(20)
-    expect(sql.options.connect_timeout).toBe(10)
+    expect(sql.options.connect_timeout).toBe(2)
     expect((await sql`SELECT 42 AS answer`)[0].answer).toBe(42)
   } finally {
     await sql.end({ timeout: 1 })
@@ -27,7 +27,7 @@ test('owner migration queries serialize on one connection', async () => {
   try {
     expect(sql.options.max).toBe(1)
     expect(sql.options.idle_timeout).toBe(20)
-    expect(sql.options.connect_timeout).toBe(10)
+    expect(sql.options.connect_timeout).toBe(2)
     const rows = await Promise.all(
       Array.from(
         { length: 4 },
@@ -40,9 +40,50 @@ test('owner migration queries serialize on one connection', async () => {
   }
 })
 
+test('an application connection refused by the role limit fails within a few seconds', async () => {
+  const admin = postgres(url, {
+    max: 1,
+    connect_timeout: 2,
+    onnotice: () => {}
+  })
+  const role = 'datepot_refused_' + randomUUID().replaceAll('-', '')
+  const roleUrl = new URL(url)
+  roleUrl.username = role
+  roleUrl.password = ''
+  const holder = database(roleUrl.toString())
+  const refused = database(roleUrl.toString())
+  let held: Awaited<ReturnType<typeof holder.reserve>> | undefined
+  try {
+    await admin`CREATE ROLE ${admin(role)} LOGIN NOSUPERUSER CONNECTION LIMIT 1`
+    held = await holder.reserve()
+    await held`SELECT 1`
+    // postgres.js v4 retries 53300 until connect_timeout, so this bounds the wait.
+    const started = performance.now()
+    let error: unknown
+    try {
+      await refused`SELECT 1`
+    } catch (caught) {
+      error = caught
+    }
+    const elapsed = performance.now() - started
+    expect(error).toMatchObject({ code: '53300' })
+    expect(elapsed).toBeLessThan(5_000)
+  } finally {
+    held?.release()
+    await refused.end({ timeout: 1 })
+    await holder.end({ timeout: 1 })
+    await admin`DROP ROLE IF EXISTS ${admin(role)}`
+    await admin.end({ timeout: 1 })
+  }
+}, 15_000)
+
 test('an idle application connection retires and reconnects for the next query', async () => {
   const sql = database(url)
-  const observer = postgres(url, { max: 1, onnotice: () => {} })
+  const observer = postgres(url, {
+    max: 1,
+    connect_timeout: 2,
+    onnotice: () => {}
+  })
   try {
     const [first] = await sql`SELECT pg_backend_pid() AS pid`
     const deadline = Date.now() + 30_000
@@ -64,7 +105,11 @@ test('an idle application connection retires and reconnects for the next query',
 }, 35_000)
 
 test('the owner CLI replays safely and keeps its journal private from runtime', async () => {
-  const admin = postgres(url, { max: 1, onnotice: () => {} })
+  const admin = postgres(url, {
+    max: 1,
+    connect_timeout: 2,
+    onnotice: () => {}
+  })
   const name = 'datepot_connections_' + randomUUID().replaceAll('-', '')
   const owner = name + '_owner'
   const runtime = name + '_runtime'
