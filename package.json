@@ -20,7 +20,7 @@
     "test:connections": "bun deploy/test-connection-budget.ts"
   },
   "dependencies": {
-    "@better-auth-ui/core": "1.7.33",
+    "@better-auth-ui/core": "1.7.34",
     "@better-auth-ui/react": "1.7.33",
     "@better-auth/drizzle-adapter": "1.7.18",
     "@better-auth/passkey": "1.7.18",
